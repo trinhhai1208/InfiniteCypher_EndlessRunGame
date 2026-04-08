@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 9a801213ef721c949a209e4b03e8dec4
+  m_SerializeEntries:
+  - m_GUID: 0f2505a3f5e77fa44a6703470cc30543
+    m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_16.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 484404636ac422042a24ac95512dc2d3
+    m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Props/Props_Traffic
+      Control Barrier Fence.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4be47a48b47d6224ebb6430561872389
+    m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_19.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50e260f821baa56419af96b848301e5d
+    m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/Magnet.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 640b94cf88de4ef459ce14645b2736d9
+    m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_06.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a301d09debaf1e4a8d3e2657cc44a96
+    m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/Coin.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 744d1ae3c9575e3499e29a4b6f9f41c7
+    m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/GoldBar.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79ef5961b86276943ab5da38ae9f2e4b
+    m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
+      with Static Wheels/Vehicle_Bus_color02.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9500f0cdde0097a4aac35ced7c1935d7
+    m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
+      with Static Wheels/Vehicle_Bus_color01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 973f382416d860647bbd2dbb2a2190dd
+    m_Address: Assets/Prefabs/Segment/TrackSegment_ModernCity.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1614f0cf649e3a4e894d20bda9008e7
+    m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/Shield.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a73eca55382651c449497eca9a2be0be
+    m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/StarCoin.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc57e42ef50869e4181dcf86cede3c7d
+    m_Address: Assets/Prefabs/Segment/TrackSegment_City.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e75f3f3463dac294baf3fb2d29a06714
+    m_Address: Assets/Prefabs/Segment/TrackSegment_OldCity.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f269a0a343ed94c4e908a388c940ea06
+    m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
+      with Static Wheels/Vehicle_Bus_color03.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fc1e359a90d4e6542b4d8022c50429ce
+    m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_13.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff60e6cbfd0ed6e4bace0ea2a2f5a238
+    m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Futuristic_Car_1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: fa576f26d9391b94e9928bc7f6d3209e, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 81201e66a17004e448557b257407fadf, type: 2}
+    - {fileID: 11400000, guid: a88e53271fbbeb44681ebabff6e206bb, type: 2}

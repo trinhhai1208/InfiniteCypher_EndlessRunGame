@@ -1,0 +1,26 @@
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+UserSettings/
+
+# Visual Studio
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.unityproj
+*.booproj
+
+# OS
+.DS_Store
+Thumbs.db
+
+.agent
+
+#.MD
+GDD.md
+GAME_BUILD_GUIDE.md
+PROJECT_STRUCTURE.md
