@@ -61,8 +61,8 @@ public class LevelGenerator : MonoBehaviour
 
     // ─────────────────────────────────────────
     [Header("Spawn Settings")]
-    [Tooltip("Khoảng Z đầu tiên không sinh vật cản (tính từ StartPoint của segment)")]
-    [SerializeField] private float _safeStartOffset = 15f;
+    [Tooltip("Khoảng Z đầu tiên không sinh vật cản (tính từ StartPoint của segment - Đã cộng bù 20m lùi)")]
+    [SerializeField] private float _safeStartOffset = 50f;
     [Tooltip("Khoảng trống giữa 2 nhóm xe")]
     [SerializeField] private float _gapBetweenGroups = 5f;
 

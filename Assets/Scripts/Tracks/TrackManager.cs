@@ -23,16 +23,18 @@ public class TrackManager : MonoBehaviour
 
     [Header("Track Settings")]
     [Tooltip("Số đoạn đường luôn tồn tại phía trước nhân vật")]
-    [SerializeField] private int _segmentsAhead = 3;
+    [SerializeField] private int _segmentsAhead = 4;
 
     [Tooltip("Khoảng cách phía sau nhân vật để xóa segment cũ")]
-    [SerializeField] private float _despawnDistance = 20f;
+    [SerializeField] private float _despawnDistance = 70f;
 
     // Runtime state
     private readonly List<TrackSegment> _activeSegments = new();
     private Vector3 _nextSpawnPosition = Vector3.zero;
     private bool _isSpawning;
-    private int _totalSpawned; // Đếm tổng số segment đã sinh — segment đầu tiên sẽ là Safe
+    private int _totalSpawned; 
+    
+    public bool IsReady { get; private set; } = false; // Báo hiệu đã load xong đoạn đường đầu tiên
 
     // ─────────────────────────────────────────────────────────────
     // Unity Lifecycle
@@ -43,13 +45,32 @@ public class TrackManager : MonoBehaviour
         if (_levelGenerator == null)
             _levelGenerator = GetComponent<LevelGenerator>();
 
-        // Đặt điểm spawn đầu tiên ngay tại vị trí Player
-        _nextSpawnPosition = _player != null ? _player.position : Vector3.zero;
+        // Đặt điểm spawn đầu tiên lùi lại 20m để che hụt chân camera
+        _nextSpawnPosition = _player != null ? _player.position - Vector3.forward * 20f : new Vector3(0, 0, -20f);
         _totalSpawned = 0;
 
-        // Spawn các đoạn đường đầu tiên — Đoạn 1 sẽ tự động là Safe (không có xe)
-        for (int i = 0; i < _segmentsAhead; i++)
-            SpawnNextSegment();
+        // Bắt đầu quy trình sinh map ban đầu
+        StartCoroutine(InitialSpawnRoutine());
+    }
+
+    private IEnumerator InitialSpawnRoutine()
+    {
+        IsReady = false;
+        
+        // Sinh đoạn đường đầu tiên và đợi nó xong
+        if (_segmentAssetRefs.Count > 0)
+        {
+            yield return StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[Random.Range(0, _segmentAssetRefs.Count)]));
+        }
+        
+        // Sinh thêm ít nhất 1 đoạn nữa cho chắc chắn
+        for (int i = 1; i < _segmentsAhead && i < 2; i++)
+        {
+            yield return StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[Random.Range(0, _segmentAssetRefs.Count)]));
+        }
+
+        IsReady = true;
+        Debug.Log("<color=green>[TrackManager] Map đã được tải xong và sẵn sàng!</color>");
     }
 
     private void Update()
@@ -168,7 +189,7 @@ public class TrackManager : MonoBehaviour
         }
         _activeSegments.Clear();
 
-        _nextSpawnPosition = _player != null ? _player.position : Vector3.zero;
+        _nextSpawnPosition = _player != null ? _player.position - Vector3.forward * 20f : new Vector3(0, 0, -20f);
         _totalSpawned = 0;
 
         for (int i = 0; i < _segmentsAhead; i++)

@@ -32,12 +32,21 @@ public class HUDManager : MonoBehaviour
         {
             GameManager.Instance.OnCoinChanged += UpdateCoinUI;
             GameManager.Instance.OnDistanceChanged += UpdateDistanceUI;
+            GameManager.Instance.OnGameStart += ShowHUD; // Hiện HUD khi bắt đầu chạy
             _isSubscribed = true;
+
+            // Mặc định ẩn HUD lúc đầu
+            gameObject.SetActive(false);
 
             // Hiển thị giá trị ngay từ khung hình đầu tiên
             UpdateCoinUI(GameManager.Instance.CoinCount);
             UpdateDistanceUI(GameManager.Instance.Distance);
         }
+    }
+
+    private void ShowHUD()
+    {
+        gameObject.SetActive(true);
     }
 
     private void OnDestroy()
@@ -46,6 +55,7 @@ public class HUDManager : MonoBehaviour
         {
             GameManager.Instance.OnCoinChanged -= UpdateCoinUI;
             GameManager.Instance.OnDistanceChanged -= UpdateDistanceUI;
+            GameManager.Instance.OnGameStart -= ShowHUD;
             _isSubscribed = false;
         }
     }

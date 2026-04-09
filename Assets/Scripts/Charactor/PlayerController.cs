@@ -23,12 +23,17 @@ public class PlayerController : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private float _groundRayDistance = 0.2f;
+    //[SerializeField] private float _groundRayDistance = 0.2f;
 
     [Header("Slide")]
     [SerializeField] private float _slideDuration = 0.8f;
     [SerializeField] private float _slideColliderHeight = 1.2f;
     [SerializeField] private float _slideColliderCenterZ = 0f; // Để 0 để tránh lệch chân khi slide
+
+    [Header("Mobile Settings")]
+    [SerializeField] private float _minSwipeDistance = 75f; // Tăng từ 45 lên 75 để chắc chắn hơn
+    private Vector2 _startTouchPosition;
+    private bool _isSwiping = false;
 
     // Cached components
     private Rigidbody _rb;
@@ -131,6 +136,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleInput()
     {
+        // --- 1. KEYBOARD (Giữ nguyên logic gốc của bạn) ---
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
             MoveToLane(_currentLane - 1);
         else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
@@ -161,6 +167,92 @@ public class PlayerController : MonoBehaviour
         if (_isGrounded && !_isSliding && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
         {
             StartCoroutine(SlideRoutine());
+        }
+
+        // --- 2. MOBILE SWIPE (Vuốt liên tục) ---
+        HandleMobileSwipe();
+    }
+
+    private void HandleMobileSwipe()
+    {
+        Vector2 currentPos = Vector2.zero;
+        bool inputDown = false;
+        bool inputHeld = false;
+
+        if (Input.touchCount > 0)
+        {
+            Touch t = Input.GetTouch(0);
+            currentPos = t.position;
+            if (t.phase == TouchPhase.Began) inputDown = true;
+            if (t.phase == TouchPhase.Moved || t.phase == TouchPhase.Stationary) inputHeld = true;
+        }
+        else if (Input.GetMouseButtonDown(0))
+        {
+            inputDown = true;
+            currentPos = Input.mousePosition;
+        }
+        else if (Input.GetMouseButton(0))
+        {
+            inputHeld = true;
+            currentPos = Input.mousePosition;
+        }
+
+        if (inputDown)
+        {
+            _startTouchPosition = currentPos;
+            _isSwiping = true;
+        }
+
+        if (_isSwiping && inputHeld)
+        {
+            Vector2 delta = currentPos - _startTouchPosition;
+            if (delta.magnitude > _minSwipeDistance)
+            {
+                if (Mathf.Abs(delta.x) > Mathf.Abs(delta.y))
+                {
+                    // VUỐT NGANG: Chỉ thực hiện 1 lần duy nhất cho mỗi cú vuốt
+                    if (Mathf.Abs(delta.x) > _minSwipeDistance * 1.5f)
+                    {
+                        if (delta.x > 0) MoveToLane(_currentLane + 1);
+                        else MoveToLane(_currentLane - 1);
+                        
+                        // KHÔNG reset _startTouchPosition ở đây nữa 
+                        // -> Buộc người chơi phải nhấc tay hoặc vuốt rất dài mới sang tiếp được
+                        _isSwiping = false; 
+                    }
+                }
+                else
+                {
+                    // VUỐT DỌC
+                    if (delta.y > 0)
+                    {
+                        if (_isGrounded)
+                        {
+                            _verticalVelocity = _jumpForce;
+                            _animator.SetTrigger(HashJump);
+                        }
+                    }
+                    else
+                    {
+                        if (_isGrounded)
+                        {
+                            if (!_isSliding) StartCoroutine(SlideRoutine());
+                        }
+                        else
+                        {
+                            if (!_isDiving) { _isDiving = true; _verticalVelocity = -_diveForce; }
+                        }
+                    }
+                    
+                    // Với Nhảy/Slide ta cũng tạm dừng nhận diện cú vuốt hiện tại để tránh bị lặp lệnh
+                    _isSwiping = false; 
+                }
+            }
+        }
+
+        if (Input.GetMouseButtonUp(0) || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended))
+        {
+            _isSwiping = false;
         }
     }
 
@@ -218,7 +310,8 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnimator()
     {
-        _animator.SetBool(HashIsRunning, true);
+        bool isRunning = GameManager.Instance != null && GameManager.Instance.IsPlaying;
+        _animator.SetBool(HashIsRunning, isRunning);
         _animator.SetBool(HashIsGrounded, _isGrounded);
     }
 

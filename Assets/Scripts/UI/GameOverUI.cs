@@ -84,6 +84,7 @@ public class GameOverUI : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
+        GameManager.SetAutoStart(true); // Nhảy vào chơi luôn
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -91,6 +92,7 @@ public class GameOverUI : MonoBehaviour
     public void GoToMainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); 
+        GameManager.SetAutoStart(false); // Quay về menu
+        SceneManager.LoadScene("MainMenuScene"); 
     }
 }
