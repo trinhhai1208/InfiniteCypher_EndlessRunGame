@@ -591,6 +591,31 @@ PrefabInstance:
       propertyPath: m_Name
       value: HDLightBlueDay
       objectReference: {fileID: 0}
+    - target: {fileID: 5904402060640840872, guid: c44c5c86588a0a94eb26819dd4b5a12c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5905689090036537317, guid: c44c5c86588a0a94eb26819dd4b5a12c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6336923714564607193, guid: c44c5c86588a0a94eb26819dd4b5a12c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6933751900423936798, guid: c44c5c86588a0a94eb26819dd4b5a12c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6933751900565623060, guid: c44c5c86588a0a94eb26819dd4b5a12c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -837,6 +862,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: MedBlueDay
       objectReference: {fileID: 0}
+    - target: {fileID: 3890997028239593530, guid: bf107cd8f7ac86347b43a6b24ddc634f,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3890997029471245224, guid: bf107cd8f7ac86347b43a6b24ddc634f,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4722179946392519600, guid: bf107cd8f7ac86347b43a6b24ddc634f,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -902,6 +937,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7827149626138855043, guid: bf107cd8f7ac86347b43a6b24ddc634f,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8790574385371228437, guid: bf107cd8f7ac86347b43a6b24ddc634f,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -963,6 +1008,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6a1a639220687694daddb25c169f98be, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 6a1a639220687694daddb25c169f98be, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2414,6 +2463,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: a14ee9901f0c6a64394b91d0b320487d, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3198,6 +3251,36 @@ PrefabInstance:
       propertyPath: m_Name
       value: EmpireGrayDay
       objectReference: {fileID: 0}
+    - target: {fileID: 1902916691910000535, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1902916692054440737, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1951894310060437296, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4361912321091574267, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5591342318615747951, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5982812038484149684, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6045923994137541100, guid: 92625acbd6cc68a4e90de5c32949b74c,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -3261,6 +3344,16 @@ PrefabInstance:
     - target: {fileID: 6045923994137541100, guid: 92625acbd6cc68a4e90de5c32949b74c,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591683914208616860, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8545955208695541673, guid: 92625acbd6cc68a4e90de5c32949b74c,
+        type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3382,6 +3475,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3652295008321810759, guid: 4505243fa39f43942b6b38478578b4b8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3652295008414187290, guid: 4505243fa39f43942b6b38478578b4b8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5312647944387402629, guid: 4505243fa39f43942b6b38478578b4b8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6691779089819566259, guid: 4505243fa39f43942b6b38478578b4b8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3475,10 +3588,35 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4114621525191019655}
     m_Modifications:
+    - target: {fileID: 6140890607235016095, guid: db84c95273d9e054fb0da2bf561c9fe1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6653765294165196355, guid: db84c95273d9e054fb0da2bf561c9fe1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6906831017420066678, guid: db84c95273d9e054fb0da2bf561c9fe1,
         type: 3}
       propertyPath: m_Name
       value: CandleAquaDay
+      objectReference: {fileID: 0}
+    - target: {fileID: 7112496668715239846, guid: db84c95273d9e054fb0da2bf561c9fe1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7112496668729664736, guid: db84c95273d9e054fb0da2bf561c9fe1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7122590739568240095, guid: db84c95273d9e054fb0da2bf561c9fe1,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7799744989265724099, guid: db84c95273d9e054fb0da2bf561c9fe1,
         type: 3}
@@ -3711,6 +3849,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4114621525191019655}
     m_Modifications:
+    - target: {fileID: 6847196113092540, guid: 80f4142eec079a142afe8cc830d5ab28, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 446578224337848143, guid: 80f4142eec079a142afe8cc830d5ab28,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -3776,10 +3918,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 904767155790637198, guid: 80f4142eec079a142afe8cc830d5ab28,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 904767156585634812, guid: 80f4142eec079a142afe8cc830d5ab28,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3134695486168834073, guid: 80f4142eec079a142afe8cc830d5ab28,
         type: 3}
       propertyPath: m_Name
       value: MallGrayNight
+      objectReference: {fileID: 0}
+    - target: {fileID: 7669321236907065587, guid: 80f4142eec079a142afe8cc830d5ab28,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7878000044628054459, guid: 80f4142eec079a142afe8cc830d5ab28,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4406,6 +4568,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4114621525191019655}
     m_Modifications:
+    - target: {fileID: 1555700687820942247, guid: d030118155c352e4e88b5a41e39bdcf5,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1896618433764896286, guid: d030118155c352e4e88b5a41e39bdcf5,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2349008465561241153, guid: d030118155c352e4e88b5a41e39bdcf5,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -4475,6 +4647,21 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SpaceBuildPinkDay
+      objectReference: {fileID: 0}
+    - target: {fileID: 4515119734683749531, guid: d030118155c352e4e88b5a41e39bdcf5,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745089885374892100, guid: d030118155c352e4e88b5a41e39bdcf5,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7745089885724637251, guid: d030118155c352e4e88b5a41e39bdcf5,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4791,6 +4978,25 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 4114621525191019655}
     m_Modifications:
+    - target: {fileID: 9781445492624511, guid: 0f20b81dac1ec24488c6d5082f1de6c8, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2879246946476948231, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3378005162878338442, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3521669377660575724, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4590369482094313540, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -4856,10 +5062,30 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4776946194323377961, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6647688867844949166, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
         type: 3}
       propertyPath: m_Name
       value: OctagonAquaDay
+      objectReference: {fileID: 0}
+    - target: {fileID: 6683167740086886151, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7371703654218860006, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7427937274412190321, guid: 0f20b81dac1ec24488c6d5082f1de6c8,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5304,10 +5530,35 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4672942070156504548, guid: 59d594d5080111348835b93072661389,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5104901520913304981, guid: 59d594d5080111348835b93072661389,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5106482154140890840, guid: 59d594d5080111348835b93072661389,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5969656622361937340, guid: 59d594d5080111348835b93072661389,
         type: 3}
       propertyPath: m_Name
       value: HDBlueNight
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579713648501602851, guid: 59d594d5080111348835b93072661389,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579713648896782377, guid: 59d594d5080111348835b93072661389,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -6143,6 +6394,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2751925891511950443, guid: 017db4ee20a99f148918c9ac6ea23bee,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3684822167824960601, guid: 017db4ee20a99f148918c9ac6ea23bee,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3684822169485657565, guid: 017db4ee20a99f148918c9ac6ea23bee,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5853514256697360876, guid: 017db4ee20a99f148918c9ac6ea23bee,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8004119392772279771, guid: 017db4ee20a99f148918c9ac6ea23bee,
         type: 3}
       propertyPath: m_Name
@@ -6171,6 +6442,31 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: H1BlueDay
+      objectReference: {fileID: 0}
+    - target: {fileID: 2299144008544974944, guid: 563e52f2ed29f2641ad1ea0a6b836cf9,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3648548272016496358, guid: 563e52f2ed29f2641ad1ea0a6b836cf9,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6223062108228109632, guid: 563e52f2ed29f2641ad1ea0a6b836cf9,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665561039052776961, guid: 563e52f2ed29f2641ad1ea0a6b836cf9,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6665561039246982866, guid: 563e52f2ed29f2641ad1ea0a6b836cf9,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8438477513353847629, guid: 563e52f2ed29f2641ad1ea0a6b836cf9,
         type: 3}

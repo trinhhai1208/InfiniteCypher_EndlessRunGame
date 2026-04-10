@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 1.55
+  m_AmbientIntensity: 1.07
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.88252753, g: 0.8857077, b: 0.89433956, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 0fc61a33fad88394387883a3e33f9742, type: 2}
@@ -395,7 +395,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 250, y: 100}
+  m_AnchoredPosition: {x: 250, y: 400}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &122766215
@@ -1087,7 +1087,7 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  _segmentsAhead: 4
+  _segmentsAhead: 3
   _despawnDistance: 70
 --- !u!4 &573284975
 Transform:
@@ -2758,7 +2758,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 850, y: 90}
+  m_SizeDelta: {x: 900, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1782444865
 MonoBehaviour:
@@ -3290,7 +3290,27 @@ PrefabInstance:
     - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
         type: 3}
       propertyPath: _minSwipeDistance
-      value: 200
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
+        type: 3}
+      propertyPath: _speedIncreaseRate
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
+        type: 3}
+      propertyPath: _groundLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
+        type: 3}
+      propertyPath: _rollColliderCenterZ
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
+        type: 3}
+      propertyPath: _slideColliderCenterZ
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

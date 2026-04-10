@@ -2320,6 +2320,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6524265241071788218, guid: 580e175accc4f644e8c5daa4090d0293,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2605,6 +2610,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: d4cfcf659200d7548b90a5580c3ab18f, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: d4cfcf659200d7548b90a5580c3ab18f, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3080,6 +3089,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 6ade71c5c1c1d014895f70f40ed67ed5, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2300000, guid: 6ade71c5c1c1d014895f70f40ed67ed5, type: 3}
+      propertyPath: m_CastShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -3707,6 +3720,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2065606800648651982}
     m_Modifications:
+    - target: {fileID: 790786689844059226, guid: 8bf27f8a5975e1f4e9160e979cfcb02b,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1295220564887911823, guid: 8bf27f8a5975e1f4e9160e979cfcb02b,
         type: 3}
       propertyPath: m_Name
@@ -4204,6 +4222,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2065606800648651982}
     m_Modifications:
+    - target: {fileID: 7888921773797012223, guid: dca6cf054ebcb5349a8333d108c74279,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8537673697885705002, guid: dca6cf054ebcb5349a8333d108c74279,
         type: 3}
       propertyPath: m_Name
@@ -4632,6 +4655,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2300002, guid: 0b6fafa63b69b174584365f2641586a4, type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4726,6 +4753,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2065606800648651982}
     m_Modifications:
+    - target: {fileID: 3160125538751572972, guid: e478292f536a7134e8e48cb62cf2be07,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3520681445263854137, guid: e478292f536a7134e8e48cb62cf2be07,
         type: 3}
       propertyPath: m_Name

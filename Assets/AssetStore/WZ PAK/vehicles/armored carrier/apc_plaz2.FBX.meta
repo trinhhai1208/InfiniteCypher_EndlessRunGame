@@ -1,93 +1,225 @@
 fileFormatVersion: 2
 guid: 142c63e4a29a6f34387febd07f73fe7f
-timeCreated: 1459279561
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: Object021
-    100004: Object189
-    100006: ram023
-    100008: tire
-    100010: tire 1
-    100012: tire 2
-    100014: tire 3
-    100016: tire 4
-    100018: tire 5
-    100020: tire 6
-    100022: tire 7
-    100024: tucha010
-    400000: //RootNode
-    400002: Object021
-    400004: Object189
-    400006: ram023
-    400008: tire
-    400010: tire 1
-    400012: tire 2
-    400014: tire 3
-    400016: tire 4
-    400018: tire 5
-    400020: tire 6
-    400022: tire 7
-    400024: tucha010
-    2300000: Object021
-    2300002: Object189
-    2300004: ram023
-    2300006: tire
-    2300008: tire 1
-    2300010: tire 2
-    2300012: tire 3
-    2300014: tire 4
-    2300016: tire 5
-    2300018: tire 6
-    2300020: tire 7
-    2300022: tucha010
-    3300000: Object021
-    3300002: Object189
-    3300004: ram023
-    3300006: tire
-    3300008: tire 1
-    3300010: tire 2
-    3300012: tire 3
-    3300014: tire 4
-    3300016: tire 5
-    3300018: tire 6
-    3300020: tire 7
-    3300022: tucha010
-    4300000: tire
-    4300002: tire
-    4300004: tire
-    4300006: tire
-    4300008: ram023
-    4300010: tire
-    4300012: tire
-    4300014: tucha010
-    4300016: tire
-    4300018: tire
-    4300020: Object021
-    4300022: Object189
-    9500000: //RootNode
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: Object021
+  - first:
+      1: 100004
+    second: Object189
+  - first:
+      1: 100006
+    second: ram023
+  - first:
+      1: 100008
+    second: tire
+  - first:
+      1: 100010
+    second: tire 1
+  - first:
+      1: 100012
+    second: tire 2
+  - first:
+      1: 100014
+    second: tire 3
+  - first:
+      1: 100016
+    second: tire 4
+  - first:
+      1: 100018
+    second: tire 5
+  - first:
+      1: 100020
+    second: tire 6
+  - first:
+      1: 100022
+    second: tire 7
+  - first:
+      1: 100024
+    second: tucha010
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: Object021
+  - first:
+      4: 400004
+    second: Object189
+  - first:
+      4: 400006
+    second: ram023
+  - first:
+      4: 400008
+    second: tire
+  - first:
+      4: 400010
+    second: tire 1
+  - first:
+      4: 400012
+    second: tire 2
+  - first:
+      4: 400014
+    second: tire 3
+  - first:
+      4: 400016
+    second: tire 4
+  - first:
+      4: 400018
+    second: tire 5
+  - first:
+      4: 400020
+    second: tire 6
+  - first:
+      4: 400022
+    second: tire 7
+  - first:
+      4: 400024
+    second: tucha010
+  - first:
+      23: 2300000
+    second: Object021
+  - first:
+      23: 2300002
+    second: Object189
+  - first:
+      23: 2300004
+    second: ram023
+  - first:
+      23: 2300006
+    second: tire
+  - first:
+      23: 2300008
+    second: tire 1
+  - first:
+      23: 2300010
+    second: tire 2
+  - first:
+      23: 2300012
+    second: tire 3
+  - first:
+      23: 2300014
+    second: tire 4
+  - first:
+      23: 2300016
+    second: tire 5
+  - first:
+      23: 2300018
+    second: tire 6
+  - first:
+      23: 2300020
+    second: tire 7
+  - first:
+      23: 2300022
+    second: tucha010
+  - first:
+      33: 3300000
+    second: Object021
+  - first:
+      33: 3300002
+    second: Object189
+  - first:
+      33: 3300004
+    second: ram023
+  - first:
+      33: 3300006
+    second: tire
+  - first:
+      33: 3300008
+    second: tire 1
+  - first:
+      33: 3300010
+    second: tire 2
+  - first:
+      33: 3300012
+    second: tire 3
+  - first:
+      33: 3300014
+    second: tire 4
+  - first:
+      33: 3300016
+    second: tire 5
+  - first:
+      33: 3300018
+    second: tire 6
+  - first:
+      33: 3300020
+    second: tire 7
+  - first:
+      33: 3300022
+    second: tucha010
+  - first:
+      43: 4300000
+    second: tire
+  - first:
+      43: 4300002
+    second: tire
+  - first:
+      43: 4300004
+    second: tire
+  - first:
+      43: 4300006
+    second: tire
+  - first:
+      43: 4300008
+    second: ram023
+  - first:
+      43: 4300010
+    second: tire
+  - first:
+      43: 4300012
+    second: tire
+  - first:
+      43: 4300014
+    second: tucha010
+  - first:
+      43: 4300016
+    second: tire
+  - first:
+      43: 4300018
+    second: tire
+  - first:
+      43: 4300020
+    second: Object021
+  - first:
+      43: 4300022
+    second: Object189
+  - first:
+      95: 9500000
+    second: //RootNode
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -95,25 +227,49 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -123,11 +279,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

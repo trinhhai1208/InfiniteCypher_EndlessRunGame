@@ -10,75 +10,44 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class Coin : MonoBehaviour
 {
-    [Header("Magnet Settings")]
+    [Header("Settings")]
+    [SerializeField] private float _despawnDistanceBack = 20f;
     [SerializeField] private float _magnetSpeed = 25f;
     [SerializeField] private float _magnetRadius = 10f;
-    
+
     private bool _collected;
     private Transform _playerTransform;
-    
-    private MeshFilter _meshFilter;
-    private MeshRenderer _meshRenderer;
-
-    private void Awake()
-    {
-        _meshFilter = GetComponentInChildren<MeshFilter>();
-        _meshRenderer = GetComponentInChildren<MeshRenderer>();
-        
-        var playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null) _playerTransform = playerObj.transform;
-    }
 
     private void OnEnable()
     {
-        // Reset trạng thái mỗi lần được lấy từ pool
         _collected = false;
-        if (_playerTransform == null)
-        {
-            var pObj = GameObject.FindGameObjectWithTag("Player");
-            if (pObj != null) _playerTransform = pObj.transform;
-        }
+        if (PlayerController.Instance != null)
+            _playerTransform = PlayerController.Instance.transform;
     }
-
-    private void Update()
+    
+    private void FixedUpdate()
     {
         if (_collected) return;
+        if (_playerTransform == null) return;
 
-        // Xử lý Hút Nam Châm
-        if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsMagnetActive() && _playerTransform != null)
+        float playerZ = _playerTransform.position.z;
+
+        // 1. Tối ưu: Tự trả về Pool nếu nhân vật đã đi qua 20m (Không cần đợi xóa Segment)
+        if (transform.position.z < playerZ - _despawnDistanceBack)
+        {
+            if (CoinPool.Instance != null)
+                CoinPool.Instance.Return(gameObject);
+        }
+
+        // 2. Xử lý Hút Nam Châm
+        if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsMagnetActive())
         {
             float dist = Vector3.Distance(transform.position, _playerTransform.position);
             if (dist < _magnetRadius)
             {
                 // Hút về phía Player
-                transform.position = Vector3.MoveTowards(transform.position, _playerTransform.position + Vector3.up, _magnetSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, _playerTransform.position + Vector3.up, _magnetSpeed * Time.fixedDeltaTime);
             }
-        }
-
-        // --- Xử lý Hình Ảnh Nhân Đôi xu ---
-        if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsMultiplierActive())
-        {
-            // 1. Ẩn Renderer thật để tránh bị trùng lặp ở tâm
-            if (_meshRenderer != null && _meshRenderer.enabled) _meshRenderer.enabled = false;
-
-            // 2. Vẽ 2 đồng xu ảo đối xứng qua tâm
-            if (_meshFilter != null && _meshRenderer != null)
-            {
-                float spacing = 0.8f; // Khoảng cách giữa 2 xu
-                Vector3 leftPos = _meshFilter.transform.position - transform.right * (spacing / 2f);
-                Vector3 rightPos = _meshFilter.transform.position + transform.right * (spacing / 2f);
-
-                Matrix4x4 leftMatrix = Matrix4x4.TRS(leftPos, _meshFilter.transform.rotation, _meshFilter.transform.lossyScale);
-                Matrix4x4 rightMatrix = Matrix4x4.TRS(rightPos, _meshFilter.transform.rotation, _meshFilter.transform.lossyScale);
-
-                Graphics.DrawMesh(_meshFilter.sharedMesh, leftMatrix, _meshRenderer.sharedMaterial, 0);
-                Graphics.DrawMesh(_meshFilter.sharedMesh, rightMatrix, _meshRenderer.sharedMaterial, 0);
-            }
-        }
-        else
-        {
-            // Nếu không có X2, đảm bảo hiện lại Renderer thật
-            if (_meshRenderer != null && !_meshRenderer.enabled) _meshRenderer.enabled = true;
         }
     }
 

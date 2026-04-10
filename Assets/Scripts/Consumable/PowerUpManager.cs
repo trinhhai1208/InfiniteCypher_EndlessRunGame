@@ -36,7 +36,7 @@ public class PowerUpManager : MonoBehaviour
         Instance = this;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
 
@@ -44,7 +44,7 @@ public class PowerUpManager : MonoBehaviour
         for (int i = _activePowerUps.Count - 1; i >= 0; i--)
         {
             var p = _activePowerUps[i];
-            p.CurrentTime -= Time.deltaTime;
+            p.CurrentTime -= Time.fixedDeltaTime;
 
             if (p.CurrentTime <= 0)
             {

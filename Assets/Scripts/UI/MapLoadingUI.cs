@@ -54,6 +54,6 @@ public class MapLoadingUI : MonoBehaviour
             _canvasGroup.gameObject.SetActive(false);
         }
 
-        Debug.Log("[MapLoadingUI] Đã mở màn hình Loading. Chúc bạn chơi game vui vẻ!");
+        // Debug.Log("[MapLoadingUI] Đã mở màn hình Loading. Chúc bạn chơi game vui vẻ!");
     }
 }

@@ -41,7 +41,7 @@ MonoBehaviour:
   m_ContentStateBuildPathProfileVariableName: <default settings path>
   m_CustomContentStateBuildPath: 
   m_ContentStateBuildPath: 
-  m_BuildAddressablesWithPlayerBuild: 0
+  m_BuildAddressablesWithPlayerBuild: 1
   m_overridePlayerVersion: '[UnityEditor.PlayerSettings.bundleVersion]'
   m_GroupAssets:
   - {fileID: 11400000, guid: 08d6a30519ae64a43ae7deeab4b25568, type: 2}
@@ -50,7 +50,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 18c01ca21d9c63e4798601c320df0482, type: 2}
   m_BuildSettings:
     m_CompileScriptsInVirtualMode: 0
-    m_CleanupStreamingAssetsAfterBuilds: 1
+    m_CleanupStreamingAssetsAfterBuilds: 0
     m_LogResourceManagerExceptions: 1
     m_BundleBuildPath: Temp/com.unity.addressables/AssetBundles
   m_ProfileSettings:

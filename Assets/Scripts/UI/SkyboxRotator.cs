@@ -17,18 +17,18 @@ public class SkyboxRotator : MonoBehaviour
         
         if (_skyboxMaterial == null)
         {
-            Debug.LogWarning("[SkyboxRotator] Không tìm thấy Skybox Material trong Lighting Settings!");
+            // Debug.LogWarning("[SkyboxRotator] Không tìm thấy Skybox Material trong Lighting Settings!");
             enabled = false;
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_skyboxMaterial != null)
         {
             // Tăng giá trị Rotation của Shader theo thời gian
             float currentRotation = _skyboxMaterial.GetFloat("_Rotation");
-            _skyboxMaterial.SetFloat("_Rotation", currentRotation + _rotationSpeed * Time.deltaTime);
+            _skyboxMaterial.SetFloat("_Rotation", currentRotation + _rotationSpeed * Time.fixedDeltaTime);
         }
     }
 }

@@ -1,79 +1,183 @@
 fileFormatVersion: 2
 guid: ab890e82db940094693887a88663366c
-timeCreated: 1459279563
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: //RootNode
-    100002: k012
-    100004: k019
-    100006: Object205
-    100008: Object246
-    100010: Object247
-    100012: Object248
-    100014: Object249
-    100016: Object250
-    100018: Object251
-    400000: //RootNode
-    400002: k012
-    400004: k019
-    400006: Object205
-    400008: Object246
-    400010: Object247
-    400012: Object248
-    400014: Object249
-    400016: Object250
-    400018: Object251
-    2300000: k012
-    2300002: k019
-    2300004: Object205
-    2300006: Object246
-    2300008: Object247
-    2300010: Object248
-    2300012: Object249
-    2300014: Object250
-    2300016: Object251
-    3300000: k012
-    3300002: k019
-    3300004: Object205
-    3300006: Object246
-    3300008: Object247
-    3300010: Object248
-    3300012: Object249
-    3300014: Object250
-    3300016: Object251
-    4300000: k019
-    4300002: k012
-    4300004: Object251
-    4300006: Object248
-    4300008: Object205
-    4300010: Object250
-    4300012: Object247
-    4300014: Object246
-    4300016: Object249
-    7400000: Take 001
-    9500000: //RootNode
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: //RootNode
+  - first:
+      1: 100002
+    second: k012
+  - first:
+      1: 100004
+    second: k019
+  - first:
+      1: 100006
+    second: Object205
+  - first:
+      1: 100008
+    second: Object246
+  - first:
+      1: 100010
+    second: Object247
+  - first:
+      1: 100012
+    second: Object248
+  - first:
+      1: 100014
+    second: Object249
+  - first:
+      1: 100016
+    second: Object250
+  - first:
+      1: 100018
+    second: Object251
+  - first:
+      4: 400000
+    second: //RootNode
+  - first:
+      4: 400002
+    second: k012
+  - first:
+      4: 400004
+    second: k019
+  - first:
+      4: 400006
+    second: Object205
+  - first:
+      4: 400008
+    second: Object246
+  - first:
+      4: 400010
+    second: Object247
+  - first:
+      4: 400012
+    second: Object248
+  - first:
+      4: 400014
+    second: Object249
+  - first:
+      4: 400016
+    second: Object250
+  - first:
+      4: 400018
+    second: Object251
+  - first:
+      23: 2300000
+    second: k012
+  - first:
+      23: 2300002
+    second: k019
+  - first:
+      23: 2300004
+    second: Object205
+  - first:
+      23: 2300006
+    second: Object246
+  - first:
+      23: 2300008
+    second: Object247
+  - first:
+      23: 2300010
+    second: Object248
+  - first:
+      23: 2300012
+    second: Object249
+  - first:
+      23: 2300014
+    second: Object250
+  - first:
+      23: 2300016
+    second: Object251
+  - first:
+      33: 3300000
+    second: k012
+  - first:
+      33: 3300002
+    second: k019
+  - first:
+      33: 3300004
+    second: Object205
+  - first:
+      33: 3300006
+    second: Object246
+  - first:
+      33: 3300008
+    second: Object247
+  - first:
+      33: 3300010
+    second: Object248
+  - first:
+      33: 3300012
+    second: Object249
+  - first:
+      33: 3300014
+    second: Object250
+  - first:
+      33: 3300016
+    second: Object251
+  - first:
+      43: 4300000
+    second: k019
+  - first:
+      43: 4300002
+    second: k012
+  - first:
+      43: 4300004
+    second: Object251
+  - first:
+      43: 4300006
+    second: Object248
+  - first:
+      43: 4300008
+    second: Object205
+  - first:
+      43: 4300010
+    second: Object250
+  - first:
+      43: 4300012
+    second: Object247
+  - first:
+      43: 4300014
+    second: Object246
+  - first:
+      43: 4300016
+    second: Object249
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      95: 9500000
+    second: //RootNode
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -81,25 +185,49 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -109,11 +237,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

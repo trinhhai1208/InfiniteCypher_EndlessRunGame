@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
@@ -25,13 +26,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask _groundLayer;
     //[SerializeField] private float _groundRayDistance = 0.2f;
 
-    [Header("Slide")]
-    [SerializeField] private float _slideDuration = 0.8f;
-    [SerializeField] private float _slideColliderHeight = 1.2f;
-    [SerializeField] private float _slideColliderCenterZ = 0f; // Để 0 để tránh lệch chân khi slide
+    [Header("Roll (Lăn)")]
+    [FormerlySerializedAs("_slideDuration")]
+    [SerializeField] private float _rollDuration = 0.8f;
+    [FormerlySerializedAs("_slideColliderHeight")]
+    [SerializeField] private float _rollColliderHeight = 1.2f;
+    [FormerlySerializedAs("_slideColliderCenterZ")]
+    [SerializeField] private float _rollColliderCenterZ = 0f;
 
     [Header("Mobile Settings")]
-    [SerializeField] private float _minSwipeDistance = 75f; // Tăng từ 45 lên 75 để chắc chắn hơn
+    [SerializeField] private float _minSwipeDistance = 45f; // Tăng từ 45 lên 75 để chắc chắn hơn
     private Vector2 _startTouchPosition;
     private bool _isSwiping = false;
 
@@ -46,11 +50,17 @@ public class PlayerController : MonoBehaviour
     private float _targetX;
     private float _verticalVelocity;
     private bool _isGrounded;
-    private bool _isSliding;
+    private bool _isRolling;
     private bool _isDead;
     private bool _isDiving;
     private float _groundY;
     private float _lastSafeY;
+    private Coroutine _rollCoroutine;
+
+    // Input Flags
+    private bool _jumpRequested;
+    private bool _diveRequested;
+    private bool _rollRequested;
 
     // Collider cache
     private float _defaultColliderHeight;
@@ -60,17 +70,23 @@ public class PlayerController : MonoBehaviour
     private static readonly int HashIsRunning = Animator.StringToHash("IsRunning");
     private static readonly int HashIsGrounded = Animator.StringToHash("IsGrounded");
     private static readonly int HashJump       = Animator.StringToHash("Jump");
-    private static readonly int HashSlide      = Animator.StringToHash("Slide");
+    private static readonly int HashRoll       = Animator.StringToHash("Roll");
     private static readonly int HashDeath      = Animator.StringToHash("Death");
+
+    public static PlayerController Instance { get; private set; }
 
     private void Awake()
     {
+        Instance = this;
         _rb = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
 
         _rb.useGravity = false;
+        _rb.useGravity = false;
         _rb.constraints = RigidbodyConstraints.FreezeRotation;
+        _rb.interpolation = RigidbodyInterpolation.None; 
+        _rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
 
         if (_capsuleCollider != null)
         {
@@ -92,16 +108,25 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance != null && !GameManager.Instance.IsPlaying) return;
         if (_isDead) return;
 
-        CheckGroundStatus();
         HandleInput();
-        UpdateSpeed();
-        ApplyMovement();
+        ApplyMovement(); // Di chuyển hiển thị ở Update để mượt mà
         UpdateAnimator();
 
         if (GameManager.Instance != null && !_isDead)
         {
             GameManager.Instance.UpdateDistance(transform.position.z);
         }
+    }
+
+    private void FixedUpdate()
+    {
+        if (GameManager.Instance != null && !GameManager.Instance.IsPlaying) return;
+        if (_isDead) return;
+
+        // Logic trạng thái và tốc độ xử lý ở FixedUpdate để ổn định
+        CheckGroundStatus();
+        UpdateSpeed();
+        HandleJumpAndDive();
     }
 
     private void CheckGroundStatus()
@@ -129,14 +154,13 @@ public class PlayerController : MonoBehaviour
         if (!wasGrounded && _isGrounded && _isDiving)
         {
             _isDiving = false;
-            if (!_isSliding)
-                StartCoroutine(SlideRoutine());
+            // Roll logic is handled in FixedUpdate check now
         }
     }
 
     private void HandleInput()
     {
-        // --- 1. KEYBOARD (Giữ nguyên logic gốc của bạn) ---
+        // --- 1. KEYBOARD ---
         if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
             MoveToLane(_currentLane - 1);
         else if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
@@ -144,33 +168,72 @@ public class PlayerController : MonoBehaviour
 
         if (_isGrounded)
         {
-            if (_verticalVelocity < 0)
-                _verticalVelocity = -0.1f;
-
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
             {
-                _verticalVelocity = _jumpForce;
-                _animator.SetTrigger(HashJump);
+                _jumpRequested = true;
             }
         }
         else
         {
-            _verticalVelocity -= _gravity * Time.deltaTime;
-
             if (!_isDiving && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
             {
-                _isDiving = true;
-                _verticalVelocity = -_diveForce;
+                _diveRequested = true;
             }
         }
 
-        if (_isGrounded && !_isSliding && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
+        if (_isGrounded && !_isRolling && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
         {
-            StartCoroutine(SlideRoutine());
+            _rollRequested = true;
         }
 
-        // --- 2. MOBILE SWIPE (Vuốt liên tục) ---
+        // --- 2. MOBILE SWIPE ---
         HandleMobileSwipe();
+    }
+
+    private void HandleJumpAndDive()
+    {
+        if (_isGrounded)
+        {
+            if (_verticalVelocity < 0)
+                _verticalVelocity = -0.1f;
+
+            if (_jumpRequested)
+            {
+                if (_isRolling) StopRoll();
+                
+                _verticalVelocity = _jumpForce;
+                _animator.SetTrigger(HashJump);
+                _jumpRequested = false;
+            }
+            
+            if (_rollRequested)
+            {
+                if (!_isRolling) _rollCoroutine = StartCoroutine(RollRoutine());
+                _rollRequested = false;
+            }
+        }
+        else
+        {
+            _verticalVelocity -= _gravity * Time.fixedDeltaTime;
+
+            if (_diveRequested)
+            {
+                _isDiving = true;
+                _verticalVelocity = -_diveForce;
+                _diveRequested = false;
+            }
+        }
+
+        // Reset flags if state is not applicable
+        if (!_isGrounded)
+        {
+            _jumpRequested = false;
+            _rollRequested = false;
+        }
+        else
+        {
+            _diveRequested = false;
+        }
     }
 
     private void HandleMobileSwipe()
@@ -228,23 +291,22 @@ public class PlayerController : MonoBehaviour
                     {
                         if (_isGrounded)
                         {
-                            _verticalVelocity = _jumpForce;
-                            _animator.SetTrigger(HashJump);
+                            if (_isRolling) StopRoll();
+                            _jumpRequested = true;
                         }
                     }
                     else
                     {
                         if (_isGrounded)
                         {
-                            if (!_isSliding) StartCoroutine(SlideRoutine());
+                            _rollRequested = true;
                         }
                         else
                         {
-                            if (!_isDiving) { _isDiving = true; _verticalVelocity = -_diveForce; }
+                            if (!_isDiving) { _diveRequested = true; }
                         }
                     }
                     
-                    // Với Nhảy/Slide ta cũng tạm dừng nhận diện cú vuốt hiện tại để tránh bị lặp lệnh
                     _isSwiping = false; 
                 }
             }
@@ -256,18 +318,31 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private IEnumerator SlideRoutine()
+    private IEnumerator RollRoutine()
     {
-        _isSliding = true;
-        _animator.SetBool(HashSlide, true);
+        _isRolling = true;
+        _animator.SetBool(HashRoll, true);
 
         if (_capsuleCollider != null)
         {
-            _capsuleCollider.height   = _slideColliderHeight;
-            _capsuleCollider.center   = new Vector3(0f, _slideColliderHeight / 2f, _slideColliderCenterZ);
+            _capsuleCollider.height   = _rollColliderHeight;
+            _capsuleCollider.center   = new Vector3(0f, _rollColliderHeight / 2f, _rollColliderCenterZ);
         }
 
-        yield return new WaitForSeconds(_slideDuration);
+        yield return new WaitForSeconds(_rollDuration);
+
+        StopRoll();
+    }
+
+    private void StopRoll()
+    {
+        if (!_isRolling) return;
+
+        if (_rollCoroutine != null)
+        {
+            StopCoroutine(_rollCoroutine);
+            _rollCoroutine = null;
+        }
 
         if (_capsuleCollider != null)
         {
@@ -275,20 +350,23 @@ public class PlayerController : MonoBehaviour
             _capsuleCollider.center = _defaultColliderCenter;
         }
 
-        _animator.SetBool(HashSlide, false);
-        _isSliding = false;
+        _animator.SetBool(HashRoll, false);
+        _isRolling = false;
     }
 
     private void UpdateSpeed()
     {
         if (_currentSpeed < _maxSpeed)
-            _currentSpeed += _speedIncreaseRate * Time.deltaTime;
+            _currentSpeed += _speedIncreaseRate * Time.fixedDeltaTime;
     }
 
     private void ApplyMovement()
     {
-        float newX = Mathf.Lerp(transform.position.x, _targetX, _laneChangeSpeed * Time.deltaTime);
-        float newY = transform.position.y + (_verticalVelocity * Time.deltaTime);
+        // Sử dụng Time.deltaTime ở đây để hình ảnh mượt mà 100% theo FPS
+        float dt = Time.deltaTime; 
+
+        float newX = Mathf.Lerp(transform.position.x, _targetX, _laneChangeSpeed * dt);
+        float newY = transform.position.y + (_verticalVelocity * dt);
 
         if (_isGrounded && _verticalVelocity <= 0)
         {
@@ -296,7 +374,7 @@ public class PlayerController : MonoBehaviour
                 newY = _groundY; 
         }
 
-        float newZ = transform.position.z + (_currentSpeed * Time.deltaTime);
+        float newZ = transform.position.z + (_currentSpeed * dt);
 
         // Safety net
         if (newY < -3f)
@@ -374,7 +452,7 @@ public class PlayerController : MonoBehaviour
             _capsuleCollider.center = _defaultColliderCenter;
         }
 
-        _animator.SetBool(HashSlide, false);
+        _animator.SetBool(HashRoll, false);
         _animator.SetTrigger(HashDeath);
         if (GameManager.Instance != null) GameManager.Instance.TriggerGameOver();
     }
@@ -382,7 +460,7 @@ public class PlayerController : MonoBehaviour
     public void Initialize()
     {
         _isDead = false;
-        _isSliding = false;
+        _isRolling = false;
         _isDiving = false;
         _currentSpeed = _baseSpeed;
         _currentLane = 0;

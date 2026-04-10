@@ -224,12 +224,13 @@ MonoBehaviour:
   _maxSpeed: 28
   _laneDistance: 3.8
   _laneChangeSpeed: 15
-  _jumpForce: 11
+  _jumpForce: 10.5
   _gravity: 28
   _diveForce: 25
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  _slideDuration: 0.8
-  _slideColliderHeight: 1.2
-  _slideColliderCenterZ: 2
+  _rollDuration: 0.8
+  _rollColliderHeight: 1.2
+  _rollColliderCenterZ: 2
+  _minSwipeDistance: 45

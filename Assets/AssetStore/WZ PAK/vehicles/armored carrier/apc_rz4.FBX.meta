@@ -1,104 +1,258 @@
 fileFormatVersion: 2
 guid: 06be8fb48f477ec4ba861fb37af5fdde
-timeCreated: 1459279561
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: anten004
-    100002: //RootNode
-    100004: far020
-    100006: k033
-    100008: k035
-    100010: Object217
-    100012: Object296
-    100014: Object297
-    100016: Object298
-    100018: Object299
-    100020: Object300
-    100022: Object301
-    100024: ram029
-    100026: rz012
-    100028: tucha020
-    400000: anten004
-    400002: //RootNode
-    400004: far020
-    400006: k033
-    400008: k035
-    400010: Object217
-    400012: Object296
-    400014: Object297
-    400016: Object298
-    400018: Object299
-    400020: Object300
-    400022: Object301
-    400024: ram029
-    400026: rz012
-    400028: tucha020
-    2300000: anten004
-    2300002: far020
-    2300004: k033
-    2300006: k035
-    2300008: Object217
-    2300010: Object296
-    2300012: Object297
-    2300014: Object298
-    2300016: Object299
-    2300018: Object300
-    2300020: Object301
-    2300022: ram029
-    2300024: rz012
-    2300026: tucha020
-    3300000: anten004
-    3300002: far020
-    3300004: k033
-    3300006: k035
-    3300008: Object217
-    3300010: Object296
-    3300012: Object297
-    3300014: Object298
-    3300016: Object299
-    3300018: Object300
-    3300020: Object301
-    3300022: ram029
-    3300024: rz012
-    3300026: tucha020
-    4300000: ram029
-    4300002: anten004
-    4300004: rz012
-    4300006: k035
-    4300008: tucha020
-    4300010: k033
-    4300012: far020
-    4300014: Object217
-    4300016: Object299
-    4300018: Object298
-    4300020: Object296
-    4300022: Object297
-    4300024: Object300
-    4300026: Object301
-    7400000: Take 001
-    9500000: //RootNode
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: anten004
+  - first:
+      1: 100002
+    second: //RootNode
+  - first:
+      1: 100004
+    second: far020
+  - first:
+      1: 100006
+    second: k033
+  - first:
+      1: 100008
+    second: k035
+  - first:
+      1: 100010
+    second: Object217
+  - first:
+      1: 100012
+    second: Object296
+  - first:
+      1: 100014
+    second: Object297
+  - first:
+      1: 100016
+    second: Object298
+  - first:
+      1: 100018
+    second: Object299
+  - first:
+      1: 100020
+    second: Object300
+  - first:
+      1: 100022
+    second: Object301
+  - first:
+      1: 100024
+    second: ram029
+  - first:
+      1: 100026
+    second: rz012
+  - first:
+      1: 100028
+    second: tucha020
+  - first:
+      4: 400000
+    second: anten004
+  - first:
+      4: 400002
+    second: //RootNode
+  - first:
+      4: 400004
+    second: far020
+  - first:
+      4: 400006
+    second: k033
+  - first:
+      4: 400008
+    second: k035
+  - first:
+      4: 400010
+    second: Object217
+  - first:
+      4: 400012
+    second: Object296
+  - first:
+      4: 400014
+    second: Object297
+  - first:
+      4: 400016
+    second: Object298
+  - first:
+      4: 400018
+    second: Object299
+  - first:
+      4: 400020
+    second: Object300
+  - first:
+      4: 400022
+    second: Object301
+  - first:
+      4: 400024
+    second: ram029
+  - first:
+      4: 400026
+    second: rz012
+  - first:
+      4: 400028
+    second: tucha020
+  - first:
+      23: 2300000
+    second: anten004
+  - first:
+      23: 2300002
+    second: far020
+  - first:
+      23: 2300004
+    second: k033
+  - first:
+      23: 2300006
+    second: k035
+  - first:
+      23: 2300008
+    second: Object217
+  - first:
+      23: 2300010
+    second: Object296
+  - first:
+      23: 2300012
+    second: Object297
+  - first:
+      23: 2300014
+    second: Object298
+  - first:
+      23: 2300016
+    second: Object299
+  - first:
+      23: 2300018
+    second: Object300
+  - first:
+      23: 2300020
+    second: Object301
+  - first:
+      23: 2300022
+    second: ram029
+  - first:
+      23: 2300024
+    second: rz012
+  - first:
+      23: 2300026
+    second: tucha020
+  - first:
+      33: 3300000
+    second: anten004
+  - first:
+      33: 3300002
+    second: far020
+  - first:
+      33: 3300004
+    second: k033
+  - first:
+      33: 3300006
+    second: k035
+  - first:
+      33: 3300008
+    second: Object217
+  - first:
+      33: 3300010
+    second: Object296
+  - first:
+      33: 3300012
+    second: Object297
+  - first:
+      33: 3300014
+    second: Object298
+  - first:
+      33: 3300016
+    second: Object299
+  - first:
+      33: 3300018
+    second: Object300
+  - first:
+      33: 3300020
+    second: Object301
+  - first:
+      33: 3300022
+    second: ram029
+  - first:
+      33: 3300024
+    second: rz012
+  - first:
+      33: 3300026
+    second: tucha020
+  - first:
+      43: 4300000
+    second: ram029
+  - first:
+      43: 4300002
+    second: anten004
+  - first:
+      43: 4300004
+    second: rz012
+  - first:
+      43: 4300006
+    second: k035
+  - first:
+      43: 4300008
+    second: tucha020
+  - first:
+      43: 4300010
+    second: k033
+  - first:
+      43: 4300012
+    second: far020
+  - first:
+      43: 4300014
+    second: Object217
+  - first:
+      43: 4300016
+    second: Object299
+  - first:
+      43: 4300018
+    second: Object298
+  - first:
+      43: 4300020
+    second: Object296
+  - first:
+      43: 4300022
+    second: Object297
+  - first:
+      43: 4300024
+    second: Object300
+  - first:
+      43: 4300026
+    second: Object301
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      95: 9500000
+    second: //RootNode
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -106,25 +260,49 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -134,11 +312,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

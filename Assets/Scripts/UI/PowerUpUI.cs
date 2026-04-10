@@ -22,7 +22,7 @@ public class PowerUpUI : MonoBehaviour
         if (_timeSlider != null) _timeSlider.maxValue = p.MaxDuration;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (_powerUpRef != null && _timeSlider != null)
         {

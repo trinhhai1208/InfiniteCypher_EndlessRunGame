@@ -26,7 +26,12 @@ public class CoinPool : MonoBehaviour
     private readonly HashSet<GameObject> _active   = new HashSet<GameObject>(); // đang được dùng
 
     private GameObject _loadedPrefab;
+    private Mesh       _coinMesh;
+    private Material   _coinMaterial;
     private bool       _isReady;
+
+    private readonly List<Matrix4x4> _matrixCacheLeft  = new List<Matrix4x4>();
+    private readonly List<Matrix4x4> _matrixCacheRight = new List<Matrix4x4>();
 
     public bool IsReady => _isReady; // Expose ra ngoài để LevelGenerator kiểm tra
 
@@ -47,11 +52,22 @@ public class CoinPool : MonoBehaviour
     {
         if (op.Status != AsyncOperationStatus.Succeeded)
         {
-            Debug.LogError("[CoinPool] Không load được Coin Prefab! Kiểm tra AssetReference.");
+            // Debug.LogError("[CoinPool] Không load được Coin Prefab! Kiểm tra AssetReference.");
             return;
         }
 
         _loadedPrefab = op.Result;
+
+        // Cache Mesh và Material để dùng cho GPU Instancing
+        var mf = _loadedPrefab.GetComponentInChildren<MeshFilter>();
+        var mr = _loadedPrefab.GetComponentInChildren<MeshRenderer>();
+        if (mf != null) _coinMesh = mf.sharedMesh;
+        if (mr != null) 
+        {
+            _coinMaterial = mr.sharedMaterial;
+            // Tự động bật GPU Instancing để tránh lỗi InvalidOperationException
+            if (_coinMaterial != null) _coinMaterial.enableInstancing = true;
+        }
 
         // Pre-warm: tạo sẵn các instance và xếp vào pool
         for (int i = 0; i < _prewarmCount; i++)
@@ -61,7 +77,68 @@ public class CoinPool : MonoBehaviour
         }
 
         _isReady = true;
-        Debug.Log($"[CoinPool] Sẵn sàng. Pre-warmed {_prewarmCount} coins.");
+        // Debug.Log($"[CoinPool] Sẵn sàng. Pre-warmed {_prewarmCount} coins.");
+    }
+
+    private void LateUpdate()
+    {
+        if (!_isReady || _active.Count == 0 || _coinMesh == null || _coinMaterial == null) return;
+
+        bool isX2 = PowerUpManager.Instance != null && PowerUpManager.Instance.IsMultiplierActive();
+
+        if (isX2)
+        {
+            _matrixCacheLeft.Clear();
+            _matrixCacheRight.Clear();
+
+            float spacing = 0.8f;
+            foreach (var go in _active)
+            {
+                if (go == null || !go.activeInHierarchy) continue;
+
+                // 1. Tắt Renderer thật (để vẽ 2 bản sao thay thế)
+                var mr = go.GetComponentInChildren<MeshRenderer>();
+                if (mr != null && mr.enabled) mr.enabled = false;
+
+                // 2. Tính toán ma trận cho 2 bản sao
+                Transform t = go.transform;
+                Vector3 pos = t.position;
+                Quaternion rot = t.rotation;
+                Vector3 scale = t.lossyScale;
+
+                Vector3 leftPos = pos - t.right * (spacing / 2f);
+                Vector3 rightPos = pos + t.right * (spacing / 2f);
+
+                _matrixCacheLeft.Add(Matrix4x4.TRS(leftPos, rot, scale));
+                _matrixCacheRight.Add(Matrix4x4.TRS(rightPos, rot, scale));
+
+                // Giới hạn 1023 bản thể cho mỗi lệnh DrawMeshInstanced
+                if (_matrixCacheLeft.Count >= 1023) 
+                {
+                    Graphics.DrawMeshInstanced(_coinMesh, 0, _coinMaterial, _matrixCacheLeft);
+                    Graphics.DrawMeshInstanced(_coinMesh, 0, _coinMaterial, _matrixCacheRight);
+                    _matrixCacheLeft.Clear();
+                    _matrixCacheRight.Clear();
+                }
+            }
+
+            // Vẽ số còn lại
+            if (_matrixCacheLeft.Count > 0)
+            {
+                Graphics.DrawMeshInstanced(_coinMesh, 0, _coinMaterial, _matrixCacheLeft);
+                Graphics.DrawMeshInstanced(_coinMesh, 0, _coinMaterial, _matrixCacheRight);
+            }
+        }
+        else
+        {
+            // Đảm bảo bật lại Renderer thật khi hết X2
+            foreach (var go in _active)
+            {
+                if (go == null) continue;
+                var mr = go.GetComponentInChildren<MeshRenderer>();
+                if (mr != null && !mr.enabled) mr.enabled = true;
+            }
+        }
     }
 
     // ─────────────────────────────────────────
@@ -87,7 +164,7 @@ public class CoinPool : MonoBehaviour
     {
         if (!_isReady)
         {
-            Debug.LogWarning("[CoinPool] Pool chưa sẵn sàng — prefab vẫn đang load.");
+            // Debug.LogWarning("[CoinPool] Pool chưa sẵn sàng — prefab vẫn đang load.");
             return null;
         }
 
@@ -100,7 +177,7 @@ public class CoinPool : MonoBehaviour
             // Tự động nới rộng hồ bơi (Pool) thay vì chặn lại làm mất xu
             if (_active.Count >= _maxPoolSize)
             {
-                Debug.LogWarning($"[CoinPool] Vượt quá {_maxPoolSize} xu. Tự động nới rộng giới hạn thêm 50 xu để tránh lỗi mất đồ.");
+                // Debug.LogWarning($"[CoinPool] Vượt quá {_maxPoolSize} xu. Tự động nới rộng giới hạn thêm 50 xu để tránh lỗi mất đồ.");
                 _maxPoolSize += 50; 
             }
             go = CreateNew();

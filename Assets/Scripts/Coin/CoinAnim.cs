@@ -30,7 +30,7 @@ namespace Benjathemaker
             endScale = initialScale * (endScale.magnitude / startScale.magnitude);
         }
 
-        void Update()
+        void FixedUpdate()
         {
             if (isRotating)
             {
@@ -39,12 +39,12 @@ namespace Benjathemaker
                     rotateY ? 1 : 0,
                     rotateZ ? 1 : 0
                 );
-                transform.Rotate(rotationVector * rotationSpeed * Time.deltaTime);
+                transform.Rotate(rotationVector * rotationSpeed * Time.fixedDeltaTime);
             }
 
             if (isScaling)
             {
-                scaleTimer += Time.deltaTime * scaleLerpSpeed;
+                scaleTimer += Time.fixedDeltaTime * scaleLerpSpeed;
                 float t = Mathf.PingPong(scaleTimer, 1f); // Oscillates between 0 and 1
 
                 if (useEasingForScaling)

@@ -40,7 +40,7 @@ public class MainMenuUI : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        Debug.Log("[MainMenuUI] Đang chuyển sang GameScene...");
+        // Debug.Log("[MainMenuUI] Đang chuyển sang GameScene...");
         
         // Đặt flag để GameScene biết là cần vào chơi luôn
         GameManager.SetAutoStart(true);

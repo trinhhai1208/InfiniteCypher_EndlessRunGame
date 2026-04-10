@@ -70,12 +70,15 @@ public class TrackManager : MonoBehaviour
         }
 
         IsReady = true;
-        Debug.Log("<color=green>[TrackManager] Map đã được tải xong và sẵn sàng!</color>");
+        // Debug.Log("<color=green>[TrackManager] Map đã được tải xong và sẵn sàng!</color>");
     }
 
     private void Update()
     {
         if (_player == null) return;
+
+        // Tối ưu WebGL: Chỉ kiểm tra mỗi 10 frame một lần
+        if (Time.frameCount % 10 != 0) return;
 
         CheckDespawn();
         CheckSpawn();
@@ -96,7 +99,7 @@ public class TrackManager : MonoBehaviour
     {
         if (_segmentAssetRefs == null || _segmentAssetRefs.Count == 0)
         {
-            Debug.LogWarning("[TrackManager] Không có Segment Asset References. Hãy gán trong Inspector.");
+            // Debug.LogWarning("[TrackManager] Không có Segment Asset References. Hãy gán trong Inspector.");
             return;
         }
 
@@ -137,13 +140,13 @@ public class TrackManager : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"[TrackManager] Prefab '{segmentGO.name}' thiếu component TrackSegment.cs!");
+                // Debug.LogError($"[TrackManager] Prefab '{segmentGO.name}' thiếu component TrackSegment.cs!");
                 Addressables.ReleaseInstance(segmentGO);
             }
         }
         else
         {
-            Debug.LogError("[TrackManager] Không thể load segment từ Addressables.");
+            // Debug.LogError("[TrackManager] Không thể load segment từ Addressables.");
         }
 
         _isSpawning = false;

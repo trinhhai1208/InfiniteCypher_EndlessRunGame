@@ -1,99 +1,243 @@
 fileFormatVersion: 2
 guid: 2faa68d1db8c62b4ca5670ae889ea7ae
-timeCreated: 1459279561
-licenseType: Store
 ModelImporter:
-  serializedVersion: 19
-  fileIDToRecycleName:
-    100000: anten001
-    100002: //RootNode
-    100004: far022
-    100006: k032
-    100008: k034
-    100010: Object214
-    100012: Object278
-    100014: Object279
-    100016: Object280
-    100018: Object281
-    100020: Object282
-    100022: Object283
-    100024: ram031
-    100026: rz009
-    400000: anten001
-    400002: //RootNode
-    400004: far022
-    400006: k032
-    400008: k034
-    400010: Object214
-    400012: Object278
-    400014: Object279
-    400016: Object280
-    400018: Object281
-    400020: Object282
-    400022: Object283
-    400024: ram031
-    400026: rz009
-    2300000: anten001
-    2300002: far022
-    2300004: k032
-    2300006: k034
-    2300008: Object214
-    2300010: Object278
-    2300012: Object279
-    2300014: Object280
-    2300016: Object281
-    2300018: Object282
-    2300020: Object283
-    2300022: ram031
-    2300024: rz009
-    3300000: anten001
-    3300002: far022
-    3300004: k032
-    3300006: k034
-    3300008: Object214
-    3300010: Object278
-    3300012: Object279
-    3300014: Object280
-    3300016: Object281
-    3300018: Object282
-    3300020: Object283
-    3300022: ram031
-    3300024: rz009
-    4300000: rz009
-    4300002: k032
-    4300004: far022
-    4300006: Object214
-    4300008: ram031
-    4300010: k034
-    4300012: anten001
-    4300014: Object278
-    4300016: Object283
-    4300018: Object280
-    4300020: Object279
-    4300022: Object282
-    4300024: Object281
-    7400000: Take 001
-    9500000: //RootNode
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: anten001
+  - first:
+      1: 100002
+    second: //RootNode
+  - first:
+      1: 100004
+    second: far022
+  - first:
+      1: 100006
+    second: k032
+  - first:
+      1: 100008
+    second: k034
+  - first:
+      1: 100010
+    second: Object214
+  - first:
+      1: 100012
+    second: Object278
+  - first:
+      1: 100014
+    second: Object279
+  - first:
+      1: 100016
+    second: Object280
+  - first:
+      1: 100018
+    second: Object281
+  - first:
+      1: 100020
+    second: Object282
+  - first:
+      1: 100022
+    second: Object283
+  - first:
+      1: 100024
+    second: ram031
+  - first:
+      1: 100026
+    second: rz009
+  - first:
+      4: 400000
+    second: anten001
+  - first:
+      4: 400002
+    second: //RootNode
+  - first:
+      4: 400004
+    second: far022
+  - first:
+      4: 400006
+    second: k032
+  - first:
+      4: 400008
+    second: k034
+  - first:
+      4: 400010
+    second: Object214
+  - first:
+      4: 400012
+    second: Object278
+  - first:
+      4: 400014
+    second: Object279
+  - first:
+      4: 400016
+    second: Object280
+  - first:
+      4: 400018
+    second: Object281
+  - first:
+      4: 400020
+    second: Object282
+  - first:
+      4: 400022
+    second: Object283
+  - first:
+      4: 400024
+    second: ram031
+  - first:
+      4: 400026
+    second: rz009
+  - first:
+      23: 2300000
+    second: anten001
+  - first:
+      23: 2300002
+    second: far022
+  - first:
+      23: 2300004
+    second: k032
+  - first:
+      23: 2300006
+    second: k034
+  - first:
+      23: 2300008
+    second: Object214
+  - first:
+      23: 2300010
+    second: Object278
+  - first:
+      23: 2300012
+    second: Object279
+  - first:
+      23: 2300014
+    second: Object280
+  - first:
+      23: 2300016
+    second: Object281
+  - first:
+      23: 2300018
+    second: Object282
+  - first:
+      23: 2300020
+    second: Object283
+  - first:
+      23: 2300022
+    second: ram031
+  - first:
+      23: 2300024
+    second: rz009
+  - first:
+      33: 3300000
+    second: anten001
+  - first:
+      33: 3300002
+    second: far022
+  - first:
+      33: 3300004
+    second: k032
+  - first:
+      33: 3300006
+    second: k034
+  - first:
+      33: 3300008
+    second: Object214
+  - first:
+      33: 3300010
+    second: Object278
+  - first:
+      33: 3300012
+    second: Object279
+  - first:
+      33: 3300014
+    second: Object280
+  - first:
+      33: 3300016
+    second: Object281
+  - first:
+      33: 3300018
+    second: Object282
+  - first:
+      33: 3300020
+    second: Object283
+  - first:
+      33: 3300022
+    second: ram031
+  - first:
+      33: 3300024
+    second: rz009
+  - first:
+      43: 4300000
+    second: rz009
+  - first:
+      43: 4300002
+    second: k032
+  - first:
+      43: 4300004
+    second: far022
+  - first:
+      43: 4300006
+    second: Object214
+  - first:
+      43: 4300008
+    second: ram031
+  - first:
+      43: 4300010
+    second: k034
+  - first:
+      43: 4300012
+    second: anten001
+  - first:
+      43: 4300014
+    second: Object278
+  - first:
+      43: 4300016
+    second: Object283
+  - first:
+      43: 4300018
+    second: Object280
+  - first:
+      43: 4300020
+    second: Object279
+  - first:
+      43: 4300022
+    second: Object282
+  - first:
+      43: 4300024
+    second: Object281
+  - first:
+      74: 7400000
+    second: Take 001
+  - first:
+      95: 9500000
+    second: //RootNode
+  externalObjects: {}
   materials:
-    importMaterials: 1
+    materialImportMode: 1
     materialName: 0
     materialSearch: 1
+    materialLocation: 0
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
     animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
+    extraUserProperties: []
     clipAnimations: []
     isReadable: 1
   meshes:
@@ -101,25 +245,49 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 0
+    importVisibility: 0
     importBlendShapes: 1
+    importCameras: 0
+    importLights: 0
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
     keepQuads: 0
     weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
     secondaryUVPackMargin: 4
     useFileScale: 1
+    strictVertexDataChecks: 0
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
+    normalCalculationMode: 0
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
   importAnimation: 1
-  copyAvatar: 0
   humanDescription:
+    serializedVersion: 3
     human: []
     skeleton: []
     armTwist: 0.5
@@ -129,11 +297,19 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
+    globalScale: 1
     rootMotionBoneName: 
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 2
   humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
   additionalBone: 0
   userData: 
   assetBundleName: 

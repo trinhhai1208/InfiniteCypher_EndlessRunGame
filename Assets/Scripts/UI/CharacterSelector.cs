@@ -42,7 +42,7 @@ public class CharacterSelector : MonoBehaviour
         PlayerPrefs.SetInt(SKIN_PREFAB_KEY, _currentSkinIndex);
         PlayerPrefs.Save();
         
-        Debug.Log("[CharacterSelector] Switched to Skin Index: " + _currentSkinIndex);
+        // Debug.Log("[CharacterSelector] Switched to Skin Index: " + _currentSkinIndex);
     }
 
     private void ApplySkin()

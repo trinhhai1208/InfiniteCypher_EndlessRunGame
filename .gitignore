@@ -21,7 +21,5 @@ Thumbs.db
 .agent
 
 #.MD
-GDD.md
-GAME_BUILD_GUIDE.md
-PROJECT_STRUCTURE.md
-SCENE_ARCHITECTURE.md
+*.md
+!README.md

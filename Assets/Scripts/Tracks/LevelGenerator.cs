@@ -86,8 +86,17 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private List<UnityEngine.AddressableAssets.AssetReference> _powerUpRefs = new();
     [SerializeField] [Range(0f, 1f)] private float _powerUpSpawnChance = 0.15f; // 15% cơ hội mỗi cụm xu xuất hiện Powerup
 
+    private struct ObjectStats
+    {
+        public float LengthZ;
+        public float OffsetToTail; // Khoảng cách từ Pivot đến mép sau (min.z) của vật thể
+    }
+
     // Lưu objects theo từng segment để cleanup đúng cách
     private readonly Dictionary<TrackSegment, List<GameObject>> _spawnedMap = new();
+
+    // Cache chiều dài (Z) của các prefab để tránh đo đạc lặp lại bằng GetComponentsInChildren
+    private readonly Dictionary<string, ObjectStats> _lengthCache = new();
 
     // ─────────────────────────────────────────────────────────
     // Public API
@@ -140,7 +149,7 @@ public class LevelGenerator : MonoBehaviour
 
         if (segment.StartPoint == null || segment.EndPoint == null)
         {
-            Debug.LogWarning($"[LevelGenerator] Segment '{segment.name}' thiếu StartPoint/EndPoint!");
+            // Debug.LogWarning($"[LevelGenerator] Segment '{segment.name}' thiếu StartPoint/EndPoint!");
             yield break;
         }
 
@@ -251,7 +260,6 @@ public class LevelGenerator : MonoBehaviour
                                 new Vector3(x, coinY, coinZ),
                                 Quaternion.identity,
                                 segment.transform);
-                            if (coin != null) list.Add(coin);
                         }
                     }
                     else
@@ -267,7 +275,6 @@ public class LevelGenerator : MonoBehaviour
                                 new Vector3(x, _barrierLowCoinY, coinZ),
                                 Quaternion.identity,
                                 segment.transform);
-                            if (coin != null) list.Add(coin);
                         }
                     }
                 }
@@ -309,9 +316,23 @@ public class LevelGenerator : MonoBehaviour
     private float AlignAndGetLengthZ(GameObject obj, float targetBackZ, float fallbackLength)
     {
         if (obj == null) return fallbackLength;
-        
-        // Dùng Renderer thay vì Collider vì Collider trong game thường được thu nhỏ lại để dễ né,
-        // khiến việc dùng nó để lấy khoảng cách làm hình ảnh 3D bị đâm vào nhau.
+
+        string prefabName = obj.name.Replace("(Clone)", "").Trim();
+
+        // 1. Kiểm tra Cache để đạt hiệu năng O(1)
+        if (_lengthCache.TryGetValue(prefabName, out ObjectStats stats))
+        {
+            // Tính toán shiftZ dựa trên OffsetToTail đã cache
+            // transform.position.z là vị trí Pivot hiện tại
+            // Mép sau thực tế = Pivot.z + OffsetToTail
+            // Cần: Pivot.z + OffsetToTail = targetBackZ  =>  Pivot.z = targetBackZ - OffsetToTail
+            float newPivotZ = targetBackZ - stats.OffsetToTail;
+            obj.transform.position = new Vector3(obj.transform.position.x, obj.transform.position.y, newPivotZ);
+            
+            return stats.LengthZ;
+        }
+
+        // 2. Nếu chưa có trong cache, thực hiện đo đạc tốn kém (chỉ chạy 1 lần cho mỗi loại prefab)
         var renderers = obj.GetComponentsInChildren<Renderer>();
         Bounds? totalBounds = null;
         foreach (var r in renderers)
@@ -325,19 +346,23 @@ public class LevelGenerator : MonoBehaviour
                 totalBounds = b;
             }
         }
-        
+
         if (totalBounds.HasValue)
         {
-            // Tính toán khoảng lệch: Mép đuôi thực tế của xe (min.z) so với gốc cần đặt (targetBackZ)
+            float lengthZ = totalBounds.Value.size.z;
+            // OffsetToTail = min.z - Pivot.z (giá trị tương đối)
+            float offsetToTail = totalBounds.Value.min.z - obj.transform.position.z;
+
+            // Lưu vào cache
+            _lengthCache[prefabName] = new ObjectStats { LengthZ = lengthZ, OffsetToTail = offsetToTail };
+
+            // Căn chỉnh
             float shiftZ = targetBackZ - totalBounds.Value.min.z;
-            
-            // Dịch chuyển xe tiến/lùi để đuôi xe sát rạt vào đúng điểm mốc
             obj.transform.position += new Vector3(0, 0, shiftZ);
             
-            // Trả về độ dài kích thước toàn xe để tính khoảng cách cho xe tiếp theo
-            return totalBounds.Value.size.z;
+            return lengthZ;
         }
-        
+
         return fallbackLength;
     }
 
@@ -364,7 +389,7 @@ public class LevelGenerator : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[LevelGenerator] Không load được Car tại Z={worldZ}");
+            // Debug.LogWarning($"[LevelGenerator] Không load được Car tại Z={worldZ}");
         }
 
         // Spawn xu hình Sin trên nóc xe con
@@ -391,7 +416,6 @@ public class LevelGenerator : MonoBehaviour
                 new Vector3(x, coinY, coinZ),
                 Quaternion.identity,
                 segment.transform);
-            if (coin != null) list.Add(coin);
         }
 
         onSpawned?.Invoke(spawnedLength);
@@ -420,7 +444,7 @@ public class LevelGenerator : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning($"[LevelGenerator] Không load được Bus tại Z={worldZ}");
+            // Debug.LogWarning($"[LevelGenerator] Không load được Bus tại Z={worldZ}");
         }
 
         // Spawn xu đường thẳng trên nóc xe bus
@@ -441,7 +465,6 @@ public class LevelGenerator : MonoBehaviour
                 new Vector3(x, _busRoofY, coinZ),
                 Quaternion.identity,
                 segment.transform);
-            if (coin != null) list.Add(coin);
             coinZ += _coinSpacingOnBus;
         }
 
@@ -490,7 +513,6 @@ public class LevelGenerator : MonoBehaviour
                 new Vector3(coinX, _freeCoinHeightY, coinZ),
                 Quaternion.identity,
                 segment.transform);
-            if (coin != null) list.Add(coin);
         }
     }
 
