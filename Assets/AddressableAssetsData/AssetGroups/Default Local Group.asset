@@ -22,11 +22,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 074659835788aaa46bc9bf54a972e31f
-    m_Address: Assets/UI/Sprites/Gemini_Generated_Image_q3zdzmq3zdzmq3zd-Photoroom.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0832a9eeb824a6d41b9e8cf2bd0e9fc7
     m_Address: Assets/UI/Sprites/Gemini_Generated_Image_eqgvhheqgvhheqgv-Photoroom.png
     m_ReadOnly: 0
@@ -34,6 +29,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0b9900ae82c3d0a49a6ab10104dd3b6c
     m_Address: Assets/UI/Font/techno_hideo SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e98f4cb25e517b4baac7d2482697ec4
+    m_Address: Assets/Sound/Male_Death.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -83,6 +83,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 612d4f6d1c8a3c94284686b6fb30fe9c
+    m_Address: Assets/Sound/Coin.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 640b94cf88de4ef459ce14645b2736d9
     m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_06.prefab
     m_ReadOnly: 0
@@ -100,6 +105,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7077aac37a0f86c47836e4b1b6980086
     m_Address: Assets/UI/Font/A4SPEED-Bold SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70e61097a8c0d00469865dbb84af53af
+    m_Address: Assets/Sound/Jump.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -129,6 +139,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 818eb0694c9f1794dab695909210892b
+    m_Address: Assets/Sound/Coin_1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 90a6b30accd930246b159ff3a0af583b
     m_Address: "Assets/UI/Sprites/Ph\u1ED1 \u0111\xEAm cyberpunk s\u1ED1ng \u0111\u1ED9ng.png"
     m_ReadOnly: 0
@@ -137,6 +152,11 @@ MonoBehaviour:
   - m_GUID: 9500f0cdde0097a4aac35ced7c1935d7
     m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
       with Static Wheels/Vehicle_Bus_color01.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 97390fc0f3e93cb438b9a9043ed27b8f
+    m_Address: Assets/Sound/Female_Death.wav
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -152,6 +172,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a1614f0cf649e3a4e894d20bda9008e7
     m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/Shield.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a17f3a1356968434c93421bf9dfa6495
+    m_Address: Assets/Sound/InGameMusic.ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -192,6 +217,16 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d2ed19b317f305c4db64ea5fb2910461
     m_Address: Assets/UI/Font/TurboType-Two SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9267623e2b561e45b6ba6a6c543a02e
+    m_Address: Assets/Sound/Slide.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e55ccddb9779add4bbca448b798a0876
+    m_Address: Assets/Sound/MenuMusic.ogg
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

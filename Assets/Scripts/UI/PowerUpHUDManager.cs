@@ -30,7 +30,13 @@ public class PowerUpHUDManager : MonoBehaviour
             PowerUpManager.Instance.OnPowerUpRemoved += HandlePowerUpRemoved;
         }
     }
-
+    private void FixedUpdate()
+    {
+        if(GameManager.Instance.IsGameOver)
+        {
+            _layoutContainer.gameObject.SetActive(false);
+        }
+    }
     private void OnDestroy()
     {
         if (PowerUpManager.Instance != null)
@@ -45,9 +51,6 @@ public class PowerUpHUDManager : MonoBehaviour
         if (_powerUpUIPrefab == null || _layoutContainer == null) return;
 
         var go = Instantiate(_powerUpUIPrefab, _layoutContainer);
-        // Đưa cái mới nhất lên trên cùng
-        go.transform.SetAsFirstSibling();
-        
         // Đưa cái mới nhất lên trên cùng
         go.transform.SetAsFirstSibling();
         

@@ -111,6 +111,12 @@ public class GameManager : MonoBehaviour
         IsGameOver = true;
         IsPlaying = false;
 
+        // Dừng nhạc nền khi thua cuộc
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.StopMusic();
+        }
+
         // Cộng dồn vàng vào tổng kho khi kết thúc ván
         TotalGold += CoinCount;
         PlayerPrefs.SetInt("TotalGold", TotalGold);

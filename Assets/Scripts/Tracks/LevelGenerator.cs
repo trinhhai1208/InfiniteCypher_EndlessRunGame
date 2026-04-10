@@ -149,7 +149,6 @@ public class LevelGenerator : MonoBehaviour
 
         if (segment.StartPoint == null || segment.EndPoint == null)
         {
-            // Debug.LogWarning($"[LevelGenerator] Segment '{segment.name}' thiếu StartPoint/EndPoint!");
             yield break;
         }
 
@@ -381,16 +380,15 @@ public class LevelGenerator : MonoBehaviour
 
         float spawnedLength = _carLengthZ;
 
-        if (carHandle.Status == AsyncOperationStatus.Succeeded)
+        if (carHandle.Status != AsyncOperationStatus.Succeeded)
         {
-            GameObject carObj = carHandle.Result;
-            list.Add(carObj);
-            spawnedLength = AlignAndGetLengthZ(carObj, worldZ, _carLengthZ);
+            onSpawned?.Invoke(spawnedLength);
+            yield break;
         }
-        else
-        {
-            // Debug.LogWarning($"[LevelGenerator] Không load được Car tại Z={worldZ}");
-        }
+
+        GameObject carObj = carHandle.Result;
+        list.Add(carObj);
+        spawnedLength = AlignAndGetLengthZ(carObj, worldZ, _carLengthZ);
 
         // Spawn xu hình Sin trên nóc xe con
         if (CoinPool.Instance == null)
@@ -402,9 +400,6 @@ public class LevelGenerator : MonoBehaviour
         for (int i = 0; i < _coinsOnCar; i++)
         {
             float t = (float)i / Mathf.Max(_coinsOnCar - 1, 1);
-            
-            // Bỏ qua biến Offset thủ công của user, tự chia đều quãng đường thân xe
-            // Bắt đầu từ 10% chiều dài đuôi xe và kết thúc ở 90% đầu xe
             float startZ = worldZ + spawnedLength * 0.15f;
             float endZ = worldZ + spawnedLength * 0.85f;
             float coinZ = Mathf.Lerp(startZ, endZ, t);
@@ -412,10 +407,7 @@ public class LevelGenerator : MonoBehaviour
             float sinY  = Mathf.Sin(t * Mathf.PI) * _carSineAmplitude;
             float coinY = _carRoofY + sinY;
 
-            var coin = CoinPool.Instance.Get(
-                new Vector3(x, coinY, coinZ),
-                Quaternion.identity,
-                segment.transform);
+            CoinPool.Instance.Get(new Vector3(x, coinY, coinZ), Quaternion.identity, segment.transform);
         }
 
         onSpawned?.Invoke(spawnedLength);
@@ -436,16 +428,15 @@ public class LevelGenerator : MonoBehaviour
 
         float spawnedLength = _busLengthZ;
 
-        if (busHandle.Status == AsyncOperationStatus.Succeeded)
+        if (busHandle.Status != AsyncOperationStatus.Succeeded)
         {
-            GameObject busObj = busHandle.Result;
-            list.Add(busObj);
-            spawnedLength = AlignAndGetLengthZ(busObj, worldZ, _busLengthZ);
+            onSpawned?.Invoke(worldZ + spawnedLength);
+            yield break;
         }
-        else
-        {
-            // Debug.LogWarning($"[LevelGenerator] Không load được Bus tại Z={worldZ}");
-        }
+
+        GameObject busObj = busHandle.Result;
+        list.Add(busObj);
+        spawnedLength = AlignAndGetLengthZ(busObj, worldZ, _busLengthZ);
 
         // Spawn xu đường thẳng trên nóc xe bus
         if (CoinPool.Instance == null)
@@ -454,17 +445,13 @@ public class LevelGenerator : MonoBehaviour
             yield break;
         }
 
-        // Tự động căn khoảng xu dựa trên kích thước thật của bus thay vì dùng Offset thủ công
         float coinStartZ = worldZ + spawnedLength * 0.15f;
         float coinEndZ   = worldZ + spawnedLength * 0.85f;
         float coinZ      = coinStartZ;
 
         while (coinZ <= coinEndZ)
         {
-            var coin = CoinPool.Instance.Get(
-                new Vector3(x, _busRoofY, coinZ),
-                Quaternion.identity,
-                segment.transform);
+            CoinPool.Instance.Get(new Vector3(x, _busRoofY, coinZ), Quaternion.identity, segment.transform);
             coinZ += _coinSpacingOnBus;
         }
 

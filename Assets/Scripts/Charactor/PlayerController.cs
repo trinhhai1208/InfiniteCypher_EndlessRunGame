@@ -83,10 +83,12 @@ public class PlayerController : MonoBehaviour
         _capsuleCollider = GetComponent<CapsuleCollider>();
 
         _rb.useGravity = false;
-        _rb.useGravity = false;
         _rb.constraints = RigidbodyConstraints.FreezeRotation;
-        _rb.interpolation = RigidbodyInterpolation.None; 
-        _rb.collisionDetectionMode = CollisionDetectionMode.Discrete;
+        
+        // BẬT INTERPOLATE: Đây là chìa khóa để di chuyển mượt mà trong FixedUpdate
+        _rb.interpolation = RigidbodyInterpolation.Interpolate; 
+        
+        _rb.collisionDetectionMode = CollisionDetectionMode.Continuous; // Tăng độ chính xác va chạm
 
         if (_capsuleCollider != null)
         {
@@ -109,7 +111,6 @@ public class PlayerController : MonoBehaviour
         if (_isDead) return;
 
         HandleInput();
-        ApplyMovement(); // Di chuyển hiển thị ở Update để mượt mà
         UpdateAnimator();
 
         if (GameManager.Instance != null && !_isDead)
@@ -123,10 +124,10 @@ public class PlayerController : MonoBehaviour
         if (GameManager.Instance != null && !GameManager.Instance.IsPlaying) return;
         if (_isDead) return;
 
-        // Logic trạng thái và tốc độ xử lý ở FixedUpdate để ổn định
         CheckGroundStatus();
         UpdateSpeed();
         HandleJumpAndDive();
+        ApplyMovementFixed(); // Di chuyển vật lý ở FixedUpdate
     }
 
     private void CheckGroundStatus()
@@ -204,9 +205,12 @@ public class PlayerController : MonoBehaviour
                 _verticalVelocity = _jumpForce;
                 _animator.SetTrigger(HashJump);
                 _jumpRequested = false;
+                _rollRequested = false; // Chống spam: Đã nhảy thì thôi lăn
+
+                // Phát âm thanh nhảy
+                if (AudioManager.Instance != null) AudioManager.Instance.PlayJump();
             }
-            
-            if (_rollRequested)
+            else if (_rollRequested) // Sử dụng else if để không thực hiện cùng lúc
             {
                 if (!_isRolling) _rollCoroutine = StartCoroutine(RollRoutine());
                 _rollRequested = false;
@@ -293,6 +297,7 @@ public class PlayerController : MonoBehaviour
                         {
                             if (_isRolling) StopRoll();
                             _jumpRequested = true;
+                            // Play Jump sound is handled in HandleJumpAndDive via flag
                         }
                     }
                     else
@@ -322,6 +327,9 @@ public class PlayerController : MonoBehaviour
     {
         _isRolling = true;
         _animator.SetBool(HashRoll, true);
+
+        // Phát âm thanh lăn
+        if (AudioManager.Instance != null) AudioManager.Instance.PlaySlide();
 
         if (_capsuleCollider != null)
         {
@@ -360,30 +368,37 @@ public class PlayerController : MonoBehaviour
             _currentSpeed += _speedIncreaseRate * Time.fixedDeltaTime;
     }
 
-    private void ApplyMovement()
+    private void ApplyMovementFixed()
     {
-        // Sử dụng Time.deltaTime ở đây để hình ảnh mượt mà 100% theo FPS
-        float dt = Time.deltaTime; 
+        // Chạy ở FixedUpdate giúp va chạm chuẩn và không bị chìm xuống sàn
+        float dt = Time.fixedDeltaTime; 
 
+        // Tính toán vị trí Z tiến lên
+        float newZ = transform.position.z + (_currentSpeed * dt);
+
+        // Tính toán vị trí X (chuyển làn)
         float newX = Mathf.Lerp(transform.position.x, _targetX, _laneChangeSpeed * dt);
+
+        // Tính toán vị trí Y (nhảy/rơi)
         float newY = transform.position.y + (_verticalVelocity * dt);
 
+        // Snap to ground logic
         if (_isGrounded && _verticalVelocity <= 0)
         {
-            if (newY - _groundY <= 0.2f)
+            // Nếu sàn cao hơn hoặc thấp hơn chút ít, bám sát sàn
+            if (Mathf.Abs(newY - _groundY) < 0.5f)
                 newY = _groundY; 
         }
 
-        float newZ = transform.position.z + (_currentSpeed * dt);
-
-        // Safety net
+        // Safety net: Chống rơi quá sâu
         if (newY < -3f)
         {
             newY = _lastSafeY > -2f ? _lastSafeY : 0f;
             _verticalVelocity = 0f;
         }
 
-        transform.position = new Vector3(newX, newY, newZ);
+        // Dùng MovePosition để Unity tự thực hiện nội suy (Interpolation) giúp mượt hình ảnh
+        _rb.MovePosition(new Vector3(newX, newY, newZ));
     }
 
     private void UpdateAnimator()
@@ -454,6 +469,15 @@ public class PlayerController : MonoBehaviour
 
         _animator.SetBool(HashRoll, false);
         _animator.SetTrigger(HashDeath);
+
+        // Phát âm thanh chết (Kiểm tra giới tính từ CharacterSelector)
+        if (AudioManager.Instance != null)
+        {
+            CharacterSelector cs = GetComponent<CharacterSelector>();
+            bool isFemale = (cs != null && cs.GetSelectedSkinIndex() == 1); // Giả định index 1 là Nữ
+            AudioManager.Instance.PlayDeath(isFemale);
+        }
+
         if (GameManager.Instance != null) GameManager.Instance.TriggerGameOver();
     }
 

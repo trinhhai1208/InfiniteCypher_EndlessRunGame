@@ -64,6 +64,8 @@ public class Coin : MonoBehaviour
         if (GameManager.Instance != null)
         {
             GameManager.Instance.AddCoin();
+            // Phát âm thanh thu thập vàng
+            if (AudioManager.Instance != null) AudioManager.Instance.PlayCoin();
         }
 
         // Trả xu về pool thay vì Destroy

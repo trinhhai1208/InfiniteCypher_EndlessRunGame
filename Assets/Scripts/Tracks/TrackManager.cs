@@ -70,7 +70,6 @@ public class TrackManager : MonoBehaviour
         }
 
         IsReady = true;
-        // Debug.Log("<color=green>[TrackManager] Map đã được tải xong và sẵn sàng!</color>");
     }
 
     private void Update()
@@ -99,7 +98,6 @@ public class TrackManager : MonoBehaviour
     {
         if (_segmentAssetRefs == null || _segmentAssetRefs.Count == 0)
         {
-            // Debug.LogWarning("[TrackManager] Không có Segment Asset References. Hãy gán trong Inspector.");
             return;
         }
 
