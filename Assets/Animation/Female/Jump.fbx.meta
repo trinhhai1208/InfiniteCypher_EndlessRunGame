@@ -1,5 +1,7 @@
 fileFormatVersion: 2
 guid: 22a0ce40ee1f8bf4189dc2291ceb9c93
+labels:
+- Unused
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
