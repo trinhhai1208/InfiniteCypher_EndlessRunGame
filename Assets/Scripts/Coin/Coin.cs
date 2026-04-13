@@ -1,12 +1,6 @@
 using UnityEngine;
 
 /// <summary>
-/// Gắn lên Coin Prefab.
-/// Yêu cầu:
-///   - Collider với Is Trigger = true
-///   - Tag = "Coin" (trên Prefab)
-///   - Nhân vật có Tag = "Player"
-///
 /// P1 Optimization: Đã xóa FixedUpdate.
 /// Logic Magnet giờ được điều khiển hoàn toàn bởi PowerUpManager (Player-driven).
 /// Logic tự Despawn cũng được chuyển sang PowerUpManager để tránh mỗi xu gọi 1 Update.
