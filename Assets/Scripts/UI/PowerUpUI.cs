@@ -22,7 +22,8 @@ public class PowerUpUI : MonoBehaviour
         if (_timeSlider != null) _timeSlider.maxValue = p.MaxDuration;
     }
 
-    private void FixedUpdate()
+    // P1: Chuyển từ FixedUpdate → Update cho UI (UI không cần đồng bộ Physics)
+    private void Update()
     {
         if (_powerUpRef != null && _timeSlider != null)
         {

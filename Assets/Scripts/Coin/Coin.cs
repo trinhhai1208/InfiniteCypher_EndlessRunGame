@@ -6,49 +6,41 @@ using UnityEngine;
 ///   - Collider với Is Trigger = true
 ///   - Tag = "Coin" (trên Prefab)
 ///   - Nhân vật có Tag = "Player"
+///
+/// P1 Optimization: Đã xóa FixedUpdate.
+/// Logic Magnet giờ được điều khiển hoàn toàn bởi PowerUpManager (Player-driven).
+/// Logic tự Despawn cũng được chuyển sang PowerUpManager để tránh mỗi xu gọi 1 Update.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class Coin : MonoBehaviour
 {
     [Header("Settings")]
-    [SerializeField] private float _despawnDistanceBack = 20f;
     [SerializeField] private float _magnetSpeed = 25f;
-    [SerializeField] private float _magnetRadius = 10f;
 
     private bool _collected;
-    private Transform _playerTransform;
+    private Transform _cachedTransform;
+
+    private void Awake()
+    {
+        _cachedTransform = transform;
+    }
 
     private void OnEnable()
     {
         _collected = false;
-        if (PlayerController.Instance != null)
-            _playerTransform = PlayerController.Instance.transform;
     }
-    
-    private void FixedUpdate()
+
+    /// <summary>
+    /// Được gọi bởi PowerUpManager mỗi FixedUpdate khi Magnet đang active.
+    /// Di chuyển xu về phía Player.
+    /// </summary>
+    public void AttractTo(Vector3 targetPosition, float deltaTime)
     {
         if (_collected) return;
-        if (_playerTransform == null) return;
-
-        float playerZ = _playerTransform.position.z;
-
-        // 1. Tối ưu: Tự trả về Pool nếu nhân vật đã đi qua 20m (Không cần đợi xóa Segment)
-        if (transform.position.z < playerZ - _despawnDistanceBack)
-        {
-            if (CoinPool.Instance != null)
-                CoinPool.Instance.Return(gameObject);
-        }
-
-        // 2. Xử lý Hút Nam Châm
-        if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsMagnetActive())
-        {
-            float dist = Vector3.Distance(transform.position, _playerTransform.position);
-            if (dist < _magnetRadius)
-            {
-                // Hút về phía Player
-                transform.position = Vector3.MoveTowards(transform.position, _playerTransform.position + Vector3.up, _magnetSpeed * Time.fixedDeltaTime);
-            }
-        }
+        _cachedTransform.position = Vector3.MoveTowards(
+            _cachedTransform.position,
+            targetPosition + Vector3.up,
+            _magnetSpeed * deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)

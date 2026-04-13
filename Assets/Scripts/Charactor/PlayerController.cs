@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody _rb;
     private Animator _animator;
     private CapsuleCollider _capsuleCollider;
+    private CharacterSelector _characterSelector; // P1: Cache để tránh GetComponent trong Die()
 
     // Movement state
     private float _currentSpeed;
@@ -81,6 +82,7 @@ public class PlayerController : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _animator = GetComponent<Animator>();
         _capsuleCollider = GetComponent<CapsuleCollider>();
+        _characterSelector = GetComponent<CharacterSelector>(); // P1: Cache ở Awake
 
         _rb.useGravity = false;
         _rb.constraints = RigidbodyConstraints.FreezeRotation;
@@ -97,7 +99,7 @@ public class PlayerController : MonoBehaviour
         }
 
         _currentSpeed = _baseSpeed;
-        _targetX      = transform.position.x;
+        _targetX      = _rb.position.x;
     }
 
     private void Start()
@@ -203,6 +205,8 @@ public class PlayerController : MonoBehaviour
                 if (_isRolling) StopRoll();
                 
                 _verticalVelocity = _jumpForce;
+                _isGrounded = false; // FIX: Ép trạng thái không chạm đất ngay lập tức để tránh Double Jump
+                
                 _animator.SetTrigger(HashJump);
                 _jumpRequested = false;
                 _rollRequested = false; // Chống spam: Đã nhảy thì thôi lăn
@@ -371,16 +375,17 @@ public class PlayerController : MonoBehaviour
     private void ApplyMovementFixed()
     {
         // Chạy ở FixedUpdate giúp va chạm chuẩn và không bị chìm xuống sàn
-        float dt = Time.fixedDeltaTime; 
+        float dt = Time.fixedDeltaTime;
+        Vector3 currentPosition = _rb.position;
 
         // Tính toán vị trí Z tiến lên
-        float newZ = transform.position.z + (_currentSpeed * dt);
+        float newZ = currentPosition.z + (_currentSpeed * dt);
 
         // Tính toán vị trí X (chuyển làn)
-        float newX = Mathf.Lerp(transform.position.x, _targetX, _laneChangeSpeed * dt);
+        float newX = Mathf.MoveTowards(currentPosition.x, _targetX, _laneChangeSpeed * dt);
 
         // Tính toán vị trí Y (nhảy/rơi)
-        float newY = transform.position.y + (_verticalVelocity * dt);
+        float newY = currentPosition.y + (_verticalVelocity * dt);
 
         // Snap to ground logic
         if (_isGrounded && _verticalVelocity <= 0)
@@ -396,6 +401,9 @@ public class PlayerController : MonoBehaviour
             newY = _lastSafeY > -2f ? _lastSafeY : 0f;
             _verticalVelocity = 0f;
         }
+
+        if (Mathf.Abs(newX - _targetX) < 0.01f)
+            newX = _targetX;
 
         // Dùng MovePosition để Unity tự thực hiện nội suy (Interpolation) giúp mượt hình ảnh
         _rb.MovePosition(new Vector3(newX, newY, newZ));
@@ -473,8 +481,8 @@ public class PlayerController : MonoBehaviour
         // Phát âm thanh chết (Kiểm tra giới tính từ CharacterSelector)
         if (AudioManager.Instance != null)
         {
-            CharacterSelector cs = GetComponent<CharacterSelector>();
-            bool isFemale = (cs != null && cs.GetSelectedSkinIndex() == 1); // Giả định index 1 là Nữ
+            // P1: Dùng _characterSelector đã cache thay vì GetComponent mỗi lần Die()
+            bool isFemale = (_characterSelector != null && _characterSelector.GetSelectedSkinIndex() == 1);
             AudioManager.Instance.PlayDeath(isFemale);
         }
 
@@ -490,7 +498,19 @@ public class PlayerController : MonoBehaviour
         _currentLane = 0;
         _targetX = 0;
         _verticalVelocity = 0;
-        transform.position = new Vector3(0, transform.position.y, transform.position.z);
+
+        Vector3 resetPosition = _rb != null ? _rb.position : transform.position;
+        resetPosition.x = 0f;
+
+        if (_rb != null)
+        {
+            _rb.position = resetPosition;
+            _rb.velocity = Vector3.zero;
+        }
+        else
+        {
+            transform.position = resetPosition;
+        }
 
         if (_capsuleCollider != null)
         {

@@ -18,13 +18,16 @@ public class HUDManager : MonoBehaviour
 
     private void Start()
     {
-        // Auto-connect to GameManager if Instance is somehow not set yet
+        // Kiểm tra GameManager.Instance, nếu không có thì thử tìm trong scene
         if (GameManager.Instance == null)
         {
             GameManager foundManager = FindObjectOfType<GameManager>();
-            if (foundManager != null)
+            // Không gọi Awake() bằng SendMessage vì có thể làm reset state
+            if (foundManager == null)
             {
-                foundManager.SendMessage("Awake"); 
+                Debug.LogWarning("[HUDManager] Không tìm thấy GameManager trong scene. Script này sẽ tự tắt.");
+                enabled = false;
+                return;
             }
         }
 
@@ -32,13 +35,13 @@ public class HUDManager : MonoBehaviour
         {
             GameManager.Instance.OnCoinChanged += UpdateCoinUI;
             GameManager.Instance.OnDistanceChanged += UpdateDistanceUI;
-            GameManager.Instance.OnGameStart += ShowHUD; // Hiện HUD khi bắt đầu chạy
+            GameManager.Instance.OnGameStart += ShowHUD;
             _isSubscribed = true;
 
-            // Mặc định ẩn HUD lúc đầu
+            // Mặc định ẩn HUD lúc đầu (GameManager sẽ trigger OnGameStart khi vào chơi)
             gameObject.SetActive(false);
 
-            // Hiển thị giá trị ngay từ khung hình đầu tiên
+            // Hiển thị giá trị ban đầu
             UpdateCoinUI(GameManager.Instance.CoinCount);
             UpdateDistanceUI(GameManager.Instance.Distance);
         }

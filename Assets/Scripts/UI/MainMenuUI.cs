@@ -11,6 +11,7 @@ public class MainMenuUI : MonoBehaviour
 {
     [Header("UI Panels")]
     [SerializeField] private GameObject _menuPanel;
+    [SerializeField] private GameObject _settingsPanel; // Tham chiếu đến Panel cài đặt mới
 
     [Header("References")]
     [SerializeField] private CharacterSelector _characterSelector;
@@ -70,6 +71,17 @@ public class MainMenuUI : MonoBehaviour
         if (_characterSelector != null)
         {
             _characterSelector.ChangeCharacter(-1);
+        }
+    }
+
+    /// <summary>
+    /// Mở bảng cài đặt. Gán hàm này vào nút Setting.
+    /// </summary>
+    public void OpenSettings()
+    {
+        if (_settingsPanel != null)
+        {
+            _settingsPanel.SetActive(true);
         }
     }
 

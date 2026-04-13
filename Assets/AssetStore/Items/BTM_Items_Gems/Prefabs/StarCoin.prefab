@@ -85,6 +85,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8596f346ea0284b41bb900ae6f4ce276,
         type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 8596f346ea0284b41bb900ae6f4ce276,
+        type: 3}
       propertyPath: m_TagString
       value: Coin
       objectReference: {fileID: 0}
@@ -144,6 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b126d4081fea6044b9ff4a1686b0c91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _despawnDistanceBack: 20
   _magnetSpeed: 25
   _magnetRadius: 20
 --- !u!114 &7889061045531811049

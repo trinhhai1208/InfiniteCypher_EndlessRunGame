@@ -26,6 +26,14 @@ public class PowerUpManager : MonoBehaviour
     public event Action<ActivePowerUp> OnPowerUpAdded;
     public event Action<ActivePowerUp> OnPowerUpRemoved;
 
+    // ─── P1: Magnet - OverlapSphereNonAlloc ───────────────────
+    [Header("Magnet Settings")]
+    [SerializeField] private float _magnetRadius = 10f;
+    [SerializeField] private LayerMask _coinLayer;
+
+    // Buffer tái sử dụng — không alloc mỗi frame
+    private readonly Collider[] _magnetBuffer = new Collider[64];
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -36,20 +44,41 @@ public class PowerUpManager : MonoBehaviour
         Instance = this;
     }
 
-    private void FixedUpdate()
+    // ─── P1: Chuyển từ FixedUpdate → Update ───────────────────
+    // Lý do: Cập nhật thời gian Power-up và kéo xu thuộc về logic game,
+    // không cần đồng bộ chính xác với Physics step.
+    private void Update()
     {
         if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
+
+        float dt = Time.deltaTime;
 
         // Cập nhật thời gian ngược
         for (int i = _activePowerUps.Count - 1; i >= 0; i--)
         {
             var p = _activePowerUps[i];
-            p.CurrentTime -= Time.fixedDeltaTime;
+            p.CurrentTime -= dt;
 
             if (p.CurrentTime <= 0)
             {
                 OnPowerUpRemoved?.Invoke(p);
                 _activePowerUps.RemoveAt(i);
+            }
+        }
+
+        // ─── P1: Logic Magnet Player-driven ───────────────────
+        // Thay vì mỗi Coin tự poll khoảng cách (O(n) FixedUpdate),
+        // Player chủ động quét 1 lần duy nhất bằng NonAlloc (O(1) alloc).
+        if (IsMagnetActive() && PlayerController.Instance != null)
+        {
+            Vector3 playerPos = PlayerController.Instance.transform.position;
+            int count = Physics.OverlapSphereNonAlloc(playerPos, _magnetRadius, _magnetBuffer, _coinLayer);
+
+            for (int i = 0; i < count; i++)
+            {
+                if (_magnetBuffer[i] == null) continue;
+                var coin = _magnetBuffer[i].GetComponent<Coin>();
+                if (coin != null) coin.AttractTo(playerPos, dt);
             }
         }
     }

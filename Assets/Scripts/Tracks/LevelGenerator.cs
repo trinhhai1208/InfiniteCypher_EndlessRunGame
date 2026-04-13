@@ -26,7 +26,7 @@ public class LevelGenerator : MonoBehaviour
     [Tooltip("Biên độ hình Sin của xu trên nóc xe con (cao nhất ở giữa xe)")]
     [SerializeField] private float _carSineAmplitude = 1f;
     [Tooltip("Số đồng xu trên nóc 1 xe con")]
-    [SerializeField] private int _coinsOnCar = 5;
+    [SerializeField] private int _coinsOnCar = 3;
 
     // ─────────────────────────────────────────
     [Header("Xe Bus")]
@@ -75,11 +75,13 @@ public class LevelGenerator : MonoBehaviour
     [Tooltip("Xác suất xu tự do xuất hiện dạng zigzag (thay vì đường thẳng)")]
     [SerializeField] [Range(0f, 1f)] private float _zigzagChance = 0.6f;
     [Tooltip("Số xu trong mỗi cụm xu tự do (Tăng lên để xu dầy hơn)")]
-    [SerializeField] private Vector2Int _freeCoinCountRange = new(10, 20);
+    [SerializeField] private Vector2Int _freeCoinCountRange = new(5, 12);
     [Tooltip("Khoảng cách giữa 2 xu tự do (nhỏ hơn = chuỗi xu ngắn hơn, nhiều cụm hơn)")]
     [SerializeField] private float _freeCoinSpacing = 1.0f;
     [Tooltip("Sau khi gặp xe/barrier, có bao nhiêu % cơ hội thêm xu tự do ở khoảng trống tiếp theo")]
-    [SerializeField] [Range(0f, 1f)] private float _extraCoinAfterObstacleChance = 0.95f;
+    [SerializeField] [Range(0f, 1f)] private float _extraCoinAfterObstacleChance = 0.5f;
+    [Tooltip("Số đồng xu tối đa cho phép trên 1 segment (tránh spam quá nhiều)")]
+    [SerializeField] private int _maxCoinsPerSegment = 60;
 
     // ─────────────────────────────────────────
     [Header("Power-ups")]
@@ -146,6 +148,7 @@ public class LevelGenerator : MonoBehaviour
 
         var list = new List<GameObject>();
         _spawnedMap[segment] = list;
+        int coinCount = 0; // Đếm số xu đã sinh trong segment này
 
         if (segment.StartPoint == null || segment.EndPoint == null)
         {
@@ -197,10 +200,10 @@ public class LevelGenerator : MonoBehaviour
                     for (int i = 0; i < chainCount; i++)
                     {
                         if (currentBusZ > endZ) break;
-                        float nextBusZ = currentBusZ + _busLengthZ;
-                        yield return SpawnBusWithStraightCoins(segment, currentBusZ, lane, list, len => nextBusZ = len);
-                        currentBusZ = nextBusZ + _busGapZ;
-                        groupEndZ = nextBusZ;
+                        float nextLen = _busLengthZ;
+                        yield return SpawnBusWithStraightCoins(segment, currentBusZ, lane, list, len => nextLen = len);
+                        currentBusZ += nextLen + _busGapZ;
+                        groupEndZ = currentBusZ;
                     }
 
                     advanceZ = (groupEndZ - currentZ) + _gapBetweenGroups;
@@ -215,10 +218,10 @@ public class LevelGenerator : MonoBehaviour
                     for (int i = 0; i < chainCount; i++)
                     {
                         if (currentBusZ > endZ) break;
-                        float nextBusZ = currentBusZ + _busLengthZ;
-                        yield return SpawnBusOnly(segment, currentBusZ, lane, list, len => nextBusZ = len);
-                        currentBusZ = nextBusZ + _busGapZ;
-                        groupEndZ = nextBusZ;
+                        float nextLen = _busLengthZ;
+                        yield return SpawnBusOnly(segment, currentBusZ, lane, list, len => nextLen = len);
+                        currentBusZ += nextLen + _busGapZ;
+                        groupEndZ = currentBusZ;
                     }
 
                     advanceZ = (groupEndZ - currentZ) + _gapBetweenGroups;
@@ -245,35 +248,39 @@ public class LevelGenerator : MonoBehaviour
                     if (isSinPattern)
                     {
                         // 🌊 Hình Sin — Xu bay vòm cao qua barrier → gợi ý JUMP
-                        int coinCount = 7;
+                        int barrierArcCount = 7;
                         float arcStartZ = currentZ + _barrierCoinZOffset;
                         float arcLength = 7f;
 
-                        for (int c = 0; c < coinCount; c++)
+                        for (int c = 0; c < barrierArcCount; c++)
                         {
-                            float t     = (float)c / (coinCount - 1);
+                            float t     = (float)c / (barrierArcCount - 1);
                             float coinZ = arcStartZ + t * arcLength;
                             float coinY = _freeCoinHeightY + Mathf.Sin(t * Mathf.PI) * 2.5f;
 
+                            if (coinCount >= _maxCoinsPerSegment) break;
                             var coin = CoinPool.Instance.Get(
                                 new Vector3(x, coinY, coinZ),
                                 Quaternion.identity,
                                 segment.transform);
+                            if (coin != null) { list.Add(coin); coinCount++; }
                         }
                     }
                     else
                     {
                         // ⬇️ Xu sát đất — Xu thấp Y trước barrier → gợi ý SLIDE
-                        int coinCount = 5;
+                        int barrierSlideCount = 5;
                         float coinStartZ = currentZ + _barrierCoinZOffset;
 
-                        for (int c = 0; c < coinCount; c++)
+                        for (int c = 0; c < barrierSlideCount; c++)
                         {
                             float coinZ = coinStartZ + c * 1.2f;
+                            if (coinCount >= _maxCoinsPerSegment) break;
                             var coin = CoinPool.Instance.Get(
                                 new Vector3(x, _barrierLowCoinY, coinZ),
                                 Quaternion.identity,
                                 segment.transform);
+                            if (coin != null) { list.Add(coin); coinCount++; }
                         }
                     }
                 }
@@ -284,8 +291,11 @@ public class LevelGenerator : MonoBehaviour
             {
                 // ── Xu Tự Do ────────────────────────────
                 int lane = Random.Range(-1, 2);
-                int freeCoinCount = Random.Range(_freeCoinCountRange.x, _freeCoinCountRange.y + 1);
+                int remaining = _maxCoinsPerSegment - coinCount;
+                if (remaining <= 0) break;
+                int freeCoinCount = Mathf.Min(Random.Range(_freeCoinCountRange.x, _freeCoinCountRange.y + 1), remaining);
                 yield return SpawnFreeCoinLine(segment, currentZ, lane, list, freeCoinCount);
+                coinCount += freeCoinCount;
                 // advanceZ đủ dài để không bị chồng lấp vật cản tiếp theo
                 advanceZ = freeCoinCount * _freeCoinSpacing + _gapBetweenGroups;
             }
@@ -297,9 +307,12 @@ public class LevelGenerator : MonoBehaviour
                 && CoinPool.Instance != null
                 && Random.value < _extraCoinAfterObstacleChance)
             {
+                int bonusRemaining = _maxCoinsPerSegment - coinCount;
+                if (bonusRemaining <= 0) continue;
                 int bonusLane  = Random.Range(-1, 2);
-                int bonusCount = Random.Range(_freeCoinCountRange.x, _freeCoinCountRange.y + 1);
+                int bonusCount = Mathf.Min(Random.Range(_freeCoinCountRange.x, _freeCoinCountRange.y + 1), bonusRemaining);
                 yield return SpawnFreeCoinLine(segment, currentZ, bonusLane, list, bonusCount);
+                coinCount += bonusCount;
                 // Tiến currentZ qua hết chuỗi xu bonus trước khi vòng lặp tiếp theo bắt đầu
                 currentZ += bonusCount * _freeCoinSpacing + _gapBetweenGroups;
             }
@@ -407,7 +420,8 @@ public class LevelGenerator : MonoBehaviour
             float sinY  = Mathf.Sin(t * Mathf.PI) * _carSineAmplitude;
             float coinY = _carRoofY + sinY;
 
-            CoinPool.Instance.Get(new Vector3(x, coinY, coinZ), Quaternion.identity, segment.transform);
+            var coin = CoinPool.Instance.Get(new Vector3(x, coinY, coinZ), Quaternion.identity, segment.transform);
+            if (coin != null) list.Add(coin);
         }
 
         onSpawned?.Invoke(spawnedLength);
@@ -430,7 +444,7 @@ public class LevelGenerator : MonoBehaviour
 
         if (busHandle.Status != AsyncOperationStatus.Succeeded)
         {
-            onSpawned?.Invoke(worldZ + spawnedLength);
+            onSpawned?.Invoke(spawnedLength);
             yield break;
         }
 
@@ -441,7 +455,7 @@ public class LevelGenerator : MonoBehaviour
         // Spawn xu đường thẳng trên nóc xe bus
         if (CoinPool.Instance == null)
         {
-            onSpawned?.Invoke(worldZ + spawnedLength);
+            onSpawned?.Invoke(spawnedLength);
             yield break;
         }
 
@@ -451,11 +465,12 @@ public class LevelGenerator : MonoBehaviour
 
         while (coinZ <= coinEndZ)
         {
-            CoinPool.Instance.Get(new Vector3(x, _busRoofY, coinZ), Quaternion.identity, segment.transform);
+            var coin = CoinPool.Instance.Get(new Vector3(x, _busRoofY, coinZ), Quaternion.identity, segment.transform);
+            if (coin != null) list.Add(coin);
             coinZ += _coinSpacingOnBus;
         }
 
-        onSpawned?.Invoke(worldZ + spawnedLength);
+        onSpawned?.Invoke(spawnedLength);
     }
 
     // ─────────────────────────────────────────────────────────
@@ -500,6 +515,7 @@ public class LevelGenerator : MonoBehaviour
                 new Vector3(coinX, _freeCoinHeightY, coinZ),
                 Quaternion.identity,
                 segment.transform);
+            if (coin != null) list.Add(coin);
         }
     }
 
@@ -544,6 +560,6 @@ public class LevelGenerator : MonoBehaviour
             spawnedLength = AlignAndGetLengthZ(obj, worldZ, _busLengthZ);
         }
         
-        onSpawned?.Invoke(worldZ + spawnedLength);
+        onSpawned?.Invoke(spawnedLength);
     }
 }

@@ -92,8 +92,9 @@ public class GameManager : MonoBehaviour
             if (Distance > BestDistance)
             {
                 BestDistance = Distance;
+                // P1: Chỉ SetInt trong bộ nhớ, KHÔNG Save() xuống đĩa mỗi frame.
+                // Save() thực sự chỉ chạy 1 lần trong TriggerGameOver.
                 PlayerPrefs.SetInt("BestDistance", BestDistance);
-                PlayerPrefs.Save();
             }
         }
     }
@@ -120,6 +121,7 @@ public class GameManager : MonoBehaviour
         // Cộng dồn vàng vào tổng kho khi kết thúc ván
         TotalGold += CoinCount;
         PlayerPrefs.SetInt("TotalGold", TotalGold);
+        // P1: Save() tất cả 1 lần duy nhất ở đây (bao gồm cả BestDistance)
         PlayerPrefs.Save();
         
         OnGameOver?.Invoke();

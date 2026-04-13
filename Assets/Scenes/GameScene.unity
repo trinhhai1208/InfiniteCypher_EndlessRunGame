@@ -1168,7 +1168,7 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   _barrierChance: 0.2
   _barrierCoinZOffset: -3
-  _barrierLowCoinY: 0.8
+  _barrierLowCoinY: 1
   _coinSpacingOnBus: 1.2
   _freeCoinHeightY: 1.2
   _safeStartOffset: 50
@@ -1179,6 +1179,7 @@ MonoBehaviour:
   _freeCoinCountRange: {x: 10, y: 15}
   _freeCoinSpacing: 1
   _extraCoinAfterObstacleChance: 0.9
+  _maxCoinsPerSegment: 60
   _powerUpRefs:
   - m_AssetGUID: 744d1ae3c9575e3499e29a4b6f9f41c7
     m_SubObjectName: 
@@ -1192,7 +1193,7 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  _powerUpSpawnChance: 0.28
+  _powerUpSpawnChance: 0.4
 --- !u!1 &583323787
 GameObject:
   m_ObjectHideFlags: 0
@@ -1222,6 +1223,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9790f4dd0a9567c43b44f7d286f28984, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _magnetRadius: 10
+  _coinLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!4 &583323789
 Transform:
   m_ObjectHideFlags: 0
@@ -2290,10 +2295,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 1184834125}
-  _offset: {x: 0, y: 4.5, z: -6}
-  _positionSmoothTime: 0.15
-  _rotationSmoothTime: 0.3
-  _lookAtOffset: {x: 0, y: 1, z: 0}
+  _offset: {x: 0, y: 3.5, z: -5.5}
+  _positionSmoothTime: 0.1
+  _rotationSmoothTime: 0.2
+  _lookAtOffset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &1302132077
 GameObject:
   m_ObjectHideFlags: 0
@@ -3194,11 +3199,11 @@ MonoBehaviour:
     type: 3}
   _icons:
   - Type: 0
-    Icon: {fileID: -2143997492, guid: b99c49198395abb4c908ea9b7c0af6dd, type: 3}
+    Icon: {fileID: -818652399, guid: 77299dd58e8ea984693f58336eff95a4, type: 3}
   - Type: 1
-    Icon: {fileID: -2086678234, guid: b99c49198395abb4c908ea9b7c0af6dd, type: 3}
+    Icon: {fileID: -7222151003434138423, guid: 39e0242329775814891ef673e48ae932, type: 3}
   - Type: 2
-    Icon: {fileID: 766888420, guid: b99c49198395abb4c908ea9b7c0af6dd, type: 3}
+    Icon: {fileID: -865648620, guid: 77299dd58e8ea984693f58336eff95a4, type: 3}
 --- !u!4 &1989214455
 Transform:
   m_ObjectHideFlags: 0
@@ -3289,13 +3294,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
         type: 3}
+      propertyPath: _jumpForce
+      value: 11
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
+        type: 3}
       propertyPath: _minSwipeDistance
       value: 45
       objectReference: {fileID: 0}
     - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
         type: 3}
       propertyPath: _speedIncreaseRate
-      value: 0.5
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
         type: 3}

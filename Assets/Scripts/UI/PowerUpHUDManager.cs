@@ -29,20 +29,30 @@ public class PowerUpHUDManager : MonoBehaviour
             PowerUpManager.Instance.OnPowerUpAdded += HandlePowerUpAdded;
             PowerUpManager.Instance.OnPowerUpRemoved += HandlePowerUpRemoved;
         }
-    }
-    private void FixedUpdate()
-    {
-        if(GameManager.Instance.IsGameOver)
+
+        if (GameManager.Instance != null)
         {
-            _layoutContainer.gameObject.SetActive(false);
+            GameManager.Instance.OnGameOver += HandleGameOver;
         }
     }
+
+    private void HandleGameOver()
+    {
+        if (_layoutContainer != null)
+            _layoutContainer.gameObject.SetActive(false);
+    }
+
     private void OnDestroy()
     {
         if (PowerUpManager.Instance != null)
         {
             PowerUpManager.Instance.OnPowerUpAdded -= HandlePowerUpAdded;
             PowerUpManager.Instance.OnPowerUpRemoved -= HandlePowerUpRemoved;
+        }
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.OnGameOver -= HandleGameOver;
         }
     }
 

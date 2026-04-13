@@ -57,16 +57,20 @@ public class TrackManager : MonoBehaviour
     {
         IsReady = false;
         
-        // Sinh đoạn đường đầu tiên và đợi nó xong
-        if (_segmentAssetRefs.Count > 0)
+        // Chờ LevelGenerator sẵn sàng (nếu cần)
+        while (_levelGenerator == null)
         {
-            yield return StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[Random.Range(0, _segmentAssetRefs.Count)]));
+            _levelGenerator = GetComponent<LevelGenerator>();
+            yield return null;
         }
-        
-        // Sinh thêm ít nhất 1 đoạn nữa cho chắc chắn
-        for (int i = 1; i < _segmentsAhead && i < 2; i++)
+
+        // Sinh đủ số lượng segment phía trước
+        for (int i = 0; i < _segmentsAhead; i++)
         {
-            yield return StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[Random.Range(0, _segmentAssetRefs.Count)]));
+            if (_segmentAssetRefs.Count > 0)
+            {
+                yield return StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[Random.Range(0, _segmentAssetRefs.Count)]));
+            }
         }
 
         IsReady = true;
@@ -182,6 +186,13 @@ public class TrackManager : MonoBehaviour
 
     public void ResetTrack()
     {
+        StartCoroutine(ResetTrackRoutine());
+    }
+
+    private IEnumerator ResetTrackRoutine()
+    {
+        IsReady = false;
+
         foreach (var seg in _activeSegments)
         {
             if (seg == null) continue;
@@ -193,7 +204,12 @@ public class TrackManager : MonoBehaviour
         _nextSpawnPosition = _player != null ? _player.position - Vector3.forward * 20f : new Vector3(0, 0, -20f);
         _totalSpawned = 0;
 
+        // Sinh lại tuần tự để tránh lỗi tọa độ _nextSpawnPosition
         for (int i = 0; i < _segmentsAhead; i++)
-            SpawnNextSegment();
+        {
+            yield return StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[Random.Range(0, _segmentAssetRefs.Count)]));
+        }
+
+        IsReady = true;
     }
 }
