@@ -3428,8 +3428,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
         type: 3}
+      propertyPath: _laneChangeSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
+        type: 3}
       propertyPath: _minSwipeDistance
-      value: 45
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
         type: 3}

@@ -2,16 +2,6 @@ using UnityEngine;
 
 public enum CameraMode { PlayerOnly, ChaseMode }
 
-/// <summary>
-/// Camera theo Player với 2 chế độ:
-///   - PlayerOnly: Camera chỉ follow Player (mặc định).
-///   - ChaseMode:  Camera lùi ra xa, nhìn vào midpoint giữa Player và Boss.
-/// 
-/// Setup Unity:
-///   - Gắn script này lên Main Camera.
-///   - Kéo Transform của Player vào field "_target".
-///   - Không cần gán Boss — BossChaseManager sẽ tự gọi SetChaseMode().
-/// </summary>
 public class CameraFollow : MonoBehaviour
 {
     public static CameraFollow Instance { get; private set; }
@@ -76,7 +66,11 @@ public class CameraFollow : MonoBehaviour
         _currentOffset = Vector3.SmoothDamp(_currentOffset, targetOffset, ref _offsetVelocity, _modeSwitchSmooth);
 
         // ── Vị trí Camera ──
-        Vector3 playerPos = _targetRigidbody != null ? _targetRigidbody.position : _target.position;
+        // LỖI GIẬT CAMERA MỌI NGƯỜI HAY MẮC PHẢI:
+        // Đoạn code cũ đọc `_targetRigidbody.position`. Lệnh này lấy toạ độ VẬT LÝ của bước nhảy FixedUpdate (50fps), 
+        // Trong khi Camera lại chạy ở LateUpdate (ví dụ 144fps màn hình). Việc đọc toạ độ cũ khựng lại sẽ gây giật hình.
+        // SỬA: Đọc `_target.position` vì Rigidbody của Player đã bật Interpolate (Tự cập nhật mượt theo LateUpdate).
+        Vector3 playerPos = _target.position;
         Vector3 targetCamPos = playerPos + _currentOffset;
 
         Vector3 cur = transform.position;
@@ -134,7 +128,7 @@ public class CameraFollow : MonoBehaviour
     public void SnapToTarget()
     {
         if (_target == null) return;
-        Vector3 basePos = _targetRigidbody != null ? _targetRigidbody.position : _target.position;
+        Vector3 basePos = _target.position;
         transform.position = basePos + _currentOffset;
 
         Vector3 dir = basePos + _lookAtOffset - transform.position;

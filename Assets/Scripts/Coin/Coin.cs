@@ -31,10 +31,22 @@ public class Coin : MonoBehaviour
     public void AttractTo(Vector3 targetPosition, float deltaTime)
     {
         if (_collected) return;
+        
+        // Tốc độ hút mặc định 25f trên Inspector là QUÁ CHẬM nếu Player max đang chạy 28f.
+        // Cần ép tốc độ tối thiểu phải lớn hơn tốc độ player để đuổi kịp.
+        float actualSpeed = Mathf.Max(_magnetSpeed, 80f);
+
+        // NẾU coin bị rớt ra phía sau (hoặc ngang hàng chậm nhịp), tăng tốc độ gấp 3 lần 
+        // để nó bay vụt bay vào lưng Player ngay lập tức (Không bị Miss, Không rồng rắn)
+        if (_cachedTransform.position.z <= targetPosition.z)
+        {
+            actualSpeed *= 3f;
+        }
+
         _cachedTransform.position = Vector3.MoveTowards(
             _cachedTransform.position,
             targetPosition + Vector3.up,
-            _magnetSpeed * deltaTime);
+            actualSpeed * deltaTime);
     }
 
     private void OnTriggerEnter(Collider other)
