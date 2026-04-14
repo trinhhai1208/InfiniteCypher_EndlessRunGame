@@ -22,6 +22,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f33959d38946f34497aaf4f67900c67
+    m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
+      with Static Wheels/Vehicle_Bus_color02 1.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 484404636ac422042a24ac95512dc2d3
     m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Props/Props_Traffic
       Control Barrier Fence.prefab
@@ -38,6 +44,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a0214f11898d6343a12c11cbf20a2f9
+    m_Address: Assets/Prefabs/Segment/TrackSegment_City (2).prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 640b94cf88de4ef459ce14645b2736d9
     m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_06.prefab
     m_ReadOnly: 0
@@ -48,20 +59,9 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 79ef5961b86276943ab5da38ae9f2e4b
-    m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
-      with Static Wheels/Vehicle_Bus_color02.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9500f0cdde0097a4aac35ced7c1935d7
     m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
       with Static Wheels/Vehicle_Bus_color01.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 973f382416d860647bbd2dbb2a2190dd
-    m_Address: Assets/Prefabs/Segment/TrackSegment_ModernCity.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -80,8 +80,8 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e75f3f3463dac294baf3fb2d29a06714
-    m_Address: Assets/Prefabs/Segment/TrackSegment_OldCity.prefab
+  - m_GUID: c9f0a37c48cfb0e48a255101e7eac08f
+    m_Address: Assets/Prefabs/Segment/TrackSegment_City 2.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
