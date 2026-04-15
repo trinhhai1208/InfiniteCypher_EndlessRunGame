@@ -66,16 +66,22 @@ public class HUDManager : MonoBehaviour
     // ─────────────────────────────────────────
     // UI Update Methods
     // ─────────────────────────────────────────
+    private int _lastCoinCount = -1;
+    private int _lastDistance = -1;
 
     private void UpdateCoinUI(int count)
     {
+        if (count == _lastCoinCount) return;
+        _lastCoinCount = count;
         if (_coinText != null)
-            _coinText.text = count.ToString();
+            _coinText.SetText("{0}", count);        // TextMeshPro tối ưu
     }
 
     private void UpdateDistanceUI(int distance)
     {
+        if (distance == _lastDistance) return;
+        _lastDistance = distance;
         if (_distanceText != null)
-            _distanceText.text = distance.ToString() + "m";
+            _distanceText.SetText("{0}m", distance);
     }
 }

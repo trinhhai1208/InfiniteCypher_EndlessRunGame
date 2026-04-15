@@ -43,6 +43,9 @@ public class GameManager : MonoBehaviour
 
         // Ép Unity cập nhật lại ánh sáng môi trường để tránh bị tối khi Reload Scene
         DynamicGI.UpdateEnvironment();
+
+        // Đăng ký vào ServiceLocator để các module khác dùng thay FindObjectOfType
+        ServiceLocator.Register<GameManager>(this);
     }
 
     private void Start()
@@ -57,7 +60,9 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator WaitAndStartGame()
     {
-        TrackManager tm = FindObjectOfType<TrackManager>();
+        // H4: Dùng ServiceLocator thay FindObjectOfType (O(1) thay vì scan toàn Scene)
+        TrackManager tm = ServiceLocator.Get<TrackManager>();
+        if (tm == null) tm = FindObjectOfType<TrackManager>(); // fallback an toàn
         
         // Chờ đến khi Map sẵn sàng
         while (tm != null && !tm.IsReady)
@@ -88,6 +93,8 @@ public class GameManager : MonoBehaviour
         {
             Distance = newDistance;
             OnDistanceChanged?.Invoke(Distance);
+            // Publish EventBus (H5)
+            EventBus.Publish(new DistanceChangedEvent { Distance = Distance });
 
             if (Distance > BestDistance)
             {
@@ -104,6 +111,8 @@ public class GameManager : MonoBehaviour
         if (IsGameOver) return;
         CoinCount++;
         OnCoinChanged?.Invoke(CoinCount);
+        // Publish EventBus (H5)
+        EventBus.Publish(new CoinCollectedEvent { Count = CoinCount });
     }
 
     public void TriggerGameOver()
@@ -125,11 +134,18 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.Save();
         
         OnGameOver?.Invoke();
+        // Publish EventBus (H5)
+        EventBus.Publish(new GameOverEvent());
     }
 
     public void RestartGame()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void OnDestroy()
+    {
+        ServiceLocator.Unregister<GameManager>();
     }
 }

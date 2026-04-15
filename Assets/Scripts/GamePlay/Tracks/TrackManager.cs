@@ -42,6 +42,9 @@ public class TrackManager : MonoBehaviour
 
     private void Start()
     {
+        // Đăng ký vào ServiceLocator để GameManager có thể tìm thấy (thay FindObjectOfType)
+        ServiceLocator.Register<TrackManager>(this);
+
         if (_levelGenerator == null)
             _levelGenerator = GetComponent<LevelGenerator>();
 
@@ -142,8 +145,9 @@ public class TrackManager : MonoBehaviour
             }
             else
             {
-                // Debug.LogError($"[TrackManager] Prefab '{segmentGO.name}' thiếu component TrackSegment.cs!");
-                Addressables.ReleaseInstance(segmentGO);
+                // H3 Addressables Safety: kiểm tra handle hợp lệ trước khi Release
+                if (handle.IsValid())
+                    Addressables.ReleaseInstance(segmentGO);
             }
         }
         else
@@ -176,7 +180,10 @@ public class TrackManager : MonoBehaviour
 
             // 🧹 Dọn dẹp obstacles và coins trước khi release
             _levelGenerator?.CleanupSegment(oldest);
-            Addressables.ReleaseInstance(oldest.gameObject);
+
+            // H3 Addressables Safety: chỉ Release nếu GameObject không null
+            if (oldest.gameObject != null)
+                Addressables.ReleaseInstance(oldest.gameObject);
         }
     }
 
@@ -197,7 +204,9 @@ public class TrackManager : MonoBehaviour
         {
             if (seg == null) continue;
             _levelGenerator?.CleanupSegment(seg);
-            Addressables.ReleaseInstance(seg.gameObject);
+            // H3: Kiểm tra null trước khi Release
+            if (seg.gameObject != null)
+                Addressables.ReleaseInstance(seg.gameObject);
         }
         _activeSegments.Clear();
 
@@ -211,5 +220,10 @@ public class TrackManager : MonoBehaviour
         }
 
         IsReady = true;
+    }
+
+    private void OnDestroy()
+    {
+        ServiceLocator.Unregister<TrackManager>();
     }
 }

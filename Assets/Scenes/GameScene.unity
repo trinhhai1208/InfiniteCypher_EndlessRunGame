@@ -2956,8 +2956,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4288967679
+  m_fontColor: {r: 1, g: 0.4509434, b: 0.6426477, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3269,14 +3269,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.80031544, g: 0.9245283, b: 0.71694547, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 654e55b07b76f8148b5de6fa0110d8b3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6ec80f365db83314585480d0c5e553a0, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3326,6 +3326,7 @@ MonoBehaviour:
   _layoutContainer: {fileID: 122766214}
   _powerUpUIPrefab: {fileID: 8499122967620606126, guid: 9f081da2c451ea44cbc89e9f8bb0e44c,
     type: 3}
+  _prewarmCount: 4
   _icons:
   - Type: 0
     Icon: {fileID: -818652399, guid: 77299dd58e8ea984693f58336eff95a4, type: 3}
