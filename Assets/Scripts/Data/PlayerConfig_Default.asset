@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8e3eda821fd8d6468afd301f2651eaf, type: 3}
+  m_Name: PlayerConfig_Default
+  m_EditorClassIdentifier: 
+  baseSpeed: 12
+  speedIncreaseRate: 0.1
+  maxSpeed: 28
+  laneDistance: 3.8
+  laneChangeSpeed: 15
+  jumpForce: 11
+  gravity: 28
+  diveForce: 25
+  rollDuration: 0.8
+  rollColliderHeight: 1.2
+  rollColliderCenterZ: 0
+  minSwipeDistance: 45
+  stumbleSpeedPenalty: 0.4
+  stumbleDuration: 0.5
+  stumbleForwardFreezeTime: 0.2
+  stumbleBackwardPush: 0.35
+  stumbleBackwardSidePush: 0.45
