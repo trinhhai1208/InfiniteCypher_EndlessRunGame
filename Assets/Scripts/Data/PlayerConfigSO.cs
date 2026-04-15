@@ -23,7 +23,7 @@ public class PlayerConfigSO : ScriptableObject
     public float laneDistance = 3.8f;
 
     [Tooltip("Tốc độ trượt ngang khi chuyển lane")]
-    public float laneChangeSpeed = 15f;
+    public float laneChangeSpeed = 25f;
 
     [Header("Jump & Physics")]
     [Tooltip("Lực bật lên khi nhảy")]
@@ -43,11 +43,11 @@ public class PlayerConfigSO : ScriptableObject
     public float rollColliderHeight = 1.2f;
 
     [Tooltip("Offset Z của tâm Collider khi lăn")]
-    public float rollColliderCenterZ = 0f;
+    public float rollColliderCenterZ = 2f;
 
     [Header("Mobile Input")]
     [Tooltip("Khoảng cách tối thiểu (pixels) để nhận diện là Swipe")]
-    public float minSwipeDistance = 45f;
+    public float minSwipeDistance = 30f;
 
     [Header("Stumble (Vấp Ngã)")]
     [Tooltip("% tốc độ bị giảm khi vấp (0.4 = mất 40% tốc độ)")]

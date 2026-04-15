@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Animator))]
@@ -10,40 +9,27 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Gắn PlayerConfigSO vào đây để điều chỉnh thông số không cần sửa code.")]
     [SerializeField] private PlayerConfigSO _config;
 
-    [Header("Core Settings")]
-    [SerializeField] private float _baseSpeed = 12f;
-    [SerializeField] private float _speedIncreaseRate = 0.1f;
-    [SerializeField] private float _maxSpeed = 28f;
-
-    [Header("Lane Settings")]
-    [SerializeField] private float _laneDistance = 3.8f;
-    [SerializeField] private float _laneChangeSpeed = 15f;
-
-    [Header("Jump And Physics")]
-    [SerializeField] private float _jumpForce = 11f;
-    [SerializeField] private float _gravity = 28f;
-    [SerializeField] private float _diveForce = 25f;
-
     [Header("Ground Check")]
     [SerializeField] private LayerMask _groundLayer;
 
-    [Header("Roll")]
-    [FormerlySerializedAs("_slideDuration")]
-    [SerializeField] private float _rollDuration = 0.8f;
-    [FormerlySerializedAs("_slideColliderHeight")]
-    [SerializeField] private float _rollColliderHeight = 1.2f;
-    [FormerlySerializedAs("_slideColliderCenterZ")]
-    [SerializeField] private float _rollColliderCenterZ = 0f;
-
-    [Header("Mobile Settings")]
-    [SerializeField] private float _minSwipeDistance = 45f;
-
-    [Header("Stumble Settings")]
-    [SerializeField] private float _stumbleSpeedPenalty = 0.4f;
-    [SerializeField] private float _stumbleDuration = 0.5f;
-    [SerializeField] private float _stumbleForwardFreezeTime = 0.2f;
-    [SerializeField] private float _stumbleBackwardPush = 0.35f;
-    [SerializeField] private float _stumbleSidePush = 0.45f;
+    // ── Runtime values — được nạp từ PlayerConfigSO trong ApplyConfig() ──
+    private float _baseSpeed;
+    private float _speedIncreaseRate;
+    private float _maxSpeed;
+    private float _laneDistance;
+    private float _laneChangeSpeed;
+    private float _jumpForce;
+    private float _gravity;
+    private float _diveForce;
+    private float _rollDuration;
+    private float _rollColliderHeight;
+    private float _rollColliderCenterZ;
+    private float _minSwipeDistance;
+    private float _stumbleSpeedPenalty;
+    private float _stumbleDuration;
+    private float _stumbleForwardFreezeTime;
+    private float _stumbleBackwardPush;
+    private float _stumbleSidePush;
 
     // Legacy events — giữ để không break BossChaseManager hiện tại
     public static event System.Action OnPlayerStumble;
