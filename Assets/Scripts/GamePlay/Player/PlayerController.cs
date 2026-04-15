@@ -6,6 +6,10 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
+    [Header("Config (Data-Driven)")]
+    [Tooltip("Gắn PlayerConfigSO vào đây để điều chỉnh thông số không cần sửa code.")]
+    [SerializeField] private PlayerConfigSO _config;
+
     [Header("Core Settings")]
     [SerializeField] private float _baseSpeed = 12f;
     [SerializeField] private float _speedIncreaseRate = 0.1f;
@@ -104,6 +108,36 @@ public class PlayerController : MonoBehaviour
 
         _currentSpeed = _baseSpeed;
         _targetX = _rb.position.x;
+
+        // Áp dụng config từ SO nếu được gán (Data-Driven)
+        ApplyConfig();
+    }
+
+    /// <summary>
+    /// Nếu có PlayerConfigSO gán vào Inspector, ghi đè SerializeField bằng giá trị từ SO.
+    /// Không ảnh hưởng gì nếu SO không được gán.
+    /// </summary>
+    private void ApplyConfig()
+    {
+        if (_config == null) return;
+
+        _baseSpeed                = _config.baseSpeed;
+        _speedIncreaseRate        = _config.speedIncreaseRate;
+        _maxSpeed                 = _config.maxSpeed;
+        _laneDistance             = _config.laneDistance;
+        _laneChangeSpeed          = _config.laneChangeSpeed;
+        _jumpForce                = _config.jumpForce;
+        _gravity                  = _config.gravity;
+        _diveForce                = _config.diveForce;
+        _rollDuration             = _config.rollDuration;
+        _rollColliderHeight       = _config.rollColliderHeight;
+        _rollColliderCenterZ      = _config.rollColliderCenterZ;
+        _minSwipeDistance         = _config.minSwipeDistance;
+        _stumbleSpeedPenalty      = _config.stumbleSpeedPenalty;
+        _stumbleDuration          = _config.stumbleDuration;
+        _stumbleForwardFreezeTime = _config.stumbleForwardFreezeTime;
+        _stumbleBackwardPush      = _config.stumbleBackwardPush;
+        _stumbleSidePush          = _config.stumbleBackwardSidePush;
     }
 
     private void Start()
