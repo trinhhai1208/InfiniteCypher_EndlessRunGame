@@ -125,10 +125,19 @@ public class LevelGenerator : MonoBehaviour
 
                 // Xu → trả về pool (tái sử dụng)
                 if (obj.CompareTag("Coin"))
-                    CoinPool.Instance?.Return(obj);
+                {
+                    // CHỈ return những xu bị bỏ lỡ (vẫn còn dính trên segment này).
+                    // Những xu đã thu thập hoặc đang được reuse ở segment khác sẽ không bị ảnh hưởng.
+                    if (obj.transform.parent == segment.transform)
+                    {
+                        CoinPool.Instance?.Return(obj);
+                    }
+                }
                 else
+                {
                     // Vật cản → hủy Addressables instance
                     Addressables.ReleaseInstance(obj);
+                }
             }
             _spawnedMap.Remove(segment);
         }

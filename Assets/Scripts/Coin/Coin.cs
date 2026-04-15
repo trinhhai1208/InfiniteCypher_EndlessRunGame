@@ -31,6 +31,13 @@ public class Coin : MonoBehaviour
     public void AttractTo(Vector3 targetPosition, float deltaTime)
     {
         if (_collected) return;
+
+        // Nếu xu vẫn còn được parent bởi segment, tách ra khỏi segment ngay khi bắt đầu bị hút
+        // để tránh trường hợp segment bị despawn và vô tình trả lại xu dù nó đang bay về Player.
+        if (_cachedTransform.parent != null)
+        {
+            _cachedTransform.SetParent(null);
+        }
         
         // Tốc độ hút mặc định 25f trên Inspector là QUÁ CHẬM nếu Player max đang chạy 28f.
         // Cần ép tốc độ tối thiểu phải lớn hơn tốc độ player để đuổi kịp.
