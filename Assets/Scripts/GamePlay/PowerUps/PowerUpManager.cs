@@ -72,7 +72,19 @@ public class PowerUpManager : MonoBehaviour
         if (IsMagnetActive() && PlayerController.Instance != null)
         {
             Vector3 playerPos = PlayerController.Instance.transform.position;
-            int count = Physics.OverlapSphereNonAlloc(playerPos, _magnetRadius, _magnetBuffer, _coinLayer);
+            
+            // P1: Bán kính từ tính to ra nếu được nâng cấp
+            float currentMagnetRadius = _magnetRadius;
+            if (ServiceLocator.TryGet<UpgradeManager>(out var upgradeManager))
+            {
+                currentMagnetRadius = upgradeManager.GetSecondaryValue(PowerUpType.Magnet);
+            }
+            else if (UpgradeManager.Instance != null)
+            {
+                currentMagnetRadius = UpgradeManager.Instance.GetSecondaryValue(PowerUpType.Magnet);
+            }
+
+            int count = Physics.OverlapSphereNonAlloc(playerPos, currentMagnetRadius, _magnetBuffer, _coinLayer);
 
             for (int i = 0; i < count; i++)
             {

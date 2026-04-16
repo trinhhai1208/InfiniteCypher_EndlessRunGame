@@ -94,11 +94,18 @@ public class LevelGenerator : MonoBehaviour
         public float OffsetToTail; // Khoảng cách từ Pivot đến mép sau (min.z) của vật thể
     }
 
-    // Lưu objects theo từng segment để cleanup đúng cách
-    private readonly Dictionary<TrackSegment, List<GameObject>> _spawnedMap = new();
+    private struct SpawnedObjects
+    {
+        public List<GameObject> Coins;
+        public List<GameObject> Obstacles;
+    }
 
-    // Cache chiều dài (Z) của các prefab để tránh đo đạc lặp lại bằng GetComponentsInChildren
+    // Lưu objects theo từng segment để cleanup đúng cách
+    private readonly Dictionary<TrackSegment, SpawnedObjects> _spawnedMap = new();
+
+    // Cache chiều dài (Z) và WaitForSeconds
     private readonly Dictionary<string, ObjectStats> _lengthCache = new();
+    private readonly WaitForEndOfFrame _waitNextFrame = new();
 
     // ─────────────────────────────────────────────────────────
     // Public API
@@ -117,28 +124,31 @@ public class LevelGenerator : MonoBehaviour
     {
         if (segment == null) return;
 
-        if (_spawnedMap.TryGetValue(segment, out List<GameObject> list))
+        if (_spawnedMap.TryGetValue(segment, out SpawnedObjects group))
         {
-            foreach (var obj in list)
+            // 1. Thu hồi xu
+            if (group.Coins != null)
             {
-                if (obj == null) continue;
-
-                // Xu → trả về pool (tái sử dụng)
-                if (obj.CompareTag("Coin"))
+                for (int i = 0; i < group.Coins.Count; i++)
                 {
-                    // CHỈ return những xu bị bỏ lỡ (vẫn còn dính trên segment này).
-                    // Những xu đã thu thập hoặc đang được reuse ở segment khác sẽ không bị ảnh hưởng.
-                    if (obj.transform.parent == segment.transform)
+                    GameObject coin = group.Coins[i];
+                    if (coin != null && coin.transform.parent == segment.transform)
                     {
-                        CoinPool.Instance?.Return(obj);
+                        CoinPool.Instance?.Return(coin);
                     }
                 }
-                else
+            }
+
+            // 2. Thu hồi vật cản (về Pool)
+            if (group.Obstacles != null)
+            {
+                for (int i = 0; i < group.Obstacles.Count; i++)
                 {
-                    // Vật cản → hủy Addressables instance
-                    Addressables.ReleaseInstance(obj);
+                    if (group.Obstacles[i] != null)
+                        AddressablePoolManager.Instance.Return(group.Obstacles[i]);
                 }
             }
+
             _spawnedMap.Remove(segment);
         }
     }
@@ -149,14 +159,18 @@ public class LevelGenerator : MonoBehaviour
 
     private IEnumerator PopulateRoutine(TrackSegment segment)
     {
-        // ⏳ Chờ cho đến khi Pool sẵn sàng (đề phòng Addressables load chậm)
+        // ⏳ Chờ cho đến khi Pool sẵn sàng
         while (CoinPool.Instance == null || !CoinPool.Instance.IsReady)
         {
-            yield return null;
+            yield return _waitNextFrame;
         }
 
-        var list = new List<GameObject>();
-        _spawnedMap[segment] = list;
+        var group = new SpawnedObjects
+        {
+            Coins = new List<GameObject>(60),
+            Obstacles = new List<GameObject>(10)
+        };
+        _spawnedMap[segment] = group;
         int coinCount = 0; // Đếm số xu đã sinh trong segment này
 
         if (segment.StartPoint == null || segment.EndPoint == null)
@@ -177,7 +191,7 @@ public class LevelGenerator : MonoBehaviour
                 // ── Xe Con ──────────────────────────────
                 int lane = Random.Range(-1, 2);
                 float actualCarLength = _carLengthZ;
-                yield return SpawnCarWithSineCoins(segment, currentZ, lane, list, len => actualCarLength = len);
+                yield return SpawnCarWithSineCoins(segment, currentZ, lane, group, len => actualCarLength = len);
                 advanceZ = actualCarLength + _gapBetweenGroups;
             }
             else if (roll < _carGroupChance + _busGroupChance && _busRefs.Count > 0)
@@ -196,7 +210,7 @@ public class LevelGenerator : MonoBehaviour
                     {
                         // Sinh xe, chờ load xong roi đo độ dài thực tế để cộng dồn
                         float carLen = _carLengthZ;
-                        yield return SpawnCarOnly(segment, currentSteppingZ, lane, list, len => carLen = len);
+                        yield return SpawnCarOnly(segment, currentSteppingZ, lane, group, len => carLen = len);
                         currentSteppingZ += carLen;
                     }
 
@@ -210,7 +224,7 @@ public class LevelGenerator : MonoBehaviour
                     {
                         if (currentBusZ > endZ) break;
                         float nextLen = _busLengthZ;
-                        yield return SpawnBusWithStraightCoins(segment, currentBusZ, lane, list, len => nextLen = len);
+                        yield return SpawnBusWithStraightCoins(segment, currentBusZ, lane, group, len => nextLen = len);
                         currentBusZ += nextLen + _busGapZ;
                         groupEndZ = currentBusZ;
                     }
@@ -228,7 +242,7 @@ public class LevelGenerator : MonoBehaviour
                     {
                         if (currentBusZ > endZ) break;
                         float nextLen = _busLengthZ;
-                        yield return SpawnBusOnly(segment, currentBusZ, lane, list, len => nextLen = len);
+                        yield return SpawnBusOnly(segment, currentBusZ, lane, group, len => nextLen = len);
                         currentBusZ += nextLen + _busGapZ;
                         groupEndZ = currentBusZ;
                     }
@@ -242,13 +256,13 @@ public class LevelGenerator : MonoBehaviour
                 int lane = Random.Range(-1, 2);
                 float x  = lane * _laneDistance;
 
-                // Spawn rào chắn
+                // Spawn rào chắn (Dùng Pool)
                 AssetReference barrierRef = _barrierRefs[Random.Range(0, _barrierRefs.Count)];
-                var handle = barrierRef.InstantiateAsync(new Vector3(x, 0f, currentZ), Quaternion.identity, segment.transform);
-                yield return handle;
+                GameObject barrierObj = null;
+                yield return AddressablePoolManager.Instance.GetRoutine(barrierRef, new Vector3(x, 0f, currentZ), Quaternion.identity, segment.transform, res => barrierObj = res);
 
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                    list.Add(handle.Result);
+                if (barrierObj != null)
+                    group.Obstacles.Add(barrierObj);
 
                 if (CoinPool.Instance != null)
                 {
@@ -272,7 +286,7 @@ public class LevelGenerator : MonoBehaviour
                                 new Vector3(x, coinY, coinZ),
                                 Quaternion.identity,
                                 segment.transform);
-                            if (coin != null) { list.Add(coin); coinCount++; }
+                            if (coin != null) { group.Coins.Add(coin); coinCount++; }
                         }
                     }
                     else
@@ -289,7 +303,7 @@ public class LevelGenerator : MonoBehaviour
                                 new Vector3(x, _barrierLowCoinY, coinZ),
                                 Quaternion.identity,
                                 segment.transform);
-                            if (coin != null) { list.Add(coin); coinCount++; }
+                            if (coin != null) { group.Coins.Add(coin); coinCount++; }
                         }
                     }
                 }
@@ -303,7 +317,7 @@ public class LevelGenerator : MonoBehaviour
                 int remaining = _maxCoinsPerSegment - coinCount;
                 if (remaining <= 0) break;
                 int freeCoinCount = Mathf.Min(Random.Range(_freeCoinCountRange.x, _freeCoinCountRange.y + 1), remaining);
-                yield return SpawnFreeCoinLine(segment, currentZ, lane, list, freeCoinCount);
+                yield return SpawnFreeCoinLine(segment, currentZ, lane, group, freeCoinCount);
                 coinCount += freeCoinCount;
                 // advanceZ đủ dài để không bị chồng lấp vật cản tiếp theo
                 advanceZ = freeCoinCount * _freeCoinSpacing + _gapBetweenGroups;
@@ -320,7 +334,7 @@ public class LevelGenerator : MonoBehaviour
                 if (bonusRemaining <= 0) continue;
                 int bonusLane  = Random.Range(-1, 2);
                 int bonusCount = Mathf.Min(Random.Range(_freeCoinCountRange.x, _freeCoinCountRange.y + 1), bonusRemaining);
-                yield return SpawnFreeCoinLine(segment, currentZ, bonusLane, list, bonusCount);
+                yield return SpawnFreeCoinLine(segment, currentZ, bonusLane, group, bonusCount);
                 coinCount += bonusCount;
                 // Tiến currentZ qua hết chuỗi xu bonus trước khi vòng lặp tiếp theo bắt đầu
                 currentZ += bonusCount * _freeCoinSpacing + _gapBetweenGroups;
@@ -391,25 +405,24 @@ public class LevelGenerator : MonoBehaviour
     // Spawn Car + Xu Hình Sin
     // ─────────────────────────────────────────────────────────
 
-    private IEnumerator SpawnCarWithSineCoins(TrackSegment segment, float worldZ, int lane, List<GameObject> list, System.Action<float> onSpawned = null)
+    private IEnumerator SpawnCarWithSineCoins(TrackSegment segment, float worldZ, int lane, SpawnedObjects group, System.Action<float> onSpawned = null)
     {
         float x = lane * _laneDistance;
 
-        // Spawn xe con
+        // Spawn xe con (Dùng Pool)
         AssetReference carRef = _carRefs[Random.Range(0, _carRefs.Count)];
-        var carHandle = carRef.InstantiateAsync(new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform);
-        yield return carHandle;
+        GameObject carObj = null;
+        yield return AddressablePoolManager.Instance.GetRoutine(carRef, new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform, res => carObj = res);
 
         float spawnedLength = _carLengthZ;
 
-        if (carHandle.Status != AsyncOperationStatus.Succeeded)
+        if (carObj == null)
         {
             onSpawned?.Invoke(spawnedLength);
             yield break;
         }
 
-        GameObject carObj = carHandle.Result;
-        list.Add(carObj);
+        group.Obstacles.Add(carObj);
         spawnedLength = AlignAndGetLengthZ(carObj, worldZ, _carLengthZ);
 
         // Spawn xu hình Sin trên nóc xe con
@@ -430,7 +443,7 @@ public class LevelGenerator : MonoBehaviour
             float coinY = _carRoofY + sinY;
 
             var coin = CoinPool.Instance.Get(new Vector3(x, coinY, coinZ), Quaternion.identity, segment.transform);
-            if (coin != null) list.Add(coin);
+            if (coin != null) group.Coins.Add(coin);
         }
 
         onSpawned?.Invoke(spawnedLength);
@@ -440,25 +453,24 @@ public class LevelGenerator : MonoBehaviour
     // Spawn Bus + Xu Đường Thẳng
     // ─────────────────────────────────────────────────────────
 
-    private IEnumerator SpawnBusWithStraightCoins(TrackSegment segment, float worldZ, int lane, List<GameObject> list, System.Action<float> onSpawned = null)
+    private IEnumerator SpawnBusWithStraightCoins(TrackSegment segment, float worldZ, int lane, SpawnedObjects group, System.Action<float> onSpawned = null)
     {
         float x = lane * _laneDistance;
 
-        // Spawn xe bus
+        // Spawn xe bus (Dùng Pool)
         AssetReference busRef = _busRefs[Random.Range(0, _busRefs.Count)];
-        var busHandle = busRef.InstantiateAsync(new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform);
-        yield return busHandle;
+        GameObject busObj = null;
+        yield return AddressablePoolManager.Instance.GetRoutine(busRef, new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform, res => busObj = res);
 
         float spawnedLength = _busLengthZ;
 
-        if (busHandle.Status != AsyncOperationStatus.Succeeded)
+        if (busObj == null)
         {
             onSpawned?.Invoke(spawnedLength);
             yield break;
         }
 
-        GameObject busObj = busHandle.Result;
-        list.Add(busObj);
+        group.Obstacles.Add(busObj);
         spawnedLength = AlignAndGetLengthZ(busObj, worldZ, _busLengthZ);
 
         // Spawn xu đường thẳng trên nóc xe bus
@@ -475,7 +487,7 @@ public class LevelGenerator : MonoBehaviour
         while (coinZ <= coinEndZ)
         {
             var coin = CoinPool.Instance.Get(new Vector3(x, _busRoofY, coinZ), Quaternion.identity, segment.transform);
-            if (coin != null) list.Add(coin);
+            if (coin != null) group.Coins.Add(coin);
             coinZ += _coinSpacingOnBus;
         }
 
@@ -486,7 +498,7 @@ public class LevelGenerator : MonoBehaviour
     // Spawn Xu Tự Do
     // ─────────────────────────────────────────────────────────
 
-    private IEnumerator SpawnFreeCoinLine(TrackSegment segment, float worldZ, int primaryLane, List<GameObject> list, int coinCount = -1)
+    private IEnumerator SpawnFreeCoinLine(TrackSegment segment, float worldZ, int primaryLane, SpawnedObjects group, int coinCount = -1)
     {
         if (CoinPool.Instance == null) yield break;
 
@@ -511,11 +523,11 @@ public class LevelGenerator : MonoBehaviour
             if (i == coinCount / 2 && _powerUpRefs.Count > 0 && Random.value < _powerUpSpawnChance)
             {
                 var pRef = _powerUpRefs[Random.Range(0, _powerUpRefs.Count)];
-                var handle = pRef.InstantiateAsync(new Vector3(coinX, _freeCoinHeightY, coinZ), Quaternion.identity, segment.transform);
-                yield return handle;
-                if (handle.Status == UnityEngine.ResourceManagement.AsyncOperations.AsyncOperationStatus.Succeeded)
+                GameObject powerupObj = null;
+                yield return AddressablePoolManager.Instance.GetRoutine(pRef, new Vector3(coinX, _freeCoinHeightY, coinZ), Quaternion.identity, segment.transform, res => powerupObj = res);
+                if (powerupObj != null)
                 {
-                    list.Add(handle.Result);
+                    group.Obstacles.Add(powerupObj);
                 }
                 continue; // Bỏ qua sinh xu tại vị trí này
             }
@@ -524,7 +536,7 @@ public class LevelGenerator : MonoBehaviour
                 new Vector3(coinX, _freeCoinHeightY, coinZ),
                 Quaternion.identity,
                 segment.transform);
-            if (coin != null) list.Add(coin);
+            if (coin != null) group.Coins.Add(coin);
         }
     }
 
@@ -532,19 +544,18 @@ public class LevelGenerator : MonoBehaviour
     // Spawn Car Không Xu (Xe bàn đạp)
     // ─────────────────────────────────────────────────────────
 
-    private IEnumerator SpawnCarOnly(TrackSegment segment, float worldZ, int lane, List<GameObject> list, System.Action<float> onSpawned = null)
+    private IEnumerator SpawnCarOnly(TrackSegment segment, float worldZ, int lane, SpawnedObjects group, System.Action<float> onSpawned = null)
     {
         float x = lane * _laneDistance;
         AssetReference carRef = _carRefs[Random.Range(0, _carRefs.Count)];
-        var carHandle = carRef.InstantiateAsync(new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform);
-        yield return carHandle;
+        GameObject carObj = null;
+        yield return AddressablePoolManager.Instance.GetRoutine(carRef, new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform, res => carObj = res);
 
         float spawnedLength = _carLengthZ;
-        if (carHandle.Status == AsyncOperationStatus.Succeeded)
+        if (carObj != null)
         {
-            GameObject obj = carHandle.Result;
-            list.Add(obj);
-            spawnedLength = AlignAndGetLengthZ(obj, worldZ, _carLengthZ);
+            group.Obstacles.Add(carObj);
+            spawnedLength = AlignAndGetLengthZ(carObj, worldZ, _carLengthZ);
         }
         
         onSpawned?.Invoke(spawnedLength);
@@ -554,19 +565,18 @@ public class LevelGenerator : MonoBehaviour
     // Spawn Bus Không Xu (Bus cản đường)
     // ─────────────────────────────────────────────────────────
 
-    private IEnumerator SpawnBusOnly(TrackSegment segment, float worldZ, int lane, List<GameObject> list, System.Action<float> onSpawned = null)
+    private IEnumerator SpawnBusOnly(TrackSegment segment, float worldZ, int lane, SpawnedObjects group, System.Action<float> onSpawned = null)
     {
         float x = lane * _laneDistance;
         AssetReference busRef = _busRefs[Random.Range(0, _busRefs.Count)];
-        var busHandle = busRef.InstantiateAsync(new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform);
-        yield return busHandle;
+        GameObject busObj = null;
+        yield return AddressablePoolManager.Instance.GetRoutine(busRef, new Vector3(x, 0f, worldZ), Quaternion.identity, segment.transform, res => busObj = res);
 
         float spawnedLength = _busLengthZ;
-        if (busHandle.Status == AsyncOperationStatus.Succeeded)
+        if (busObj != null)
         {
-            GameObject obj = busHandle.Result;
-            list.Add(obj);
-            spawnedLength = AlignAndGetLengthZ(obj, worldZ, _busLengthZ);
+            group.Obstacles.Add(busObj);
+            spawnedLength = AlignAndGetLengthZ(busObj, worldZ, _busLengthZ);
         }
         
         onSpawned?.Invoke(spawnedLength);

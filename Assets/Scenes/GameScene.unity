@@ -2456,9 +2456,9 @@ MonoBehaviour:
   _playerOnlyOffset: {x: 0, y: 3.5, z: -5.5}
   _chaseModeOffset: {x: 0, y: 4.5, z: -11}
   _chaseLookAtOffset: {x: 0, y: 1, z: 2.5}
-  _positionSmoothTime: 0.1
-  _rotationSmoothTime: 0.2
-  _modeSwitchSmooth: 0.6
+  _positionSmoothTime: 0.15
+  _rotationSmoothTime: 0.11
+  _modeSwitchSmooth: 0.44
   _lookAtOffset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &1302132077
 GameObject:

@@ -66,10 +66,6 @@ public class CameraFollow : MonoBehaviour
         _currentOffset = Vector3.SmoothDamp(_currentOffset, targetOffset, ref _offsetVelocity, _modeSwitchSmooth);
 
         // ── Vị trí Camera ──
-        // LỖI GIẬT CAMERA MỌI NGƯỜI HAY MẮC PHẢI:
-        // Đoạn code cũ đọc `_targetRigidbody.position`. Lệnh này lấy toạ độ VẬT LÝ của bước nhảy FixedUpdate (50fps), 
-        // Trong khi Camera lại chạy ở LateUpdate (ví dụ 144fps màn hình). Việc đọc toạ độ cũ khựng lại sẽ gây giật hình.
-        // SỬA: Đọc `_target.position` vì Rigidbody của Player đã bật Interpolate (Tự cập nhật mượt theo LateUpdate).
         Vector3 playerPos = _target.position;
         Vector3 targetCamPos = playerPos + _currentOffset;
 

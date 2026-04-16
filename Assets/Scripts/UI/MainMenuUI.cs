@@ -11,7 +11,8 @@ public class MainMenuUI : MonoBehaviour
 {
     [Header("UI Panels")]
     [SerializeField] private GameObject _menuPanel;
-    [SerializeField] private GameObject _settingsPanel; // Tham chiếu đến Panel cài đặt mới
+    [SerializeField] private GameObject _settingsPanel; // Tham chiếu đến Panel cài đặt
+    [SerializeField] private GameObject _shopPanel;     // Tham chiếu đến Panel Shop
 
     [Header("References")]
     [SerializeField] private CharacterSelector _characterSelector;
@@ -82,6 +83,17 @@ public class MainMenuUI : MonoBehaviour
         if (_settingsPanel != null)
         {
             _settingsPanel.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Mở bảng Shop nâng cấp. Gán hàm này vào nút Shop trên Menu.
+    /// </summary>
+    public void OpenShop()
+    {
+        if (_shopPanel != null)
+        {
+            _shopPanel.SetActive(true);
         }
     }
 

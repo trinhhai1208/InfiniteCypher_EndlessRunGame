@@ -31,8 +31,8 @@ public class CoinPool : MonoBehaviour
     }
 
     private readonly Stack<CoinInstance>   _inactive = new();
-    private readonly List<CoinInstance>    _active   = new(); // List để iterate nhanh trong LateUpdate
-    private readonly HashSet<GameObject>   _activeSet = new(); // HashSet để kiểm tra O(1) trong Return
+    private readonly List<CoinInstance>    _active   = new(); 
+    private readonly Dictionary<GameObject, int> _activeMap = new(); // O(1) lookup cho Return logic
 
     private GameObject _loadedPrefab;
     private Mesh       _coinMesh;
@@ -61,7 +61,6 @@ public class CoinPool : MonoBehaviour
     {
         if (op.Status != AsyncOperationStatus.Succeeded)
         {
-            // Debug.LogError("[CoinPool] Không load được Coin Prefab! Kiểm tra AssetReference.");
             return;
         }
 
@@ -190,8 +189,11 @@ public class CoinPool : MonoBehaviour
         ci.Tr.SetParent(parent);
         ci.Tr.SetPositionAndRotation(position, rotation);
         ci.Go.SetActive(true);
+        
+        // Luôn trả về index nơi vật thể vừa được Add vào List
+        _activeMap[ci.Go] = _active.Count;
         _active.Add(ci);
-        _activeSet.Add(ci.Go);
+        
         return ci.Go;
     }
 
@@ -201,27 +203,29 @@ public class CoinPool : MonoBehaviour
     public void Return(GameObject go)
     {
         if (go == null) return;
-        if (!_activeSet.Contains(go)) return; // tránh return trùng
+        if (!_activeMap.TryGetValue(go, out int index)) return; // O(1) check
 
-        // Tìm và xóa khỏi _active list
-        for (int i = 0; i < _active.Count; i++)
+        CoinInstance ci = _active[index];
+
+        // 🔄 Swap-and-Pop pattern: Hoán đổi phần tử hiện tại với phần tử cuối cùng của list
+        // Điều này giúp việc RemoveAt(last) đạt O(1) và giữ cho List luôn dầy đặc.
+        int lastIndex = _active.Count - 1;
+        if (index != lastIndex)
         {
-            if (_active[i].Go == go)
-            {
-                CoinInstance ci = _active[i];
-                _active.RemoveAt(i);
-                _activeSet.Remove(go);
-
-                go.SetActive(false);
-                ci.Tr.SetParent(null);
-
-                // Khôi phục Renderer nếu bị tắt trong X2 mode
-                if (ci.Mr != null && !ci.Mr.enabled) ci.Mr.enabled = true;
-
-                _inactive.Push(ci);
-                break;
-            }
+            CoinInstance lastCI = _active[lastIndex];
+            _active[index] = lastCI;
+            _activeMap[lastCI.Go] = index; // Cập nhật map cho phần tử vừa được di dời
         }
+
+        _active.RemoveAt(lastIndex);
+        _activeMap.Remove(go);
+
+        // Reset trạng thái
+        go.SetActive(false);
+        ci.Tr.SetParent(null);
+        if (ci.Mr != null && !ci.Mr.enabled) ci.Mr.enabled = true;
+
+        _inactive.Push(ci);
     }
 
     /// <summary>

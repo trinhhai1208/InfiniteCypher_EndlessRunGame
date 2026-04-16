@@ -203,10 +203,13 @@ public class TrackManager : MonoBehaviour
         foreach (var seg in _activeSegments)
         {
             if (seg == null) continue;
+            
             _levelGenerator?.CleanupSegment(seg);
-            // H3: Kiểm tra null trước khi Release
             if (seg.gameObject != null)
                 Addressables.ReleaseInstance(seg.gameObject);
+
+            // Tối ưu WebGL: Dọn dẹp từng segment qua từng frame để tránh CPU Spike
+            yield return null; 
         }
         _activeSegments.Clear();
 
