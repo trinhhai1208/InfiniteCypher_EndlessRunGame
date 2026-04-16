@@ -578,7 +578,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &338597066
 RectTransform:
   m_ObjectHideFlags: 0
@@ -597,7 +597,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -170, y: -300}
+  m_AnchoredPosition: {x: -210, y: -350}
   m_SizeDelta: {x: 400, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338597067
@@ -620,7 +620,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 0832a9eeb824a6d41b9e8cf2bd0e9fc7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0f2ae3f0ba1f6b44480ced2c365f6608, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -759,7 +759,7 @@ MonoBehaviour:
   _spawnBehindDistance: 2
   _retreatDistance: 10
   _zSmoothTime: 0.25
-  _laneFollowDelay: 0.35
+  _laneFollowDelay: 0.2
   _xSmoothTime: 0.12
 --- !u!114 &459655667
 MonoBehaviour:
@@ -1569,9 +1569,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 338597066}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -90, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 75, y: 0}
   m_SizeDelta: {x: 50, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &655909371
@@ -2237,7 +2237,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1057982998
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2256,7 +2256,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -200, y: -150}
-  m_SizeDelta: {x: 700, y: 200}
+  m_SizeDelta: {x: 400, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1057982999
 MonoBehaviour:
@@ -2278,7 +2278,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6c9679db003ba4741b3a689ce3de4fde, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a8a602380d394b8459a98e33dc315983, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2457,8 +2457,8 @@ MonoBehaviour:
   _chaseModeOffset: {x: 0, y: 4, z: -8}
   _chaseLookAtOffset: {x: 0, y: 1, z: 2}
   _positionSmoothTime: 0.15
-  _rotationSmoothTime: 0.1
-  _modeSwitchSmooth: 0.3
+  _rotationSmoothTime: 0.15
+  _modeSwitchSmooth: 0.25
   _lookAtOffset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &1302132077
 GameObject:

@@ -41,40 +41,13 @@ public class MainMenuUI : MonoBehaviour
     /// Hãy gán hàm này vào nút START DASH.
     /// </summary>
     public void StartGame()
-    {
-        // Debug.Log("[MainMenuUI] Đang chuyển sang GameScene...");
-        
+    {     
         // Đặt flag để GameScene biết là cần vào chơi luôn
         GameManager.SetAutoStart(true);
         
         // Chuyển sang màn chơi chính
         SceneManager.LoadScene("GameScene");
     }
-
-    /// <summary>
-    /// Chọn nhân vật kế tiếp.
-    /// Hãy gán hàm này vào nút Mũi tên Phải.
-    /// </summary>
-    public void SelectNextCharacter()
-    {
-        if (_characterSelector != null)
-        {
-            _characterSelector.ChangeCharacter(1);
-        }
-    }
-
-    /// <summary>
-    /// Chọn nhân vật trước đó.
-    /// Hãy gán hàm này vào nút Mũi tên Trái.
-    /// </summary>
-    public void SelectPrevCharacter()
-    {
-        if (_characterSelector != null)
-        {
-            _characterSelector.ChangeCharacter(-1);
-        }
-    }
-
     /// <summary>
     /// Mở bảng cài đặt. Gán hàm này vào nút Setting.
     /// </summary>

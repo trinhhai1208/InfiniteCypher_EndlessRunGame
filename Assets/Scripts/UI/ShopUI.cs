@@ -15,9 +15,6 @@ public class ShopUI : MonoBehaviour
     [Tooltip("Prefab của Shop Item dể tự động nhân bản")]
     public GameObject ShopItemPrefab;
 
-    [Tooltip("Text hiển thị tiền hiện có trên góc màn hình Shop")]
-    public TextMeshProUGUI TotalGoldText;
-
     private List<ShopItemUI> _spawnedItems = new();
     private bool _isInitialized = false;
 
@@ -31,25 +28,12 @@ public class ShopUI : MonoBehaviour
     private void InitializeShop()
     {
         if (_isInitialized) return;
-        Debug.Log("[ShopUI] Bắt đầu khởi tạo danh sách đồ trong Shop...");
         // Xóa sạch placeholder rác nếu có trong scene (trong quá trình thiết kế)
         foreach (Transform child in ContentContainer)
         {
             Destroy(child.gameObject);
         }
-        if (UpgradeManager.Instance == null)
-        {
-            Debug.LogError("[ShopUI] LỖI: Không tìm thấy UpgradeManager trong Scene! Hãy chắc chắn bạn đã làm Bước 3: Tạo GameObject UpgradeManager.");
-            return;
-        }
-        if (UpgradeManager.Instance.Configs == null || UpgradeManager.Instance.Configs.Length == 0)
-        {
-            Debug.LogWarning("[ShopUI] CẢNH BÁO: Danh sách Configs trong UpgradeManager đang TRỐNG! Hãy kéo các file MagnetData, ShieldData... vào mục Configs của UpgradeManager.");
-        }
-        else
-        {
-            Debug.Log($"[ShopUI] Tìm thấy {UpgradeManager.Instance.Configs.Length} món đồ để hiển thị.");
-        }
+
         // Đọc Config từ UpgradeManager và sinh ra UI
         if (UpgradeManager.Instance != null && UpgradeManager.Instance.Configs != null)
         {
@@ -78,10 +62,6 @@ public class ShopUI : MonoBehaviour
     /// </summary>
     public void RefreshAll()
     {
-        if (TotalGoldText != null)
-        {
-            TotalGoldText.text = PlayerPrefs.GetInt("TotalGold", 0).ToString("N0");
-        }
 
         foreach (var item in _spawnedItems)
         {

@@ -9,16 +9,20 @@ using UnityEngine.UI;
 public class ShopItemUI : MonoBehaviour
 {
     [Header("UI Elements")]
-    public Image ItemIcon;
-    public TextMeshProUGUI TitleText;
-    public TextMeshProUGUI DescriptionText;      // Có thể để trống nếu UI nhỏ
-    public TextMeshProUGUI AttributeText;        // Vd: "Thời gian: 15s"
-    public TextMeshProUGUI LevelText;            // Vd: "Lvl: 2/5"
-    public TextMeshProUGUI PriceText;            // Vd: "1500"
+    [SerializeField] private Image ItemIcon;
+    [SerializeField] private TextMeshProUGUI TitleText;
+    [SerializeField] private TextMeshProUGUI DescriptionText;      // Có thể để trống nếu UI nhỏ
+    [SerializeField] private TextMeshProUGUI AttributeText;        // Vd: "Thời gian: 15s"
+    [SerializeField] private TextMeshProUGUI LevelText;            // Vd: "Lvl: 2/5"
+    [SerializeField] private TextMeshProUGUI PriceText;            // Vd: "1500"
     
     [Header("Interactive Elements")]
-    public Button BuyButton;
-    public Slider UpgradeProgressBar;            // Thanh chia 5 nấc
+    [SerializeField] private Button BuyButton;
+    
+    [Tooltip("Drag father object")]
+    [SerializeField] private Transform SegmentContainer;
+    [SerializeField] private Color ActiveColor = new Color(0.0157f, 1f, 0.6862f); // Mã Hex 04FFAF
+    [SerializeField] private Color InactiveColor = new Color(0.2f, 0.2f, 0.2f, 0.8f); // Xám tối trong suốt
 
     private UpgradeConfigSO _config;
     private PowerUpType _type;
@@ -49,41 +53,57 @@ public class ShopItemUI : MonoBehaviour
         if (UpgradeManager.Instance == null) return;
 
         int currentLevel = UpgradeManager.Instance.GetLevel(_type);
-        
+        int maxLevel = _config.Tiers.Length; // maxLevel bằng độ dài mảng Tiers (vd 5)
+
         // Cập nhật AttributeText (Hiển thị thời gian/bán kính)
         if (AttributeText != null)
         {
-            float dur = _config.GetTier(currentLevel).Duration;
-            AttributeText.text = "Thời gian: " + dur + "s";
-            
-            // Nếu là Magnet, hiển thị thêm Bán kính hút
-            if (_type == PowerUpType.Magnet)
+            if (currentLevel == 0)
             {
-                float rad = _config.GetTier(currentLevel).SecondaryValue;
-                AttributeText.text += " | Hút xa: " + rad + "m";
+                AttributeText.text = "Cơ bản (Chưa nâng cấp)";
+            }
+            else
+            {
+                // currentLevel từ 1 đến maxLevel sẽ lấy Tiers[0] đến Tiers[maxLevel-1]
+                int idx = Mathf.Clamp(currentLevel - 1, 0, maxLevel - 1);
+                float dur = _config.Tiers[idx].Duration;
+                AttributeText.text = "Thời gian: " + dur + "s";
+                
+                if (_type == PowerUpType.Magnet)
+                {
+                    float rad = _config.Tiers[idx].SecondaryValue;
+                    AttributeText.text += " | Hút xa: " + rad + "m";
+                }
             }
         }
 
-        // Cập nhật Level & Slider tiến trình (Max level = 5)
-        if (LevelText != null) LevelText.text = "Lvl " + currentLevel + "/5";
-        if (UpgradeProgressBar != null)
+        // Cập nhật Level & Slider tiến trình
+        if (LevelText != null) LevelText.text = "Lvl " + currentLevel + "/" + maxLevel;
+        if (SegmentContainer)
         {
-            UpgradeProgressBar.maxValue = 5;
-            UpgradeProgressBar.value = currentLevel;
+            for (int i = 0; i < SegmentContainer.childCount; i++)
+            {
+                Image segImg = SegmentContainer.GetChild(i).GetComponent<Image>();
+                if (segImg != null)
+                {
+                    // Nếu index nhỏ hơn level hiện tại -> Bật sáng
+                    segImg.color = (i < currentLevel) ? ActiveColor : InactiveColor;
+                }
+            }
         }
 
         // Cập nhật Nút Mua
-        if (currentLevel >= 5)
+        if (currentLevel >= maxLevel)
         {
             PriceText.text = "MAX LEVEL";
             BuyButton.interactable = false;
         }
         else
         {
-            int cost = _config.GetTier(currentLevel).Cost; // Lưu ý: Level 1 dùng config[1] để nhảy lên Level 2
+            // Level 0 lấy giá Tiers[0] để lên Lv1. Level 1 lấy giá Tiers[1] để lên Lv2...
+            int cost = _config.Tiers[currentLevel].Cost; 
             PriceText.text = cost.ToString("N0") + " G";
 
-            // Có thể mờ nút nếu không đủ vàng
             int totalGold = PlayerPrefs.GetInt("TotalGold", 0);
             BuyButton.interactable = totalGold >= cost;
         }

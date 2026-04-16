@@ -11,7 +11,7 @@ public class BossController : MonoBehaviour
     public static BossController Instance { get; private set; }
 
     [Header("Chase Movement")]
-    [SerializeField] private float _spawnBehindDistance = 6f;
+    [SerializeField] private float _spawnBehindDistance = 2f;
     [SerializeField] private float _retreatDistance = 18f;
     [SerializeField] private float _zSmoothTime = 0.25f;
     //[SerializeField] private float _xFollowSpeed = 5f;

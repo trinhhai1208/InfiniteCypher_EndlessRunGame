@@ -33,11 +33,11 @@ public class UpgradeManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Lấy Cấp độ hiện tại của một loại PowerUp (Mặc định 1, Tối đa 5).
+    /// Lấy Cấp độ hiện tại của một loại PowerUp (Mặc định 0 = chưa nâng cấp).
     /// </summary>
     public int GetLevel(PowerUpType type)
     {
-        return PlayerPrefs.GetInt("Upgrade_" + type.ToString(), 1);
+        return PlayerPrefs.GetInt("Upgrade_" + type.ToString(), 0);
     }
 
     /// <summary>
@@ -54,27 +54,31 @@ public class UpgradeManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Trả về thời gian Max Duration dựa trên level đã nâng cấp của người chơi.
+    /// Trả về thời gian dựa trên level nâng cấp. Trả về -1 nếu là Lv0 (dùng gốc).
     /// </summary>
     public float GetDuration(PowerUpType type)
     {
         int level = GetLevel(type);
+        if (level <= 0) return -1f; 
+
         var config = GetConfig(type);
-        if (config == null) return 10f; // dự phòng
+        if (config == null || level > config.Tiers.Length) return -1f;
         
-        return config.GetTier(level).Duration;
+        return config.Tiers[level - 1].Duration;
     }
 
     /// <summary>
-    /// Trả về chỉ số phụ (ví dụ Bán kính Magnet).
+    /// Trả về chỉ số phụ (Vd Bán kính). Trả về -1 nếu Lv0.
     /// </summary>
     public float GetSecondaryValue(PowerUpType type)
     {
         int level = GetLevel(type);
-        var config = GetConfig(type);
-        if (config == null) return 10f; 
+        if (level <= 0) return -1f;
 
-        return config.GetTier(level).SecondaryValue;
+        var config = GetConfig(type);
+        if (config == null || level > config.Tiers.Length) return -1f; 
+
+        return config.Tiers[level - 1].SecondaryValue;
     }
 
     /// <summary>
@@ -84,10 +88,17 @@ public class UpgradeManager : MonoBehaviour
     public bool TryUpgrade(PowerUpType type)
     {
         int level = GetLevel(type);
-        if (level >= 5) return false; // Max Level
-
         var config = GetConfig(type);
-        if (config == null) return false;
+        
+        if (config == null) 
+        {
+            return false;
+        }
+
+        if(level >= config.Tiers.Length) 
+        {
+            return false;
+        }
 
         // Muốn lên cấp tiếp theo, cần trả phí của cấp đó (Index là level hiện tại vì Index chạy từ 0)
         int cost = config.Tiers[level].Cost;
@@ -112,7 +123,6 @@ public class UpgradeManager : MonoBehaviour
             OnUpgradeChanged?.Invoke(type, level);
             return true;
         }
-
         return false;
     }
 }

@@ -22,7 +22,7 @@ MonoBehaviour:
   diveForce: 25
   rollDuration: 0.8
   rollColliderHeight: 1.2
-  rollColliderCenterZ: 2
+  rollColliderCenterZ: 0
   minSwipeDistance: 30
   stumbleSpeedPenalty: 0.4
   stumbleDuration: 0.5

@@ -43,16 +43,15 @@ public class PlayerConfigSO : ScriptableObject
     public float rollColliderHeight = 1.2f;
 
     [Tooltip("Offset Z của tâm Collider khi lăn")]
-    public float rollColliderCenterZ = 2f;
+    public float rollColliderCenterZ = 0f;
 
     [Header("Mobile Input")]
     [Tooltip("Khoảng cách tối thiểu (pixels) để nhận diện là Swipe")]
     public float minSwipeDistance = 30f;
 
     [Header("Stumble (Vấp Ngã)")]
-    [Tooltip("% tốc độ bị giảm khi vấp (0.4 = mất 40% tốc độ)")]
     [Range(0f, 1f)]
-    public float stumbleSpeedPenalty = 0.4f;
+    public float stumbleSpeedPenalty = 0.6f;
 
     [Tooltip("Tổng thời gian bị stun sau vấp (giây)")]
     public float stumbleDuration = 0.5f;
