@@ -2453,12 +2453,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 1184834125}
-  _playerOnlyOffset: {x: 0, y: 3.5, z: -5.5}
-  _chaseModeOffset: {x: 0, y: 4.5, z: -11}
-  _chaseLookAtOffset: {x: 0, y: 1, z: 2.5}
+  _playerOnlyOffset: {x: 0, y: 3, z: -5}
+  _chaseModeOffset: {x: 0, y: 4, z: -8}
+  _chaseLookAtOffset: {x: 0, y: 1, z: 2}
   _positionSmoothTime: 0.15
-  _rotationSmoothTime: 0.11
-  _modeSwitchSmooth: 0.44
+  _rotationSmoothTime: 0.1
+  _modeSwitchSmooth: 0.3
   _lookAtOffset: {x: 0, y: 1.5, z: 0}
 --- !u!1 &1302132077
 GameObject:

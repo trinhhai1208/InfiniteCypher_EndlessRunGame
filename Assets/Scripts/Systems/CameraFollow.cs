@@ -77,19 +77,25 @@ public class CameraFollow : MonoBehaviour
         transform.position = new Vector3(newX, newY, newZ);
 
         // ── LookAt Target ──
-        // Luôn nhìn về phía Player (phía trước camera), không dùng midpoint boss.
-        // Camera đã lùi xa khi ChaseMode nên tự nhiên sẽ thấy cả Player và Boss.
+        // ── LookAt Target ──
+        // P1 SỬA: Để Camera KHÔNG xoay giật sang trái/phải, ta đặt toạ độ X của điểm nhìn 
+        // bằng chính toạ độ X của Camera hiện tại (newX).
+        // Như vậy Camera luôn nhìn thẳng băng về phía trước theo hướng song song.
         Vector3 lookAtTarget;
 
         if (_mode == CameraMode.ChaseMode)
         {
-            lookAtTarget = playerPos + _chaseLookAtOffset;
+            lookAtTarget = new Vector3(newX, playerPos.y + _chaseLookAtOffset.y, playerPos.z + _chaseLookAtOffset.z);
         }
         else
         {
-            lookAtTarget = playerPos + _lookAtOffset;
+            lookAtTarget = new Vector3(newX, playerPos.y + _lookAtOffset.y, playerPos.z + _lookAtOffset.z);
         }
 
+        // Sau đó Camera sẽ bù trừ góc quay để nhìn về điểm đó. 
+        // Nếu bạn muốn nhìn LÀN TRƯỚC mặt (tức là nhìn song song), ta dùng:
+        // Vector3 forward = Vector3.forward; 
+        
         Vector3 direction = lookAtTarget - transform.position;
         if (direction != Vector3.zero)
         {
