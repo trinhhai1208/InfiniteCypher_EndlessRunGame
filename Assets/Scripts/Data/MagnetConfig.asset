@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39bb88688056d824e89bf9584536e204, type: 3}
+  m_Name: MagnetConfig
+  m_EditorClassIdentifier: 
+  DisplayName: "Nam ch\xE2m "
+  Type: 0
+  Tiers:
+  - Cost: 500
+    Duration: 11
+    SecondaryValue: 10
+  - Cost: 1500
+    Duration: 12
+    SecondaryValue: 12
+  - Cost: 3000
+    Duration: 15
+    SecondaryValue: 14
+  - Cost: 5000
+    Duration: 17
+    SecondaryValue: 16
+  - Cost: 10000
+    Duration: 24
+    SecondaryValue: 18
+  Description: "N\xE2ng c\u1EA5p \u0111\u1EC3 t\u0103ng th\u1EDDi gian hi\u1EC7u
+    l\u1EF1c v\xE0 t\u1EA7m h\xFAt c\u1EE7a nam ch\xE2m"
+  Icon: {fileID: -1106463230, guid: 77299dd58e8ea984693f58336eff95a4, type: 3}
