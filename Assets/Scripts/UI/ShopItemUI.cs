@@ -120,10 +120,5 @@ public class ShopItemUI : MonoBehaviour
             RefreshData(); // Làm mới chính nó
             _parentShop.RefreshAll(); // Báo cho Shop biết để Cập nhật tiền (Góc trên) & Làm mới các nút khác
         }
-        else
-        {
-            // Mua thất bại (Hết tiền hoặc lỗi)
-            Debug.Log("[Shop] Not enough gold or max level reached.");
-        }
     }
 }

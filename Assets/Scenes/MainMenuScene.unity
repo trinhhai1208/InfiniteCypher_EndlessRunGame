@@ -645,7 +645,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -95, y: 0}
+  m_AnchoredPosition: {x: -140, y: 0}
   m_SizeDelta: {x: 180, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &258934934
@@ -2288,6 +2288,7 @@ MonoBehaviour:
   ContentContainer: {fileID: 682641595}
   ShopItemPrefab: {fileID: 8471508774959380081, guid: 4841edd5d57623244ae326cf9e66b5a9,
     type: 3}
+  TotalGoldText: {fileID: 232682658}
 --- !u!114 &1047943333
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3570,7 +3571,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 35, y: 0}
+  m_AnchoredPosition: {x: 70, y: 0}
   m_SizeDelta: {x: 60, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1578632932
@@ -3996,7 +3997,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 170, y: -80}
-  m_SizeDelta: {x: 300, y: 100}
+  m_SizeDelta: {x: 350, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1725801523
 MonoBehaviour:
@@ -4011,15 +4012,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.18825829, g: 1, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1541865002599254229, guid: 7f9865cf6ac20f7468e13d5a5daff8ef,
-    type: 3}
+  m_Sprite: {fileID: 21300000, guid: 789dd076d12c7fd488c64e055e730103, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

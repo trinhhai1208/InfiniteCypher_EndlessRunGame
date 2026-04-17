@@ -18,10 +18,10 @@ MonoBehaviour:
     DescriptionTemplate: "Thu th\u1EADp {0} gold trong 1 l\u01B0\u1EE3t ch\u1EA1y"
     BaseGoal: 100
     GoalMultiplier: 2
-    Icon: {fileID: 0}
+    Icon: {fileID: -40966565, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}
   Total:
     Title: "Ti\u1EC1n! Ti\u1EC1n! Ti\u1EC1n"
     DescriptionTemplate: "Thu th\u1EADp t\u1ED5ng {0} gold"
     BaseGoal: 2000
     GoalMultiplier: 1.5
-    Icon: {fileID: 0}
+    Icon: {fileID: -40966565, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}

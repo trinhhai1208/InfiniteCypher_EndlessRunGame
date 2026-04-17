@@ -19,10 +19,10 @@ MonoBehaviour:
       1 l\u1EA7n ch\u1EA1y"
     BaseGoal: 10
     GoalMultiplier: 2
-    Icon: {fileID: 0}
+    Icon: {fileID: -685833355, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}
   Total:
     Title: "Nh\u1EA3y! Nh\u1EA3y \u0111i!"
     DescriptionTemplate: "Ch\u1EA1y tr\xEAn t\u1ED5ng {0} ph\u01B0\u01A1ng ti\u1EC7n"
     BaseGoal: 100
     GoalMultiplier: 1.5
-    Icon: {fileID: 0}
+    Icon: {fileID: -685833355, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}

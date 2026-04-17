@@ -55,6 +55,8 @@ public class MainMenuUI : MonoBehaviour
     /// </summary>
     public void OpenSettings()
     {
+        if (IsAnySubPanelOpen()) return;
+
         if (_settingsPanel != null)
         {
             _settingsPanel.SetActive(true);
@@ -66,6 +68,8 @@ public class MainMenuUI : MonoBehaviour
     /// </summary>
     public void OpenMissions()
     {
+        if (IsAnySubPanelOpen()) return;
+
         if (_missionPanel != null)
         {
             _missionPanel.SetActive(true);
@@ -80,10 +84,21 @@ public class MainMenuUI : MonoBehaviour
     /// </summary>
     public void OpenShop()
     {
+        if (IsAnySubPanelOpen()) return;
+
         if (_shopPanel != null)
         {
             _shopPanel.SetActive(true);
         }
+    }
+
+    private bool IsAnySubPanelOpen()
+    {
+        // Kiểm tra xem có bất kỳ bảng con nào đang mở không
+        if (_settingsPanel != null && _settingsPanel.activeSelf) return true;
+        if (_shopPanel != null && _shopPanel.activeSelf) return true;
+        if (_missionPanel != null && _missionPanel.activeSelf) return true;
+        return false;
     }
 
     private void UpdateTotalGoldUI()

@@ -18,10 +18,10 @@ MonoBehaviour:
     DescriptionTemplate: "L\u0103n qua {0} r\xE0o ch\u1EAFn trong 1 game"
     BaseGoal: 10
     GoalMultiplier: 2
-    Icon: {fileID: 0}
+    Icon: {fileID: -1352825132, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}
   Total:
     Title: "N\xE9! N\xE9! N\xE9!"
     DescriptionTemplate: "L\u0103n qua t\u1ED5ng {0} r\xE0o ch\u1EAFn"
     BaseGoal: 100
     GoalMultiplier: 1.5
-    Icon: {fileID: 0}
+    Icon: {fileID: -1352825132, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}

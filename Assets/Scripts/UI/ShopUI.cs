@@ -10,10 +10,13 @@ public class ShopUI : MonoBehaviour
 {
     [Header("References")]
     [Tooltip("Vùng chứa (Content) bên dưới ScrollView")]
-    [SerializeField] private Transform ContentContainer;
+    public Transform ContentContainer;
     
     [Tooltip("Prefab của Shop Item dể tự động nhân bản")]
-    [SerializeField] private GameObject ShopItemPrefab;
+    public GameObject ShopItemPrefab;
+
+    [Tooltip("Text hiển thị tiền hiện có trên góc màn hình Shop")]
+    public TextMeshProUGUI TotalGoldText;
 
     private List<ShopItemUI> _spawnedItems = new();
     private bool _isInitialized = false;
@@ -28,6 +31,7 @@ public class ShopUI : MonoBehaviour
     private void InitializeShop()
     {
         if (_isInitialized) return;
+
         // Xóa sạch placeholder rác nếu có trong scene (trong quá trình thiết kế)
         foreach (Transform child in ContentContainer)
         {
@@ -55,13 +59,17 @@ public class ShopUI : MonoBehaviour
 
         _isInitialized = true;
     }
-    
+
     /// <summary>
     /// Được gọi bởi một ShopItemUI khi người chơi mua đồ thành công.
     /// Giúp update lại hiển thị vàng trên góc và làm "mờ" nút những món không đủ khả năng mua.
     /// </summary>
     public void RefreshAll()
     {
+        if (TotalGoldText != null)
+        {
+            TotalGoldText.text = PlayerPrefs.GetInt("TotalGold", 0).ToString("N0");
+        }
 
         foreach (var item in _spawnedItems)
         {

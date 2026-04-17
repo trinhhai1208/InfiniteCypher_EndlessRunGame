@@ -18,10 +18,10 @@ MonoBehaviour:
     DescriptionTemplate: "Nh\u1EA3y qua {0} v\u1EADt c\u1EA3n trong 1 l\u1EA7n ch\u1EA1y"
     BaseGoal: 10
     GoalMultiplier: 2
-    Icon: {fileID: 0}
+    Icon: {fileID: -389906164, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}
   Total:
     Title: "Nh\u1EA3y! Nh\u1EA3y \u0111i!"
     DescriptionTemplate: "Nh\u1EA3y qua t\u1ED5ng {0} v\u1EADt c\u1EA3n "
     BaseGoal: 100
     GoalMultiplier: 1.5
-    Icon: {fileID: 0}
+    Icon: {fileID: -389906164, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}

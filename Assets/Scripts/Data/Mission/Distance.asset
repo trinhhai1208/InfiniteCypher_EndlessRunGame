@@ -18,10 +18,10 @@ MonoBehaviour:
     DescriptionTemplate: "Ch\u1EA1y {0} m trong 1 l\u01B0\u1EE3t ch\u01A1i"
     BaseGoal: 100
     GoalMultiplier: 2
-    Icon: {fileID: 0}
+    Icon: {fileID: 104401582, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}
   Total:
-    Title: "Ch\u1EA1y ch\u1EA1y m\xE3i"
+    Title: "Ch\u1EA1y! Ch\u1EA1y m\xE3i!"
     DescriptionTemplate: "Ch\u1EA1y t\u1ED5ng {0} m"
     BaseGoal: 1000
     GoalMultiplier: 2.5
-    Icon: {fileID: 0}
+    Icon: {fileID: 104401582, guid: c40801d7d2043f64398fe4a4b56fb603, type: 3}
