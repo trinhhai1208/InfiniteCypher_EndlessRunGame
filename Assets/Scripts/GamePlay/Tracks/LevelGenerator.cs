@@ -266,45 +266,19 @@ public class LevelGenerator : MonoBehaviour
 
                 if (CoinPool.Instance != null)
                 {
-                    bool isSinPattern = Random.value < 0.5f;
+                    // ⬇️ Xu sát đất — Xu thấp Y dưới barrier → gợi ý SLIDE
+                    int barrierSlideCount = 5;
+                    float coinStartZ = currentZ + _barrierCoinZOffset;
 
-                    if (isSinPattern)
+                    for (int c = 0; c < barrierSlideCount; c++)
                     {
-                        // 🌊 Hình Sin — Xu bay vòm cao qua barrier → gợi ý JUMP
-                        int barrierArcCount = 7;
-                        float arcStartZ = currentZ + _barrierCoinZOffset;
-                        float arcLength = 7f;
-
-                        for (int c = 0; c < barrierArcCount; c++)
-                        {
-                            float t     = (float)c / (barrierArcCount - 1);
-                            float coinZ = arcStartZ + t * arcLength;
-                            float coinY = _freeCoinHeightY + Mathf.Sin(t * Mathf.PI) * 2.5f;
-
-                            if (coinCount >= _maxCoinsPerSegment) break;
-                            var coin = CoinPool.Instance.Get(
-                                new Vector3(x, coinY, coinZ),
-                                Quaternion.identity,
-                                segment.transform);
-                            if (coin != null) { group.Coins.Add(coin); coinCount++; }
-                        }
-                    }
-                    else
-                    {
-                        // ⬇️ Xu sát đất — Xu thấp Y trước barrier → gợi ý SLIDE
-                        int barrierSlideCount = 5;
-                        float coinStartZ = currentZ + _barrierCoinZOffset;
-
-                        for (int c = 0; c < barrierSlideCount; c++)
-                        {
-                            float coinZ = coinStartZ + c * 1.2f;
-                            if (coinCount >= _maxCoinsPerSegment) break;
-                            var coin = CoinPool.Instance.Get(
-                                new Vector3(x, _barrierLowCoinY, coinZ),
-                                Quaternion.identity,
-                                segment.transform);
-                            if (coin != null) { group.Coins.Add(coin); coinCount++; }
-                        }
+                        float coinZ = coinStartZ + c * 1.2f;
+                        if (coinCount >= _maxCoinsPerSegment) break;
+                        var coin = CoinPool.Instance.Get(
+                            new Vector3(x, _barrierLowCoinY, coinZ),
+                            Quaternion.identity,
+                            segment.transform);
+                        if (coin != null) { group.Coins.Add(coin); coinCount++; }
                     }
                 }
 

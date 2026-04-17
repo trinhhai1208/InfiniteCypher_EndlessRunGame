@@ -10,10 +10,10 @@ public class PlayerConfigSO : ScriptableObject
 {
     [Header("Speed")]
     [Tooltip("Tốc độ khởi đầu khi bắt đầu ván chơi")]
-    public float baseSpeed = 12f;
+    public float baseSpeed = 22f;
 
     [Tooltip("Tốc độ tăng mỗi giây (FixedUpdate)")]
-    public float speedIncreaseRate = 0.1f;
+    public float speedIncreaseRate = 0.05f;
 
     [Tooltip("Tốc độ tối đa - không thể vượt qua giá trị này")]
     public float maxSpeed = 28f;
@@ -27,7 +27,7 @@ public class PlayerConfigSO : ScriptableObject
 
     [Header("Jump & Physics")]
     [Tooltip("Lực bật lên khi nhảy")]
-    public float jumpForce = 11f;
+    public float jumpForce = 10f;
 
     [Tooltip("Trọng lực tự định nghĩa (không dùng Physics của Unity)")]
     public float gravity = 28f;
@@ -37,7 +37,7 @@ public class PlayerConfigSO : ScriptableObject
 
     [Header("Roll (Lăn)")]
     [Tooltip("Thời gian lăn (giây)")]
-    public float rollDuration = 0.8f;
+    public float rollDuration = 0.5f;
 
     [Tooltip("Chiều cao Capsule Collider khi đang lăn")]
     public float rollColliderHeight = 1.2f;

@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8e3eda821fd8d6468afd301f2651eaf, type: 3}
   m_Name: PlayerConfig_Default
   m_EditorClassIdentifier: 
-  baseSpeed: 15
-  speedIncreaseRate: 0.25
-  maxSpeed: 30
+  baseSpeed: 22
+  speedIncreaseRate: 0.05
+  maxSpeed: 26
   laneDistance: 3.8
   laneChangeSpeed: 25
-  jumpForce: 11
+  jumpForce: 10
   gravity: 28
   diveForce: 25
-  rollDuration: 0.8
+  rollDuration: 0.5
   rollColliderHeight: 1.2
   rollColliderCenterZ: 0
   minSwipeDistance: 30

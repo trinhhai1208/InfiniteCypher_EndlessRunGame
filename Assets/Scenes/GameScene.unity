@@ -732,8 +732,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -210, y: -350}
-  m_SizeDelta: {x: 400, y: 200}
+  m_AnchoredPosition: {x: -160, y: -350}
+  m_SizeDelta: {x: 300, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338597067
 MonoBehaviour:
@@ -1100,7 +1100,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 0}
+  m_AnchoredPosition: {x: -110, y: 0}
   m_SizeDelta: {x: 200, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &531108574
@@ -2535,8 +2535,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 7186931820594961514}
-  _playerOnlyOffset: {x: 0, y: 3.5, z: -5}
-  _chaseModeOffset: {x: 0, y: 4, z: -8}
+  _playerOnlyOffset: {x: 0, y: 4, z: -7}
+  _chaseModeOffset: {x: 0, y: 4, z: -10}
   _chaseLookAtOffset: {x: 0, y: 1, z: 2}
   _positionSmoothTime: 0.15
   _rotationSmoothTime: 0.15
@@ -3595,11 +3595,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5334010163824671088, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: m_Center.y
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6034476861304687752, guid: 10357f387cb20db41954f5e353a3c50c,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3659,47 +3654,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_IsActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _config
-      value: 
-      objectReference: {fileID: 11400000, guid: 3179fd7c2d1e23a438d1c93885821b40,
-        type: 2}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _jumpForce
-      value: 11
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _laneChangeSpeed
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _minSwipeDistance
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _speedIncreaseRate
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _groundLayer.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _rollColliderCenterZ
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8528151461412317511, guid: 10357f387cb20db41954f5e353a3c50c,
-        type: 3}
-      propertyPath: _slideColliderCenterZ
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

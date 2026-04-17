@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
     private bool _isDiving;
     private bool _isStumbling;
     private bool _freezeForwardMovement;
+    private bool _queuedRoll; // Ghi nhớ lệnh lộn người khi đang nhảy
     private float _groundY;
     private float _lastSafeY;
     private Coroutine _rollCoroutine;
@@ -185,8 +186,27 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (!wasGrounded && _isGrounded && _isDiving)
-            _isDiving = false;
+        if (!wasGrounded && _isGrounded)
+        {
+            if (_isDiving) _isDiving = false;
+
+            // VÁ LỖI MỚI: Nếu có lệnh chờ Roll khi đang nhảy, thực hiện ngay khi chạm đất
+            if (_queuedRoll)
+            {
+                if (!_isRolling)
+                    _rollCoroutine = StartCoroutine(RollRoutine());
+                _queuedRoll = false;
+            }
+
+            if (!wasGrounded)
+            {
+                var identity = ResolveObstacleIdentity(hit.collider);
+                if (identity != null && identity.CollisionType == ObstacleCollisionType.VehicleStumble)
+                {
+                    EventBus.Publish(new PlayerVehicleRunEvent());
+                }
+            }
+        }
     }
 
     private void HandleInput()
@@ -202,15 +222,18 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W))
                 _jumpRequested = true;
+
+            if (!_isRolling && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
+                _rollRequested = true;
         }
         else
         {
-            if (!_isDiving && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
+            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+            {
                 _diveRequested = true;
+                _queuedRoll = true; // Buffer lệnh lộn người cho đến khi chạm đất
+            }
         }
-
-        if (_isGrounded && !_isRolling && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
-            _rollRequested = true;
 
         HandleMobileSwipe();
     }
@@ -232,6 +255,7 @@ public class PlayerController : MonoBehaviour
                 _animator.SetTrigger(HashJump);
                 _jumpRequested = false;
                 _rollRequested = false;
+                _queuedRoll = false; // Xóa lệnh chờ roll nếu thực hiện cú nhảy mới
 
                 if (AudioManager.Instance != null)
                     AudioManager.Instance.PlayJump();
@@ -330,8 +354,11 @@ public class PlayerController : MonoBehaviour
                     {
                         if (_isGrounded)
                             _rollRequested = true;
-                        else if (!_isDiving)
+                        else
+                        {
                             _diveRequested = true;
+                            _queuedRoll = true; // Ghi nhớ lệnh roll khi vuốt xuống trên không
+                        }
                     }
 
                     _isSwiping = false;
