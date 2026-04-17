@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton pattern: Dọn dẹp nếu có tham chiếu rác từ scene cũ
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
@@ -110,7 +111,15 @@ public class GameManager : MonoBehaviour
     public void AddCoin()
     {
         if (IsGameOver) return;
-        CoinCount++;
+
+        // Mặc định mỗi lần ăn 1 xu. Nếu có PowerUp Multiplier thì nhân đôi (ăn 1 thành 2).
+        int increment = 1;
+        if (PowerUpManager.Instance != null && PowerUpManager.Instance.IsMultiplierActive())
+        {
+            increment = 2;
+        }
+
+        CoinCount += increment;
         OnCoinChanged?.Invoke(CoinCount);
         // Publish EventBus (H5)
         EventBus.Publish(new CoinCollectedEvent { Count = CoinCount });
@@ -147,6 +156,10 @@ public class GameManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        ServiceLocator.Unregister<GameManager>();
+        if (Instance == this)
+        {
+            ServiceLocator.Unregister<GameManager>();
+            Instance = null;
+        }
     }
 }

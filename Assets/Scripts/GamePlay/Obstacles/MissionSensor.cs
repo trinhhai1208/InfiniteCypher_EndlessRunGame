@@ -20,10 +20,10 @@ public class MissionSensor : MonoBehaviour
     {
         if (_triggered) return;
         
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.GetComponent<PlayerController>() != null)
         {
             // Tránh phát event nếu Player đã chết
-            if (PlayerController.Instance != null && PlayerController.Instance.gameObject == other.gameObject)
+            if (PlayerController.Instance != null)
             {
                 // Gọi EventBus
                 if (_actionToDetect == MissionSensorAction.Roll)

@@ -54,29 +54,33 @@ public class UpgradeManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Trả về thời gian dựa trên level nâng cấp. Trả về -1 nếu là Lv0 (dùng gốc).
+    /// Trả về thời gian dựa trên level nâng cấp. Trả về 10s mặc định nếu là Lv0.
     /// </summary>
     public float GetDuration(PowerUpType type)
     {
         int level = GetLevel(type);
-        if (level <= 0) return -1f; 
+        
+        // Nếu chưa nâng cấp (Lv0), trả về thời gian cơ bản là 10 giây
+        if (level <= 0) return 10f; 
 
         var config = GetConfig(type);
-        if (config == null || level > config.Tiers.Length) return -1f;
+        if (config == null || level > config.Tiers.Length) return 10f;
         
         return config.Tiers[level - 1].Duration;
     }
 
     /// <summary>
-    /// Trả về chỉ số phụ (Vd Bán kính). Trả về -1 nếu Lv0.
+    /// Trả về chỉ số phụ (Vd Bán kính). Trả về giá trị cơ bản nếu Lv0.
     /// </summary>
     public float GetSecondaryValue(PowerUpType type)
     {
         int level = GetLevel(type);
-        if (level <= 0) return -1f;
+
+        // Giá trị cơ bản cho Lv0 (Vd bán kính Nam châm là 7m)
+        if (level <= 0) return 7f;
 
         var config = GetConfig(type);
-        if (config == null || level > config.Tiers.Length) return -1f; 
+        if (config == null || level > config.Tiers.Length) return 7f; 
 
         return config.Tiers[level - 1].SecondaryValue;
     }

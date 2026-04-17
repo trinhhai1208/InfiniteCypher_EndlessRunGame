@@ -35,7 +35,7 @@ public class PowerUpPickup : MonoBehaviour
                 actualDuration = UpgradeManager.Instance.GetDuration(Type);
             }
             
-            PowerUpManager.Instance.ActivatePowerUp(Type, actualDuration);
+            PowerUpManager.Instance.ActivatePowerUp(Type, actualDuration > 0 ? actualDuration : Duration);
         }
 
         // Tạm thời Disable, vì thường Powerup sẽ load qua Pooler hoặc Object Instantiate

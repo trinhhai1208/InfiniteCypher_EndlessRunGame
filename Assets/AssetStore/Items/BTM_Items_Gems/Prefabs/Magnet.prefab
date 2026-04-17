@@ -11,17 +11,17 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: e9f10851f5b79d94db00a34dbfa7afa9,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.3
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e9f10851f5b79d94db00a34dbfa7afa9,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.3
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e9f10851f5b79d94db00a34dbfa7afa9,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.3
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e9f10851f5b79d94db00a34dbfa7afa9,
         type: 3}
@@ -99,10 +99,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e9f10851f5b79d94db00a34dbfa7afa9,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 5673299560545180310}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e9f10851f5b79d94db00a34dbfa7afa9,
-        type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1491570012849793620}
   m_SourcePrefab: {fileID: 100100000, guid: e9f10851f5b79d94db00a34dbfa7afa9, type: 3}
 --- !u!1 &8050537342152234946 stripped
@@ -132,28 +128,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.8644094, y: 1.9911376, z: 0.33526292}
   m_Center: {x: 0, y: 0.06281697, z: -0.1676314}
---- !u!114 &5673299560545180310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8050537342152234946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a7eec745fa860c4084ca503a87a077d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isRotating: 1
-  rotateX: 0
-  rotateY: 1
-  rotateZ: 0
-  rotationSpeed: 90
-  startScale: {x: 0.2, y: 0.2, z: 0.2}
-  endScale: {x: 0.3, y: 0.3, z: 0.3}
-  isScaling: 1
-  useEasingForScaling: 0
-  scaleLerpSpeed: 1
 --- !u!114 &1491570012849793620
 MonoBehaviour:
   m_ObjectHideFlags: 0

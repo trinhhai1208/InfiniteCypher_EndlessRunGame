@@ -36,12 +36,23 @@ public class PowerUpManager : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton: Dọn dẹp rác từ scene cũ
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
         Instance = this;
+        ServiceLocator.Register<PowerUpManager>(this);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            ServiceLocator.Unregister<PowerUpManager>();
+            Instance = null;
+        }
     }
 
     // ─── P1: Chuyển từ FixedUpdate → Update ───────────────────

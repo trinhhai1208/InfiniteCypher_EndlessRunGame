@@ -18,11 +18,14 @@ public class MissionManager : MonoBehaviour
 
     private void Awake()
     {
+        // Singleton pattern: Nếu đã có Instance cũ (từ scene trước chưa được dọn sạch)
+        // mà Instance đó trỏ đến một object đã bị hủy (null in Unity), thì reset nó.
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+        
         Instance = this;
         ServiceLocator.Register<MissionManager>(this);
 
@@ -31,6 +34,16 @@ public class MissionManager : MonoBehaviour
         {
             if (c != null && !_configDict.ContainsKey(c.Type))
                 _configDict.Add(c.Type, c);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        // Quan trọng: Dọn dẹp ServiceLocator khi object bị hủy (đổi scene)
+        if (Instance == this)
+        {
+            ServiceLocator.Unregister<MissionManager>();
+            Instance = null;
         }
     }
 
@@ -80,16 +93,20 @@ public class MissionManager : MonoBehaviour
     private void SetTier(MissionType type, MissionScope scope, int val)
     {
         PlayerPrefs.SetInt(GetKey(type, scope, "Tier"), val);
+        PlayerPrefs.Save();
     }
 
     private void SetProgress(MissionType type, MissionScope scope, int val)
     {
         PlayerPrefs.SetInt(GetKey(type, scope, "Progress"), val);
+        // Ép lưu ngay lập tức để tránh mất tiến trình khi reload/crash
+        PlayerPrefs.Save(); 
     }
 
-    private void SetStatus(MissionType type, MissionScope scope, MissionStatus val)
+    private void OnStatusChanged(MissionType type, MissionScope scope, MissionStatus val)
     {
         PlayerPrefs.SetInt(GetKey(type, scope, "Status"), (int)val);
+        PlayerPrefs.Save();
     }
 
     public MissionConfigSO GetConfig(MissionType type)
@@ -197,7 +214,7 @@ public class MissionManager : MonoBehaviour
         if (absoluteAmount >= goal)
         {
             SetProgress(type, scope, goal);
-            SetStatus(type, scope, MissionStatus.Completed);
+            OnStatusChanged(type, scope, MissionStatus.Completed);
         }
         else
         {
@@ -225,7 +242,7 @@ public class MissionManager : MonoBehaviour
         // Reset for next tier
         SetTier(type, scope, tier + 1);
         SetProgress(type, scope, 0); // Reset tiến trình về 0
-        SetStatus(type, scope, MissionStatus.Active);
+        OnStatusChanged(type, scope, MissionStatus.Active);
 
         PlayerPrefs.Save();
         return true;

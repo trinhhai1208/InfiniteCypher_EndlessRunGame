@@ -164,7 +164,8 @@ public class PlayerController : MonoBehaviour
             Vector3.down,
             out RaycastHit hit,
             0.6f,
-            _groundLayer);
+            _groundLayer,
+            QueryTriggerInteraction.Ignore);
 
         if (_isGrounded)
         {
@@ -503,6 +504,10 @@ public class PlayerController : MonoBehaviour
     private ObstacleIdentity ResolveObstacleIdentity(Component hitComponent)
     {
         if (hitComponent == null) return null;
+
+        // Nếu vật thể chạm phải là một Sensor (như Jump/Roll Sensor) thì bỏ qua, không tính là va chạm gây chết
+        if (hitComponent.GetComponent<MissionSensor>() != null || hitComponent.GetComponentInParent<MissionSensor>() != null)
+            return null;
 
         ObstacleIdentity identity = hitComponent.GetComponent<ObstacleIdentity>();
         if (identity != null) return identity;
