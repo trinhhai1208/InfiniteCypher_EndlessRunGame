@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 608471af62a7e424a9189706d5eefbcd, type: 3}
+  m_Name: JumpOver
+  m_EditorClassIdentifier: 
+  Type: 3
+  SingleRun:
+    Title: "Nh\u1EA3y \u0111i!"
+    DescriptionTemplate: "Nh\u1EA3y qua {0} v\u1EADt c\u1EA3n trong 1 l\u1EA7n ch\u1EA1y"
+    BaseGoal: 10
+    GoalMultiplier: 2
+    Icon: {fileID: 0}
+  Total:
+    Title: "Nh\u1EA3y! Nh\u1EA3y \u0111i!"
+    DescriptionTemplate: "Nh\u1EA3y qua t\u1ED5ng {0} v\u1EADt c\u1EA3n "
+    BaseGoal: 100
+    GoalMultiplier: 1.5
+    Icon: {fileID: 0}
