@@ -10,10 +10,10 @@ public class ShopUI : MonoBehaviour
 {
     [Header("References")]
     [Tooltip("Vùng chứa (Content) bên dưới ScrollView")]
-    public Transform ContentContainer;
+    [SerializeField] private Transform ContentContainer;
     
     [Tooltip("Prefab của Shop Item dể tự động nhân bản")]
-    public GameObject ShopItemPrefab;
+    [SerializeField] private GameObject ShopItemPrefab;
 
     private List<ShopItemUI> _spawnedItems = new();
     private bool _isInitialized = false;

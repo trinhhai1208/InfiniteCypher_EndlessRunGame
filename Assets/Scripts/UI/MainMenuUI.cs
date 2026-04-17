@@ -13,6 +13,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private GameObject _menuPanel;
     [SerializeField] private GameObject _settingsPanel; // Tham chiếu đến Panel cài đặt
     [SerializeField] private GameObject _shopPanel;     // Tham chiếu đến Panel Shop
+    [SerializeField] private GameObject _missionPanel;  // Tham chiếu đến Panel Sự kiện/Nhiệm vụ
 
     [Header("References")]
     [SerializeField] private CharacterSelector _characterSelector;
@@ -48,6 +49,7 @@ public class MainMenuUI : MonoBehaviour
         // Chuyển sang màn chơi chính
         SceneManager.LoadScene("GameScene");
     }
+    
     /// <summary>
     /// Mở bảng cài đặt. Gán hàm này vào nút Setting.
     /// </summary>
@@ -56,6 +58,20 @@ public class MainMenuUI : MonoBehaviour
         if (_settingsPanel != null)
         {
             _settingsPanel.SetActive(true);
+        }
+    }
+
+    /// <summary>
+    /// Mở bảng Nhiệm vụ. Gán hàm này vào nút Nhiệm vụ trên Menu.
+    /// </summary>
+    public void OpenMissions()
+    {
+        if (_missionPanel != null)
+        {
+            _missionPanel.SetActive(true);
+            
+            var missionUI = _missionPanel.GetComponent<MissionUI>();
+            if (missionUI != null) missionUI.OpenMissions();
         }
     }
 

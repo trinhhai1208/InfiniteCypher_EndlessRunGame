@@ -26,7 +26,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: b92abae66e6a7e04ca4f7bd373d9ef3a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.07
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b92abae66e6a7e04ca4f7bd373d9ef3a,
         type: 3}
@@ -178,17 +178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18135f150478a7541b64b909d2bcbafb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseSpeed: 12
-  _speedIncreaseRate: 0.1
-  _maxSpeed: 28
-  _laneDistance: 3.8
-  _laneChangeSpeed: 15
-  _jumpForce: 11
-  _gravity: 28
-  _diveForce: 25
+  _config: {fileID: 11400000, guid: 3179fd7c2d1e23a438d1c93885821b40, type: 2}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  _slideDuration: 0.8
-  _slideColliderHeight: 1
-  _slideColliderCenterZ: 0

@@ -82,6 +82,7 @@ public class GameManager : MonoBehaviour
     {
         IsPlaying = true;
         OnGameStart?.Invoke();
+        EventBus.Publish(new GameStartEvent());
     }
 
     public void UpdateDistance(float zPosition)
