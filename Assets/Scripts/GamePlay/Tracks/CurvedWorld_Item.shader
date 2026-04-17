@@ -31,6 +31,7 @@ Shader "FutureCity/CurvedWorld_Item"
             HLSLPROGRAM
             #pragma vertex vert
             #pragma fragment frag
+            #pragma multi_compile_instancing
             #pragma multi_compile_fog
 
             #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -41,6 +42,7 @@ Shader "FutureCity/CurvedWorld_Item"
                 float4 positionOS   : POSITION;
                 float2 uv           : TEXCOORD0;
                 float3 normalOS     : NORMAL;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             struct Varyings
@@ -49,6 +51,7 @@ Shader "FutureCity/CurvedWorld_Item"
                 float2 uv           : TEXCOORD0;
                 float3 normalWS     : TEXCOORD1;
                 float fogCoord      : TEXCOORD2;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
             TEXTURE2D(_BaseMap);
@@ -67,6 +70,8 @@ Shader "FutureCity/CurvedWorld_Item"
             Varyings vert(Attributes input)
             {
                 Varyings output;
+                UNITY_SETUP_INSTANCE_ID(input);
+                UNITY_TRANSFER_INSTANCE_ID(input, output);
                 
                 // 1. CHẾ ĐỘ TỰ XOAY (AUTO-ROTATION)
                 // Xoay trong Object Space trước khi chuyển sang World Space
@@ -112,6 +117,8 @@ Shader "FutureCity/CurvedWorld_Item"
 
             half4 frag(Varyings input) : SV_Target
             {
+                UNITY_SETUP_INSTANCE_ID(input);
+
                 // 1. SAMPLE TEXTURE & ALPHA TEST
                 half4 texColor = SAMPLE_TEXTURE2D(_BaseMap, sampler_BaseMap, input.uv);
                 half4 color = texColor * _BaseColor;

@@ -1474,7 +1474,7 @@ MonoBehaviour:
   _extraCoinAfterObstacleChance: 0.9
   _maxCoinsPerSegment: 60
   _powerUpRefs:
-  - m_AssetGUID: 744d1ae3c9575e3499e29a4b6f9f41c7
+  - m_AssetGUID: 61c7dcd8337158a468821e9b631f2689
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
@@ -3033,11 +3033,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cfb503a8366c07640aec8fab93c75193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurveY: 0.0015
+  CurveY: 0.001
   EnableDynamicX: 1
   BaseCurveX: 0
   OscillationAmplitude: 0.002
-  OscillationSpeed: 0.2
+  OscillationSpeed: 0.06
   DistanceOffset: 15
 --- !u!1 &1782444863
 GameObject:
