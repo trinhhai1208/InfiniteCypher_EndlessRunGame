@@ -1451,9 +1451,9 @@ MonoBehaviour:
     m_EditorAssetChanged: 1
   _busRoofY: 4.5
   _busLengthZ: 9.3
-  _maxBusChain: 3
+  _maxBusChain: 5
   _busGapZ: 0
-  _busHasCoinChance: 0.5
+  _busHasCoinChance: 0.69
   _carToBusGap: 2.5
   _barrierRefs:
   - m_AssetGUID: 484404636ac422042a24ac95512dc2d3
@@ -1465,15 +1465,15 @@ MonoBehaviour:
   _barrierLowCoinY: 1
   _coinSpacingOnBus: 1.2
   _freeCoinHeightY: 1.2
-  _safeStartOffset: 50
+  _safeStartOffset: 40
   _gapBetweenGroups: 5
-  _carGroupChance: 0.3
-  _busGroupChance: 0.25
+  _carGroupChance: 0.54
+  _busGroupChance: 0.44
   _zigzagChance: 0.82
   _freeCoinCountRange: {x: 12, y: 15}
   _freeCoinSpacing: 1
-  _extraCoinAfterObstacleChance: 0.64
-  _maxCoinsPerSegment: 100
+  _extraCoinAfterObstacleChance: 0.76
+  _maxCoinsPerSegment: 120
   _powerUpRefs:
   - m_AssetGUID: 61c7dcd8337158a468821e9b631f2689
     m_SubObjectName: 
@@ -2537,7 +2537,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 7186931820594961514}
-  _offset: {x: 0, y: 4.5, z: -5.5}
+  _offset: {x: 0, y: 4.5, z: -8}
   _xSmoothTime: 0.12
   _ySmoothTime: 0.15
   _rotationSmoothTime: 0.15
@@ -2578,7 +2578,7 @@ MonoBehaviour:
     m_EditorAssetChanged: 0
   _prewarmCount: 30
   _maxPoolSize: 200
-  _activeCap: 80
+  _activeCap: 150
 --- !u!4 &1302132079
 Transform:
   m_ObjectHideFlags: 0
