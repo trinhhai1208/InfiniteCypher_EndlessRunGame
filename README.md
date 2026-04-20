@@ -43,27 +43,3 @@ Dự án tuân thủ nghiêm ngặt quy tắc Component-based và chia tách Mod
 *   **`CameraFollow.cs`**: Quản lý Camera bằng LateUpdate, theo dõi mịn màng toạ độ nội suy của nhân vật, và tự động Zoom Out khi vào trạng thái Chase Mode.
 *   **`Consumables/`**: Chứa hệ thống `PowerUpManager.cs` điều khiển Item Magnet, Shield. Quản lý trạng thái không dùng OnUpdate của từng đồng xu để lấy lại hiệu năng mà quét tập trung trên Player (OverlapSphereNonAlloc).
 
----
-
-## 🔧 Phục Vụ Build WebGL Di Động (Deployment)
-
-Nếu bạn là Developer tải source code này về để Build lên Web. Lưu ý các cấu hình bắt buộc:
-
-1.  **Unity Player Settings:** Gắn Scripting Backend = `IL2CPP`. Strip Engine Code = `On` (Medium).
-2.  **URP Settings:** Chuyển `Render Scale` vùng 0.75 - 0.85. Tắt MSAA. 
-3.  **Shadows:** Giữ `Shadow Resolution` của Main Light ở mức `512` và tắt hoàn toàn `Additional Lights`. Tính toán bóng của Đồng xu nên chuyển MeshRenderer sang `Off`.
-4.  **Audio Fix:** Toàn bộ nhạc và tiếng động phải Override cho WebGL chọn `Force To Mono` (Cắt nửa gánh nặng vi xử lý bộ nhớ ngầm).
-
----
-*Developed & Optimized internally specifically for cross-platform Web browser experiences. 🚀*
-
----
-
-## 📊 Benchmark Hiệu Năng WebGL (Ngày 5)
-
-Dự án đã đạt được các chỉ số tối ưu chuyên sâu cho WebGL Mobile:
-*   **GC Alloc:** 0 KB trong frame gameplay bình thường.
-*   **Object Pooling:** Tái sử dụng 100% Coin và PowerUp UI (O(1) access).
-*   **Memory Safety:** Addressables được release triệt để, ngăn chặn crash Memory trên trình duyệt di động.
-*   **Jitter-free:** Camera và Player di chuyển mượt mà nhờ phối hợp LateUpdate và Interpolation.
-
