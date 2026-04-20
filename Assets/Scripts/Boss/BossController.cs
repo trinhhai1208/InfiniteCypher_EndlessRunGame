@@ -50,8 +50,19 @@ public class BossController : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+        Instance = this;
+        ServiceLocator.Register<BossController>(this);
 
         EnsureInitialized();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            ServiceLocator.Unregister<BossController>();
+            Instance = null;
+        }
     }
 
     private void Start()

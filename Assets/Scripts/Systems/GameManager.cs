@@ -3,12 +3,15 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+public enum GameState { Loadout, Playing, Paused, GameOver }
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    public bool IsGameOver { get; private set; }
-    public bool IsPlaying { get; set; } = false; // Mặc định là false để dừng ở Menu
+    public GameState State { get; private set; } = GameState.Loadout;
+    public bool IsGameOver => State == GameState.GameOver;
+    public bool IsPlaying => State == GameState.Playing;
     
     public int Distance  { get; private set; }
     public int BestDistance { get; private set; }
@@ -36,8 +39,7 @@ public class GameManager : MonoBehaviour
         Application.targetFrameRate = 60;
         
         Time.timeScale = 1f;
-        IsGameOver = false;
-        IsPlaying = false; 
+        State = GameState.Loadout;
         
         BestDistance = PlayerPrefs.GetInt("BestDistance", 0);
         TotalGold = PlayerPrefs.GetInt("TotalGold", 0);
@@ -81,7 +83,7 @@ public class GameManager : MonoBehaviour
 
     public void StartGame()
     {
-        IsPlaying = true;
+        State = GameState.Playing;
         OnGameStart?.Invoke();
         EventBus.Publish(new GameStartEvent());
     }
@@ -127,9 +129,8 @@ public class GameManager : MonoBehaviour
 
     public void TriggerGameOver()
     {
-        if (IsGameOver) return;
-        IsGameOver = true;
-        IsPlaying = false;
+        if (State == GameState.GameOver) return;
+        State = GameState.GameOver;
 
         // Dừng nhạc nền khi thua cuộc
         if (AudioManager.Instance != null)

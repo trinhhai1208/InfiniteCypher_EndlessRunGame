@@ -175,15 +175,6 @@ public class PlayerController : MonoBehaviour
 
             if (_verticalVelocity < 0f)
                 _verticalVelocity = 0f;
-                
-            if (!wasGrounded)
-            {
-                var identity = ResolveObstacleIdentity(hit.collider);
-                if (identity != null && identity.CollisionType == ObstacleCollisionType.VehicleStumble)
-                {
-                    EventBus.Publish(new PlayerVehicleRunEvent());
-                }
-            }
         }
 
         if (!wasGrounded && _isGrounded)
@@ -198,13 +189,10 @@ public class PlayerController : MonoBehaviour
                 _queuedRoll = false;
             }
 
-            if (!wasGrounded)
+            var identity = ResolveObstacleIdentity(hit.collider);
+            if (identity != null && identity.CollisionType == ObstacleCollisionType.VehicleStumble)
             {
-                var identity = ResolveObstacleIdentity(hit.collider);
-                if (identity != null && identity.CollisionType == ObstacleCollisionType.VehicleStumble)
-                {
-                    EventBus.Publish(new PlayerVehicleRunEvent());
-                }
+                EventBus.Publish(new PlayerVehicleRunEvent());
             }
         }
     }

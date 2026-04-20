@@ -10,13 +10,13 @@ public class PlayerConfigSO : ScriptableObject
 {
     [Header("Speed")]
     [Tooltip("Tốc độ khởi đầu khi bắt đầu ván chơi")]
-    public float baseSpeed = 22f;
+    public float baseSpeed = 16f;
 
     [Tooltip("Tốc độ tăng mỗi giây (FixedUpdate)")]
-    public float speedIncreaseRate = 0.05f;
+    public float speedIncreaseRate = 0.25f;
 
     [Tooltip("Tốc độ tối đa - không thể vượt qua giá trị này")]
-    public float maxSpeed = 28f;
+    public float maxSpeed = 24f;
 
     [Header("Lane")]
     [Tooltip("Khoảng cách giữa các lane (phải khớp với LevelGenerator._laneDistance)")]

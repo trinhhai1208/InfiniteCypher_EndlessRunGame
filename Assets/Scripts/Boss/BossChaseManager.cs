@@ -28,22 +28,33 @@ public class BossChaseManager : MonoBehaviour
         }
 
         Instance = this;
+        ServiceLocator.Register<BossChaseManager>(this);
+
         ResolveBossController();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            ServiceLocator.Unregister<BossChaseManager>();
+            Instance = null;
+        }
     }
 
     private void OnEnable()
     {
-        PlayerController.OnPlayerStumble += HandlePlayerStumble;
-        PlayerController.OnPlayerJump += HandlePlayerJump;
+        EventBus.Subscribe<PlayerStumbleEvent>(HandlePlayerStumble);
+        EventBus.Subscribe<PlayerJumpEvent>(HandlePlayerJump);
     }
 
     private void OnDisable()
     {
-        PlayerController.OnPlayerStumble -= HandlePlayerStumble;
-        PlayerController.OnPlayerJump -= HandlePlayerJump;
+        EventBus.Unsubscribe<PlayerStumbleEvent>(HandlePlayerStumble);
+        EventBus.Unsubscribe<PlayerJumpEvent>(HandlePlayerJump);
     }
 
-    private void HandlePlayerStumble()
+    private void HandlePlayerStumble(PlayerStumbleEvent e)
     {
         if (IsChasing)
             CatchPlayer();
@@ -51,7 +62,7 @@ public class BossChaseManager : MonoBehaviour
             StartChase();
     }
 
-    private void HandlePlayerJump()
+    private void HandlePlayerJump(PlayerJumpEvent e)
     {
         BossController boss = ResolveBossController();
         if (IsChasing && boss != null)

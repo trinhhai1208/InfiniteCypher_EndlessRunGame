@@ -59,6 +59,16 @@ public class CameraFollow : MonoBehaviour
 
     private void FollowTarget()
     {
+        // Tính toán vị trí mục tiêu (Base Position)
+        Vector3 playerPos = _target.position;
+        Vector3 targetFocusPos = playerPos; // Mặc định là Player
+        
+        if (_mode == CameraMode.ChaseMode && _boss != null)
+        {
+            // Nếu đang trong ChaseMode, tiêu điểm là trung điểm giữa Player và Boss
+            targetFocusPos = (playerPos + _boss.position) * 0.5f;
+        }
+
         // Tính toán offset mục tiêu dựa trên Mode
         Vector3 targetOffset = (_mode == CameraMode.ChaseMode) ? _chaseModeOffset : _playerOnlyOffset;
 
@@ -66,8 +76,7 @@ public class CameraFollow : MonoBehaviour
         _currentOffset = Vector3.SmoothDamp(_currentOffset, targetOffset, ref _offsetVelocity, _modeSwitchSmooth);
 
         // ── Vị trí Camera ──
-        Vector3 playerPos = _target.position;
-        Vector3 targetCamPos = playerPos + _currentOffset;
+        Vector3 targetCamPos = targetFocusPos + _currentOffset;
 
         Vector3 cur = transform.position;
         float newX = Mathf.SmoothDamp(cur.x, targetCamPos.x, ref _positionVelocity.x, _positionSmoothTime);
@@ -77,25 +86,18 @@ public class CameraFollow : MonoBehaviour
         transform.position = new Vector3(newX, newY, newZ);
 
         // ── LookAt Target ──
-        // ── LookAt Target ──
-        // P1 SỬA: Để Camera KHÔNG xoay giật sang trái/phải, ta đặt toạ độ X của điểm nhìn 
-        // bằng chính toạ độ X của Camera hiện tại (newX).
-        // Như vậy Camera luôn nhìn thẳng băng về phía trước theo hướng song song.
         Vector3 lookAtTarget;
-
-        if (_mode == CameraMode.ChaseMode)
+        if (_mode == CameraMode.ChaseMode && _boss != null)
         {
-            lookAtTarget = new Vector3(newX, playerPos.y + _chaseLookAtOffset.y, playerPos.z + _chaseLookAtOffset.z);
+            // Nhìn về trung điểm có cộng thêm offset
+            Vector3 midPoint = (playerPos + _boss.position) * 0.5f;
+            lookAtTarget = new Vector3(newX, midPoint.y + _chaseLookAtOffset.y, midPoint.z + _chaseLookAtOffset.z);
         }
         else
         {
             lookAtTarget = new Vector3(newX, playerPos.y + _lookAtOffset.y, playerPos.z + _lookAtOffset.z);
         }
 
-        // Sau đó Camera sẽ bù trừ góc quay để nhìn về điểm đó. 
-        // Nếu bạn muốn nhìn LÀN TRƯỚC mặt (tức là nhìn song song), ta dùng:
-        // Vector3 forward = Vector3.forward; 
-        
         Vector3 direction = lookAtTarget - transform.position;
         if (direction != Vector3.zero)
         {

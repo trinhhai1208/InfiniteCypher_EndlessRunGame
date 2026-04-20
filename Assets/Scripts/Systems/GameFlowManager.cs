@@ -1,17 +1,24 @@
 using UnityEngine;
 using System;
 
-public enum GameState { Loadout, Playing, Paused, GameOver }
-
 public class GameFlowManager : MonoBehaviour
 {
     public static GameFlowManager Instance { get; private set; }
 
-    public GameState CurrentState { get; private set; } = GameState.Loadout;
+    // Hợp nhất về GameManager: GameFlowManager giờ chỉ trỏ về GameManager để giữ tương thích (Legacy support)
+    public GameState CurrentState => GameManager.Instance != null ? GameManager.Instance.State : GameState.Loadout;
 
-    // Events
-    public event Action OnGameStart;
-    public event Action OnGameOver;
+    public event Action OnGameStart
+    {
+        add { if (GameManager.Instance != null) GameManager.Instance.OnGameStart += value; }
+        remove { if (GameManager.Instance != null) GameManager.Instance.OnGameStart -= value; }
+    }
+
+    public event Action OnGameOver
+    {
+        add { if (GameManager.Instance != null) GameManager.Instance.OnGameOver += value; }
+        remove { if (GameManager.Instance != null) GameManager.Instance.OnGameOver -= value; }
+    }
 
     private void Awake()
     {
@@ -24,21 +31,15 @@ public class GameFlowManager : MonoBehaviour
         ServiceLocator.Register<GameFlowManager>(this);
     }
 
-    public void StartGame()
-    {
-        CurrentState = GameState.Playing;
-        OnGameStart?.Invoke();
-    }
-
-    public void TriggerGameOver()
-    {
-        if (CurrentState == GameState.GameOver) return;
-        CurrentState = GameState.GameOver;
-        OnGameOver?.Invoke();
-    }
+    public void StartGame() => GameManager.Instance?.StartGame();
+    public void TriggerGameOver() => GameManager.Instance?.TriggerGameOver();
 
     private void OnDestroy()
     {
-        ServiceLocator.Unregister<GameFlowManager>();
+        if (Instance == this)
+        {
+            ServiceLocator.Unregister<GameFlowManager>();
+            Instance = null;
+        }
     }
 }
