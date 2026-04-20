@@ -59,11 +59,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 744d1ae3c9575e3499e29a4b6f9f41c7
-    m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/GoldBar.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 9500f0cdde0097a4aac35ced7c1935d7
     m_Address: Assets/AssetStore/SimplePoly City - Low Poly Assets/Prefab/Vehicles/Vehicle
       with Static Wheels/Vehicle_Bus_color01.prefab
