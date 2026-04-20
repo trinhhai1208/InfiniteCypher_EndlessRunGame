@@ -26,13 +26,10 @@ public class PowerUpManager : MonoBehaviour
     public event Action<ActivePowerUp> OnPowerUpAdded;
     public event Action<ActivePowerUp> OnPowerUpRemoved;
 
-    // ─── P1: Magnet - OverlapSphereNonAlloc ───────────────────
+    // ─── P2: Magnet path đã dùng CoinPool.AttractNearbyCoins, không cần buffer nữa ───
     [Header("Magnet Settings")]
     [SerializeField] private float _magnetRadius = 10f;
-    [SerializeField] private LayerMask _coinLayer;
-
-    // Buffer tái sử dụng — không alloc mỗi frame
-    private readonly Collider[] _magnetBuffer = new Collider[64];
+    // _coinLayer và _magnetBuffer đã được xóa (P2 optimization)
 
     private void Awake()
     {
@@ -77,14 +74,12 @@ public class PowerUpManager : MonoBehaviour
             }
         }
 
-        // ─── P1: Logic Magnet Player-driven ───────────────────
-        // Thay vì mỗi Coin tự poll khoảng cách (O(n) FixedUpdate),
-        // Player chủ động quét 1 lần duy nhất bằng NonAlloc (O(1) alloc).
-        if (IsMagnetActive() && PlayerController.Instance != null)
+        // P2: Tối ưu magnet path — không còn OverlapSphere hay GetComponent mỗi frame.
+        // Thay bằng duyệt trực tiếp danh sách xu active từ CoinPool (đã được cache sẵn).
+        if (IsMagnetActive() && PlayerController.Instance != null && CoinPool.Instance != null)
         {
             Vector3 playerPos = PlayerController.Instance.transform.position;
-            
-            // P1: Bán kính từ tính to ra nếu được nâng cấp
+
             float currentMagnetRadius = _magnetRadius;
             if (ServiceLocator.TryGet<UpgradeManager>(out var upgradeManager))
             {
@@ -95,14 +90,8 @@ public class PowerUpManager : MonoBehaviour
                 currentMagnetRadius = UpgradeManager.Instance.GetSecondaryValue(PowerUpType.Magnet);
             }
 
-            int count = Physics.OverlapSphereNonAlloc(playerPos, currentMagnetRadius, _magnetBuffer, _coinLayer);
-
-            for (int i = 0; i < count; i++)
-            {
-                if (_magnetBuffer[i] == null) continue;
-                var coin = _magnetBuffer[i].GetComponent<Coin>();
-                if (coin != null) coin.AttractTo(playerPos, dt);
-            }
+            float radiusSq = currentMagnetRadius * currentMagnetRadius;
+            CoinPool.Instance.AttractNearbyCoins(playerPos, radiusSq, dt);
         }
     }
 

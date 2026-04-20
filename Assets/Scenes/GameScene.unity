@@ -1487,6 +1487,7 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   _powerUpSpawnChance: 0.4
+  _spawnBudgetPerFrame: 3
 --- !u!1 &602104586
 GameObject:
   m_ObjectHideFlags: 0
@@ -2535,8 +2536,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 7186931820594961514}
-  _playerOnlyOffset: {x: 0, y: 4, z: -7}
-  _chaseModeOffset: {x: 0, y: 4, z: -7}
+  _playerOnlyOffset: {x: 0, y: 4, z: -5.5}
+  _chaseModeOffset: {x: 0, y: 5, z: -7}
   _chaseLookAtOffset: {x: 0, y: 1, z: 2}
   _positionSmoothTime: 0.15
   _rotationSmoothTime: 0.15
@@ -2577,7 +2578,8 @@ MonoBehaviour:
     m_SubObjectType: 
     m_EditorAssetChanged: 0
   _prewarmCount: 30
-  _maxPoolSize: 80
+  _maxPoolSize: 200
+  _activeCap: 80
 --- !u!4 &1302132079
 Transform:
   m_ObjectHideFlags: 0
@@ -3004,9 +3006,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _magnetRadius: 10
-  _coinLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!114 &1607583813
 MonoBehaviour:
   m_ObjectHideFlags: 0

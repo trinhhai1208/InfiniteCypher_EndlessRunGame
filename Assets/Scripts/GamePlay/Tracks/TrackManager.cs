@@ -8,6 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 /// Quản lý việc sinh (spawn) và xóa (release) các đoạn đường bằng Addressables.
 /// Luôn giữ _segmentsAhead đoạn đường phía trước nhân vật.
 /// Kết hợp với LevelGenerator để tự động sinh obstacles và coins.
+/// P2 Optimization: Chuyển sang Queue<TrackSegment> để CheckDespawn đạt O(1).
 /// </summary>
 public class TrackManager : MonoBehaviour
 {
@@ -28,13 +29,13 @@ public class TrackManager : MonoBehaviour
     [Tooltip("Khoảng cách phía sau nhân vật để xóa segment cũ")]
     [SerializeField] private float _despawnDistance = 70f;
 
-    // Runtime state
-    private readonly List<TrackSegment> _activeSegments = new();
+    // P2: Đổi từ List sang Queue — Dequeue() = O(1) thay vì RemoveAt(0) = O(n)
+    private readonly Queue<TrackSegment> _activeSegments = new();
     private Vector3 _nextSpawnPosition = Vector3.zero;
     private bool _isSpawning;
-    private int _totalSpawned; 
-    
-    public bool IsReady { get; private set; } = false; // Báo hiệu đã load xong đoạn đường đầu tiên
+    private int _totalSpawned;
+
+    public bool IsReady { get; private set; } = false;
 
     // ─────────────────────────────────────────────────────────────
     // Unity Lifecycle
@@ -42,32 +43,27 @@ public class TrackManager : MonoBehaviour
 
     private void Start()
     {
-        // Đăng ký vào ServiceLocator để GameManager có thể tìm thấy (thay FindObjectOfType)
         ServiceLocator.Register<TrackManager>(this);
 
         if (_levelGenerator == null)
             _levelGenerator = GetComponent<LevelGenerator>();
 
-        // Đặt điểm spawn đầu tiên lùi lại 20m để che hụt chân camera
         _nextSpawnPosition = _player != null ? _player.position - Vector3.forward * 20f : new Vector3(0, 0, -20f);
         _totalSpawned = 0;
 
-        // Bắt đầu quy trình sinh map ban đầu
         StartCoroutine(InitialSpawnRoutine());
     }
 
     private IEnumerator InitialSpawnRoutine()
     {
         IsReady = false;
-        
-        // Chờ LevelGenerator sẵn sàng (nếu cần)
+
         while (_levelGenerator == null)
         {
             _levelGenerator = GetComponent<LevelGenerator>();
             yield return null;
         }
 
-        // Sinh đủ số lượng segment phía trước
         for (int i = 0; i < _segmentsAhead; i++)
         {
             if (_segmentAssetRefs.Count > 0)
@@ -103,10 +99,7 @@ public class TrackManager : MonoBehaviour
 
     private void SpawnNextSegment()
     {
-        if (_segmentAssetRefs == null || _segmentAssetRefs.Count == 0)
-        {
-            return;
-        }
+        if (_segmentAssetRefs == null || _segmentAssetRefs.Count == 0) return;
 
         int randomIndex = Random.Range(0, _segmentAssetRefs.Count);
         StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[randomIndex]));
@@ -126,33 +119,26 @@ public class TrackManager : MonoBehaviour
 
             if (segment != null)
             {
-                // Căn chỉnh segment khớp với điểm nối
                 if (segment.StartPoint != null)
                 {
                     Vector3 offset = segmentGO.transform.position - segment.StartPoint.position;
                     segmentGO.transform.position = _nextSpawnPosition + offset;
                 }
 
-                // Cập nhật điểm spawn tiếp theo
                 if (segment.EndPoint != null)
                     _nextSpawnPosition = segment.EndPoint.position;
 
-                _activeSegments.Add(segment);
+                // P2: Enqueue thay vì Add (Queue API)
+                _activeSegments.Enqueue(segment);
 
-                // 🎲 Tất cả các đoạn đều sinh xe/xu ngay từ đầu
                 _totalSpawned++;
                 _levelGenerator?.PopulateSegment(segment);
             }
             else
             {
-                // H3 Addressables Safety: kiểm tra handle hợp lệ trước khi Release
                 if (handle.IsValid())
                     Addressables.ReleaseInstance(segmentGO);
             }
-        }
-        else
-        {
-            // Debug.LogError("[TrackManager] Không thể load segment từ Addressables.");
         }
 
         _isSpawning = false;
@@ -166,22 +152,23 @@ public class TrackManager : MonoBehaviour
     {
         if (_activeSegments.Count == 0) return;
 
-        TrackSegment oldest = _activeSegments[0];
+        // P2: Peek() = O(1) thay vì _activeSegments[0] trên List
+        TrackSegment oldest = _activeSegments.Peek();
+
         if (oldest == null)
         {
-            _activeSegments.RemoveAt(0);
+            _activeSegments.Dequeue();
             return;
         }
 
         if (oldest.EndPoint != null &&
             oldest.EndPoint.position.z < _player.position.z - _despawnDistance)
         {
-            _activeSegments.RemoveAt(0);
+            // P2: Dequeue() = O(1) thay vì RemoveAt(0) = O(n)
+            _activeSegments.Dequeue();
 
-            // 🧹 Dọn dẹp obstacles và coins trước khi release
             _levelGenerator?.CleanupSegment(oldest);
 
-            // H3 Addressables Safety: chỉ Release nếu GameObject không null
             if (oldest.gameObject != null)
                 Addressables.ReleaseInstance(oldest.gameObject);
         }
@@ -200,23 +187,25 @@ public class TrackManager : MonoBehaviour
     {
         IsReady = false;
 
-        foreach (var seg in _activeSegments)
+        // Snapshot để làm sạch queue trong khi xử lý
+        var snapshot = new List<TrackSegment>(_activeSegments);
+        _activeSegments.Clear();
+
+        foreach (var seg in snapshot)
         {
             if (seg == null) continue;
-            
+
             _levelGenerator?.CleanupSegment(seg);
             if (seg.gameObject != null)
                 Addressables.ReleaseInstance(seg.gameObject);
 
-            // Tối ưu WebGL: Dọn dẹp từng segment qua từng frame để tránh CPU Spike
-            yield return null; 
+            // Dọn dẹp từng segment qua từng frame để tránh CPU Spike
+            yield return null;
         }
-        _activeSegments.Clear();
 
         _nextSpawnPosition = _player != null ? _player.position - Vector3.forward * 20f : new Vector3(0, 0, -20f);
         _totalSpawned = 0;
 
-        // Sinh lại tuần tự để tránh lỗi tọa độ _nextSpawnPosition
         for (int i = 0; i < _segmentsAhead; i++)
         {
             yield return StartCoroutine(SpawnSegmentAsync(_segmentAssetRefs[Random.Range(0, _segmentAssetRefs.Count)]));

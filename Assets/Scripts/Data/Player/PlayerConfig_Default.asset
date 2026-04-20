@@ -16,7 +16,7 @@ MonoBehaviour:
   speedIncreaseRate: 0.25
   maxSpeed: 24
   laneDistance: 3.8
-  laneChangeSpeed: 25
+  laneChangeSpeed: 15
   jumpForce: 10
   gravity: 28
   diveForce: 25

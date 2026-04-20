@@ -19,7 +19,9 @@ public class CoinPool : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private AssetReference _coinAssetRef;
     [SerializeField] private int _prewarmCount = 30;
-    [SerializeField] private int _maxPoolSize  = 100;
+    [SerializeField] private int _maxPoolSize  = 200;
+    [Tooltip("Số xu active tối đa. 0 = không giới hạn. Đặt 80 cho mobile WebGL để giảm draw call.")]
+    [SerializeField] private int _activeCap = 0; // 0 = disabled
 
     // ─────────────────────────────────────────
     // P1: Struct cache — tránh GetComponent mỗi frame
@@ -28,6 +30,7 @@ public class CoinPool : MonoBehaviour
         public GameObject Go;
         public Transform Tr;
         public MeshRenderer Mr;
+        public Coin CoinScript; // P2: Cache Coin component — Zero-GC magnet path
     }
 
     private readonly Stack<CoinInstance>   _inactive = new();
@@ -155,12 +158,13 @@ public class CoinPool : MonoBehaviour
         var go = Instantiate(_loadedPrefab);
         go.SetActive(false);
 
-        // P1: Cache ngay khi tạo — chỉ gọi GetComponent 1 lần duy nhất cho mỗi instance
+        // P1+P2: Cache ngay khi tạo — chỉ gọi GetComponent 1 lần duy nhất cho mỗi instance
         return new CoinInstance
         {
             Go = go,
             Tr = go.transform,
-            Mr = go.GetComponentInChildren<MeshRenderer>()
+            Mr = go.GetComponentInChildren<MeshRenderer>(),
+            CoinScript = go.GetComponent<Coin>() // P2: Cache Coin
         };
     }
 
@@ -185,6 +189,9 @@ public class CoinPool : MonoBehaviour
                 _maxPoolSize += 50;
             ci = CreateNew();
         }
+
+        // P2: Active Cap — giới hạn số xu active trên mobile. Inspector: _activeCap > 0 = bật.
+        if (_activeCap > 0 && _active.Count >= _activeCap) return null;
 
         ci.Tr.SetParent(parent);
         ci.Tr.SetPositionAndRotation(position, rotation);
@@ -238,6 +245,28 @@ public class CoinPool : MonoBehaviour
         foreach (var ci in snapshot)
             Return(ci.Go);
     }
+
+    /// <summary>
+    /// P2: Hút tất cả xu trong bán kính về phía Player.
+    /// Duyệt trực tiếp _active list — không cần OverlapSphere hay GetComponent.
+    /// radiusSq: Bình phương bán kính hút (tránh sqrt tốn CPU).
+    /// </summary>
+    public void AttractNearbyCoins(Vector3 playerPos, float radiusSq, float deltaTime)
+    {
+        for (int i = 0; i < _active.Count; i++)
+        {
+            var ci = _active[i];
+            if (ci.Go == null || !ci.Go.activeInHierarchy) continue;
+
+            float distSq = (ci.Tr.position - playerPos).sqrMagnitude;
+            if (distSq <= radiusSq)
+            {
+                // P2: Dùng cached CoinScript — Zero-GC, không cần GetComponent
+                ci.CoinScript?.AttractTo(playerPos, deltaTime);
+            }
+        }
+    }
+
 
     private void OnDestroy()
     {
