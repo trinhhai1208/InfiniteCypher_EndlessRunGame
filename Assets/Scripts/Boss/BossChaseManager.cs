@@ -84,8 +84,7 @@ public class BossChaseManager : MonoBehaviour
         if (boss != null)
             boss.Appear();
 
-        if (CameraFollow.Instance != null && boss != null)
-            CameraFollow.Instance.SetChaseMode(boss.transform);
+        // Boss tự rush tới, camera giữ nguyên follow player
     }
 
     private IEnumerator EscapeCountdown()
@@ -116,9 +115,9 @@ public class BossChaseManager : MonoBehaviour
         if (boss != null)
             boss.Disappear();
 
-        if (CameraFollow.Instance != null)
-            CameraFollow.Instance.SetPlayerOnlyMode();
+        // Boss đã lùi xa, camera tự động bám theo player mượt mà
     }
+
 
     public void CatchPlayer()
     {
@@ -153,8 +152,7 @@ public class BossChaseManager : MonoBehaviour
         if (boss != null)
             boss.ForceHide();
 
-        if (CameraFollow.Instance != null)
-            CameraFollow.Instance.SetPlayerOnlyMode();
+        // Reset Boss trạng thái hidden
     }
 
     private BossController ResolveBossController()

@@ -19,7 +19,7 @@ MonoBehaviour:
   laneChangeSpeed: 15
   jumpForce: 10
   gravity: 28
-  diveForce: 25
+  diveForce: 35
   rollDuration: 0.5
   rollColliderHeight: 1.2
   rollColliderCenterZ: 0

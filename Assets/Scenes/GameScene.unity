@@ -809,7 +809,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: d92746d40e8960c49a14d1404e0cdadc,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.79
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: d92746d40e8960c49a14d1404e0cdadc,
         type: 3}
@@ -891,10 +891,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f35257fa53379904291ef6d62f74cf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawnBehindDistance: 1
-  _retreatDistance: 10
+  _chaseDistance: 1
+  _spawnBehindDistance: 15
+  _retreatDistance: 18
   _zSmoothTime: 0.25
-  _laneFollowDelay: 0.2
+  _laneFollowDelay: 0.12
   _xSmoothTime: 0.12
 --- !u!114 &459655667
 MonoBehaviour:
@@ -1468,11 +1469,11 @@ MonoBehaviour:
   _gapBetweenGroups: 5
   _carGroupChance: 0.3
   _busGroupChance: 0.25
-  _zigzagChance: 0.6
-  _freeCoinCountRange: {x: 10, y: 15}
+  _zigzagChance: 0.82
+  _freeCoinCountRange: {x: 12, y: 15}
   _freeCoinSpacing: 1
-  _extraCoinAfterObstacleChance: 0.9
-  _maxCoinsPerSegment: 60
+  _extraCoinAfterObstacleChance: 0.64
+  _maxCoinsPerSegment: 100
   _powerUpRefs:
   - m_AssetGUID: 61c7dcd8337158a468821e9b631f2689
     m_SubObjectName: 
@@ -2536,13 +2537,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 7186931820594961514}
-  _playerOnlyOffset: {x: 0, y: 4, z: -5.5}
-  _chaseModeOffset: {x: 0, y: 5, z: -7}
-  _chaseLookAtOffset: {x: 0, y: 1, z: 2}
-  _positionSmoothTime: 0.15
+  _offset: {x: 0, y: 4.5, z: -5.5}
+  _xSmoothTime: 0.12
+  _ySmoothTime: 0.15
   _rotationSmoothTime: 0.15
-  _modeSwitchSmooth: 0.25
-  _lookAtOffset: {x: 0, y: 1.5, z: 0}
+  _lookAtOffset: {x: 0, y: 2.5, z: 0}
 --- !u!1 &1302132077
 GameObject:
   m_ObjectHideFlags: 0
@@ -3073,7 +3072,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -50}
   m_SizeDelta: {x: 900, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1782444865
@@ -3106,8 +3105,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4288967679
-  m_fontColor: {r: 1, g: 0.4509434, b: 0.6426477, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -3132,7 +3131,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 1
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 512
+  m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -3506,7 +3505,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.80031544, g: 0.9245283, b: 0.71694547, a: 1}
+  m_Color: {r: 0.5924529, g: 0.5924529, b: 0.5924529, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

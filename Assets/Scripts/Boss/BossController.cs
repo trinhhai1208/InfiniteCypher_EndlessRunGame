@@ -11,9 +11,13 @@ public class BossController : MonoBehaviour
     public static BossController Instance { get; private set; }
 
     [Header("Chase Movement")]
-    [SerializeField] private float _spawnBehindDistance = 2f;
-    [SerializeField] private float _retreatDistance = 18f;
-    [SerializeField] private float _zSmoothTime = 0.25f;
+    [Header("Chase Movement")]
+    [Tooltip("Kho\u1ea3ng c\u00e1ch Boss s\u1ebd d\u1eebng l\u1ea1i ngay sau Player (hi\u1ec7n trong frame).")]
+    [SerializeField] private float _chaseDistance = 2f;
+    [Tooltip("Kho\u1ea3ng c\u00e1ch Boss sinh ra t\u1eeb xa \u0111\u1ec3 ph\u00f3ng t\u1edbi.")]
+    [SerializeField] private float _spawnBehindDistance = 15f;
+    [SerializeField] private float _retreatDistance = 25f;
+    [SerializeField] private float _zSmoothTime = 0.12f; // Giảm xuống để phản ứng nhanh hơn
     //[SerializeField] private float _xFollowSpeed = 5f;
 
     [Header("Lane Follow (Smooth Lag)")]
@@ -88,10 +92,10 @@ public class BossController : MonoBehaviour
 
         if (State == BossState.Chasing)
         {
-            _targetZ = playerZ - _spawnBehindDistance;
+            // Lu\u00f4n b\u00e1m s\u00e1t sau player m\u1ed9t kho\u1ea3ng c\u1ed1 \u0111\u1ecbnh
+            _targetZ = playerZ - _chaseDistance;
 
-            // Lagged follower: _delayedPlayerX sẽ tự động đuổi player X chậm lại
-            // Không có bước nhảy, luôn mượt mà
+            // Lagged follower: _delayedPlayerX s\u1ebd t\u1ef1 \u0111\u1ed9ng \u0111u\u1edbi player X ch\u1eadm l\u1ea1i t\u1ef1 nhi\u00ean
             _delayedPlayerX = Mathf.SmoothDamp(
                 _delayedPlayerX,
                 _player.position.x,
@@ -114,7 +118,26 @@ public class BossController : MonoBehaviour
             }
         }
 
-        _currentZ = Mathf.SmoothDamp(_currentZ, _targetZ, ref _zVelocity, _zSmoothTime);
+        // ── Trục Z (Tiến/Lùi) ────────────────────
+        if (State == BossState.Chasing)
+        {
+            // Nếu đã tiến sát mục tiêu (trong tầm 0.1m), khóa chặt Z để tránh trễ theo vận tốc
+            float distZ = Mathf.Abs(_currentZ - _targetZ);
+            if (distZ < 0.15f)
+            {
+                _currentZ = _targetZ;
+                _zVelocity = 0f;
+            }
+            else
+            {
+                _currentZ = Mathf.SmoothDamp(_currentZ, _targetZ, ref _zVelocity, _zSmoothTime);
+            }
+        }
+        else
+        {
+            // Khi Recovery (lùi đi), dùng SmoothDamp cho mượt mà
+            _currentZ = Mathf.SmoothDamp(_currentZ, _targetZ, ref _zVelocity, _zSmoothTime);
+        }
         // _currentX bám theo _delayedPlayerX (vốn đã lag sẵn), thêm smooth nhẹ để tránh jitter
         _currentX = Mathf.SmoothDamp(_currentX, _delayedPlayerX, ref _xVelocity, _xSmoothTime);
         
@@ -129,11 +152,14 @@ public class BossController : MonoBehaviour
         EnsureInitialized();
         if (_player == null || _animator == null) return;
 
+        // Sinh ra t\u1eeb xa (ngo\u00e0i camera)
         _currentZ     = _player.position.z - _spawnBehindDistance;
-        _targetZ      = _currentZ;
+        // M\u1ee5c ti\u00eau l\u00e0 ti\u1ebfn s\u00e1t d\u01b0\u1edbi l\u01b0ng player
+        _targetZ      = _player.position.z - _chaseDistance;
+        
         _currentX     = _player.position.x;
         _currentY     = _player.position.y;
-        _delayedPlayerX = _player.position.x;  // Snap lag target ngay khi spawn
+        _delayedPlayerX = _player.position.x;
         _zVelocity    = 0f;
         _xVelocity    = 0f;
         _yVelocity    = 0f;

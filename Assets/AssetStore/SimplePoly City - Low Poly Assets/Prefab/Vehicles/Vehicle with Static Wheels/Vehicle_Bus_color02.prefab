@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 3300000}
   - component: {fileID: 2300000}
   - component: {fileID: 2515137506829647178}
+  - component: {fileID: 931638240745907274}
+  - component: {fileID: 4225435105674151726}
   m_Layer: 6
   m_Name: Vehicle_Bus_color02
   m_TagString: Obstacle
@@ -106,6 +108,47 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3.6946046, y: 3.5785658, z: 9.302495}
   m_Center: {x: -0.0013978481, y: 1.784227, z: -0.050180912}
+--- !u!54 &931638240745907274
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &4225435105674151726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aa6a9b7e63e4614da151552c96370f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collisionType: 1
+  _allowTopLanding: 1
 --- !u!1 &5365345710298427787
 GameObject:
   m_ObjectHideFlags: 0
@@ -158,8 +201,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.92, y: 0.35, z: 8.63}
-  m_Center: {x: 1.1, y: 3.04, z: 0.95}
+  m_Size: {x: 2.46, y: 0.35, z: 7.47}
+  m_Center: {x: 0.99, y: 3.04, z: 0.74}
 --- !u!114 &5019065677315057819
 MonoBehaviour:
   m_ObjectHideFlags: 0

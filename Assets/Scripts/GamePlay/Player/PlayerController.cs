@@ -49,6 +49,9 @@ public class PlayerController : MonoBehaviour
     private bool _isStumbling;
     private bool _freezeForwardMovement;
     private bool _queuedRoll; // Ghi nhớ lệnh lộn người khi đang nhảy
+    private Vector3 _stumblePushDirection = Vector3.back;
+    private Bounds _stumbleObstacleBounds;
+    private bool _hasStumbleObstacleBounds;
     private float _groundY;
     private float _lastSafeY;
     private Coroutine _rollCoroutine;
@@ -472,7 +475,16 @@ public class PlayerController : MonoBehaviour
 
             if (isSideHit || isPositionSideHit)
             {
-                TriggerStumble(identity.transform.position);
+                Vector3 pushDirection = Vector3.back;
+                if (collision.contactCount > 0)
+                {
+                    Vector3 contactNormal = collision.GetContact(0).normal;
+                    contactNormal.y = 0f;
+                    if (contactNormal.sqrMagnitude > 0.0001f)
+                        pushDirection = contactNormal.normalized;
+                }
+
+                TriggerStumble(identity, pushDirection);
                 return;
             }
         }
@@ -484,8 +496,15 @@ public class PlayerController : MonoBehaviour
     {
         if (_isDead || _isStumbling) return;
 
+        if (other.GetComponent<MissionSensor>() != null || other.GetComponentInParent<MissionSensor>() != null)
+            return;
+
         ObstacleIdentity identity = ResolveObstacleIdentity(other);
         if (identity == null && !other.CompareTag("Obstacle")) return;
+
+        // Vehicle stumble must come from the solid body collider, not trigger sensors.
+        if (identity != null && identity.CollisionType == ObstacleCollisionType.VehicleStumble)
+            return;
 
         if (identity != null && identity.CollisionType == ObstacleCollisionType.JumpableTop)
             return;
@@ -495,17 +514,6 @@ public class PlayerController : MonoBehaviour
             PowerUpManager.Instance.ConsumeShield();
             other.gameObject.SetActive(false);
             return;
-        }
-
-        if (identity != null && identity.CollisionType == ObstacleCollisionType.VehicleStumble)
-        {
-            float obstacleX = identity.transform.position.x;
-            float deltaX = Mathf.Abs(transform.position.x - obstacleX);
-            if (deltaX > 0.6f)
-            {
-                TriggerStumble(identity.transform.position);
-                return;
-            }
         }
 
         Die();
@@ -525,6 +533,33 @@ public class PlayerController : MonoBehaviour
         return hitComponent.GetComponentInParent<ObstacleIdentity>();
     }
 
+    private bool TryGetSolidObstacleBounds(ObstacleIdentity identity, out Bounds bounds)
+    {
+        bounds = default;
+        if (identity == null) return false;
+
+        Collider[] colliders = identity.GetComponentsInChildren<Collider>();
+        bool found = false;
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider col = colliders[i];
+            if (col == null || !col.enabled || col.isTrigger) continue;
+
+            if (!found)
+            {
+                bounds = col.bounds;
+                found = true;
+            }
+            else
+            {
+                bounds.Encapsulate(col.bounds);
+            }
+        }
+
+        return found;
+    }
+
     public void TriggerStumble()
     {
         TriggerStumble(transform.position);
@@ -532,11 +567,21 @@ public class PlayerController : MonoBehaviour
 
     public void TriggerStumble(Vector3 obstaclePosition)
     {
-        if (_isDead || _isStumbling) return;
-        StartCoroutine(StumbleRoutine(obstaclePosition));
+        Vector3 fallbackDirection = transform.position.x >= obstaclePosition.x ? Vector3.right : Vector3.left;
+        fallbackDirection += Vector3.back;
+        TriggerStumble(null, fallbackDirection.normalized);
     }
 
-    private IEnumerator StumbleRoutine(Vector3 obstaclePosition)
+    private void TriggerStumble(ObstacleIdentity obstacleIdentity, Vector3 pushDirection)
+    {
+        if (_isDead || _isStumbling) return;
+        pushDirection.y = 0f;
+        _stumblePushDirection = pushDirection.sqrMagnitude > 0.0001f ? pushDirection.normalized : Vector3.back;
+        _hasStumbleObstacleBounds = TryGetSolidObstacleBounds(obstacleIdentity, out _stumbleObstacleBounds);
+        StartCoroutine(StumbleRoutine());
+    }
+
+    private IEnumerator StumbleRoutine()
     {
         _isStumbling = true;
         _freezeForwardMovement = true;
@@ -546,35 +591,57 @@ public class PlayerController : MonoBehaviour
 
         if (_rb != null)
         {
-            Vector3 stumblePosition = _rb.position;
-            float pushDirection = stumblePosition.x >= obstaclePosition.x ? 1f : -1f;
-            stumblePosition.x += pushDirection * _stumbleSidePush;
-            stumblePosition.z -= _stumbleBackwardPush;
-            stumblePosition.x = Mathf.Clamp(stumblePosition.x, -_laneDistance, _laneDistance);
+            Vector3 safePos = _rb.position;
+            Vector3 push = _stumblePushDirection * (_stumbleSidePush + 0.35f);
+            push.z = Mathf.Min(push.z, -_stumbleBackwardPush);
 
-            _rb.position = stumblePosition;
+            safePos += push;
+            safePos.z -= _stumbleBackwardPush;
 
-            int snappedLane = Mathf.RoundToInt(stumblePosition.x / _laneDistance);
+            if (_hasStumbleObstacleBounds)
+            {
+                float radius = _capsuleCollider != null ? _capsuleCollider.radius : 0.4f;
+                float margin = radius + 0.1f;
+
+                safePos.z = Mathf.Min(safePos.z, _stumbleObstacleBounds.min.z - margin);
+
+                float horizontalDirection = _stumblePushDirection.x;
+                if (Mathf.Abs(horizontalDirection) < 0.05f)
+                    horizontalDirection = _rb.position.x >= _stumbleObstacleBounds.center.x ? 1f : -1f;
+
+                if (horizontalDirection > 0f)
+                    safePos.x = Mathf.Max(safePos.x, _stumbleObstacleBounds.max.x + margin);
+                else
+                    safePos.x = Mathf.Min(safePos.x, _stumbleObstacleBounds.min.x - margin);
+            }
+
+            safePos.x = Mathf.Clamp(safePos.x, -_laneDistance, _laneDistance);
+
+            _rb.position = safePos;
+            _rb.velocity = Vector3.zero;
+
+            int snappedLane = Mathf.RoundToInt(safePos.x / _laneDistance);
             _currentLane = Mathf.Clamp(snappedLane, -1, 1);
             _targetX = _currentLane * _laneDistance;
         }
 
-        // Publish qua EventBus (Mới)
+        // Publish qua EventBus
         EventBus.Publish(new PlayerStumbleEvent());
 
         yield return new WaitForSeconds(_stumbleForwardFreezeTime);
         _freezeForwardMovement = false;
 
-        float remainingStumble = Mathf.Max(0f, _stumbleDuration - _stumbleForwardFreezeTime);
-        if (remainingStumble > 0f)
-            yield return new WaitForSeconds(remainingStumble);
+        float remaining = Mathf.Max(0f, _stumbleDuration - _stumbleForwardFreezeTime);
+        if (remaining > 0f)
+            yield return new WaitForSeconds(remaining);
 
         if (!_isDead)
             _currentSpeed = previousSpeed;
 
         _isStumbling = false;
-        _freezeForwardMovement = false;
+        _hasStumbleObstacleBounds = false;
     }
+
 
     public void MoveToLane(int laneIndex)
     {

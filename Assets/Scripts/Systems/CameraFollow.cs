@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public enum CameraMode { PlayerOnly, ChaseMode }
-
+/// <summary>
+/// Camera follow chuyen dung cho Endless Runner.
+/// Camera luon follow player, boss tu xu ly di chuyen cua minh.
+/// </summary>
 public class CameraFollow : MonoBehaviour
 {
     public static CameraFollow Instance { get; private set; }
@@ -9,42 +11,27 @@ public class CameraFollow : MonoBehaviour
     [Header("Target")]
     [SerializeField] private Transform _target;
 
-    [Header("Player Only Offset")]
-    [SerializeField] private Vector3 _playerOnlyOffset = new Vector3(0f, 3.5f, -5.5f);
-
-    [Header("Chase Mode Offset (khi Boss xuất hiện)")]
-    [Tooltip("Lùi xa và cao hơn để lấy cả Player và Boss")]
-    [SerializeField] private Vector3 _chaseModeOffset = new Vector3(0f, 5f, -9f);
-    [SerializeField] private Vector3 _chaseLookAtOffset = new Vector3(0f, 1f, 2f); // Nhìn về điểm giữa 2 nhân vật
+    [Header("Offset")]
+    [SerializeField] private Vector3 _offset = new Vector3(0f, 3.5f, -5.5f);
 
     [Header("Smoothing")]
-    [SerializeField] private float _positionSmoothTime  = 0.15f;
-    [SerializeField] private float _rotationSmoothTime  = 0.3f;
-    [SerializeField] private float _modeSwitchSmooth    = 0.6f;   // Tốc độ chuyển mode
+    [Tooltip("Smoothing cho truc X (chuyen lan). Nho = ban chat, lon = mem mai.")]
+    [SerializeField] private float _xSmoothTime = 0.12f;
+    [Tooltip("Smoothing cho truc Y (nhan vat nhay). Nho = bat keo, lon = mem mai.")]
+    [SerializeField] private float _ySmoothTime = 0.15f;
+    [SerializeField] private float _rotationSmoothTime = 0.25f;
 
     [Header("Look At")]
     [SerializeField] private Vector3 _lookAtOffset = new Vector3(0f, 1f, 0f);
 
-    // ── State ──────────────────────────────────────────
-    private CameraMode _mode = CameraMode.PlayerOnly;
-    private Transform  _boss;
-
-    // ── Dynamics ───────────────────────────────────────
-    private Vector3 _positionVelocity;
-    private Vector3 _currentOffset;
-    private Vector3 _offsetVelocity;
-
-    // ── Cached ─────────────────────────────────────────
-    private Rigidbody _targetRigidbody;
-
-    // ─────────────────────────────────────────────────────────
+    // Dynamics
+    private float _xVelocity;
+    private float _yVelocity;
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        _currentOffset = _playerOnlyOffset;
-        CacheTargetRigidbody();
     }
 
     private void Start() => SnapToTarget();
@@ -55,99 +42,48 @@ public class CameraFollow : MonoBehaviour
         FollowTarget();
     }
 
-    // ── Core ───────────────────────────────────────────
-
     private void FollowTarget()
     {
-        // Tính toán vị trí mục tiêu (Base Position)
-        Vector3 playerPos = _target.position;
-        Vector3 targetFocusPos = playerPos; // Mặc định là Player
-        
-        if (_mode == CameraMode.ChaseMode && _boss != null)
-        {
-            // Nếu đang trong ChaseMode, tiêu điểm là trung điểm giữa Player và Boss
-            targetFocusPos = (playerPos + _boss.position) * 0.5f;
-        }
+        Vector3 playerPos  = _target.position;
+        Vector3 targetCamPos = playerPos + _offset;
+        Vector3 curPos     = transform.position;
 
-        // Tính toán offset mục tiêu dựa trên Mode
-        Vector3 targetOffset = (_mode == CameraMode.ChaseMode) ? _chaseModeOffset : _playerOnlyOffset;
-
-        // Lerp offset mượt mà khi chuyển mode
-        _currentOffset = Vector3.SmoothDamp(_currentOffset, targetOffset, ref _offsetVelocity, _modeSwitchSmooth);
-
-        // ── Vị trí Camera ──
-        Vector3 targetCamPos = targetFocusPos + _currentOffset;
-
-        Vector3 cur = transform.position;
-        float newX = Mathf.SmoothDamp(cur.x, targetCamPos.x, ref _positionVelocity.x, _positionSmoothTime);
-        float newY = Mathf.SmoothDamp(cur.y, targetCamPos.y, ref _positionVelocity.y, _positionSmoothTime);
-        float newZ = targetCamPos.z; // Bám sát Z trực tiếp tránh cảm giác lag
+        // X: smooth chuyen lan
+        float newX = Mathf.SmoothDamp(curPos.x, targetCamPos.x, ref _xVelocity, _xSmoothTime);
+        // Y: smooth nhan vat nhay/ha
+        float newY = Mathf.SmoothDamp(curPos.y, targetCamPos.y, ref _yVelocity, _ySmoothTime);
+        // Z: bam sat truc tien tranh cam giac lag (khong dung SmoothDamp)
+        float newZ = targetCamPos.z;
 
         transform.position = new Vector3(newX, newY, newZ);
 
-        // ── LookAt Target ──
-        Vector3 lookAtTarget;
-        if (_mode == CameraMode.ChaseMode && _boss != null)
-        {
-            // Nhìn về trung điểm có cộng thêm offset
-            Vector3 midPoint = (playerPos + _boss.position) * 0.5f;
-            lookAtTarget = new Vector3(newX, midPoint.y + _chaseLookAtOffset.y, midPoint.z + _chaseLookAtOffset.z);
-        }
-        else
-        {
-            lookAtTarget = new Vector3(newX, playerPos.y + _lookAtOffset.y, playerPos.z + _lookAtOffset.z);
-        }
-
-        Vector3 direction = lookAtTarget - transform.position;
+        // LookAt Player
+        Vector3 lookAt    = new Vector3(newX, playerPos.y + _lookAtOffset.y, playerPos.z + _lookAtOffset.z);
+        Vector3 direction = lookAt - transform.position;
         if (direction != Vector3.zero)
         {
             Quaternion targetRot = Quaternion.LookRotation(direction);
-            float rotLerp = _rotationSmoothTime <= 0.0001f ? 1f : Time.deltaTime / _rotationSmoothTime;
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Mathf.Clamp01(rotLerp));
+            transform.rotation   = Quaternion.Slerp(transform.rotation, targetRot,
+                                        Time.deltaTime / _rotationSmoothTime);
         }
     }
 
-    // ── Public API ─────────────────────────────────────
-
-    /// <summary>
-    /// Chuyển sang chế độ theo dõi Player và Boss cùng lúc.
-    /// Gọi bởi BossChaseManager.StartChase().
-    /// </summary>
-    public void SetChaseMode(Transform boss)
-    {
-        _boss = boss;
-        _mode = CameraMode.ChaseMode;
-    }
-
-    /// <summary>
-    /// Quay về chế độ chỉ theo dõi Player.
-    /// Gọi bởi BossChaseManager.EndChase().
-    /// </summary>
-    public void SetPlayerOnlyMode()
-    {
-        _boss = null;
-        _mode = CameraMode.PlayerOnly;
-    }
-
+    // Public API
     public void SnapToTarget()
     {
         if (_target == null) return;
-        Vector3 basePos = _target.position;
-        transform.position = basePos + _currentOffset;
-
-        Vector3 dir = basePos + _lookAtOffset - transform.position;
+        transform.position = _target.position + _offset;
+        Vector3 dir = (_target.position + _lookAtOffset) - transform.position;
         if (dir != Vector3.zero) transform.rotation = Quaternion.LookRotation(dir);
     }
 
     public void SetTarget(Transform target)
     {
         _target = target;
-        CacheTargetRigidbody();
         SnapToTarget();
     }
 
-    private void CacheTargetRigidbody()
-    {
-        _targetRigidbody = _target != null ? _target.GetComponent<Rigidbody>() : null;
-    }
+    // Giu lai empty de tranh loi build neu con script tham chieu
+    public void SetChaseMode(Transform boss) { }
+    public void SetPlayerOnlyMode() { }
 }
