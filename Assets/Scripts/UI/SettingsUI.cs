@@ -55,6 +55,7 @@ public class SettingsUI : MonoBehaviour
 
     public void CloseSettings()
     {
+        PlayerPrefs.Save();
         gameObject.SetActive(false);
     }
 }

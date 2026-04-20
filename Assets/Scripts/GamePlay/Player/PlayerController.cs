@@ -31,10 +31,6 @@ public class PlayerController : MonoBehaviour
     private float _stumbleBackwardPush;
     private float _stumbleSidePush;
 
-    // Legacy events — giữ để không break BossChaseManager hiện tại
-    public static event System.Action OnPlayerStumble;
-    public static event System.Action OnPlayerJump;
-
     public static PlayerController Instance { get; private set; }
 
     private Rigidbody _rb;
@@ -248,9 +244,8 @@ public class PlayerController : MonoBehaviour
                 if (AudioManager.Instance != null)
                     AudioManager.Instance.PlayJump();
 
-                // Publish qua cả 2 kênh: EventBus (mới) và static event (legacy)
+                // Publish qua EventBus (Mới)
                 EventBus.Publish(new PlayerJumpEvent());
-                OnPlayerJump?.Invoke();
             }
             else if (_rollRequested)
             {
@@ -564,9 +559,8 @@ public class PlayerController : MonoBehaviour
             _targetX = _currentLane * _laneDistance;
         }
 
-        // Publish qua cả 2 kênh: EventBus (mới) và static event (legacy)
+        // Publish qua EventBus (Mới)
         EventBus.Publish(new PlayerStumbleEvent());
-        OnPlayerStumble?.Invoke();
 
         yield return new WaitForSeconds(_stumbleForwardFreezeTime);
         _freezeForwardMovement = false;
@@ -665,7 +659,5 @@ public class PlayerController : MonoBehaviour
     private void OnDestroy()
     {
         ServiceLocator.Unregister<PlayerController>();
-        OnPlayerStumble = null;
-        OnPlayerJump    = null;
     }
 }

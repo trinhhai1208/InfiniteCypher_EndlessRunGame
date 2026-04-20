@@ -93,14 +93,13 @@ public class MissionManager : MonoBehaviour
     private void SetTier(MissionType type, MissionScope scope, int val)
     {
         PlayerPrefs.SetInt(GetKey(type, scope, "Tier"), val);
-        PlayerPrefs.Save();
     }
 
     private void SetProgress(MissionType type, MissionScope scope, int val)
     {
         PlayerPrefs.SetInt(GetKey(type, scope, "Progress"), val);
-        // Ép lưu ngay lập tức để tránh mất tiến trình khi reload/crash
-        PlayerPrefs.Save(); 
+        // P1: Đã gỡ bỏ Save() ở đây để tránh gây khựng (hitch) mỗi khi nhặt xu/tăng distance. 
+        // Tiến trình vẫn được lưu khi hoàn thành hoặc game over.
     }
 
     private void OnStatusChanged(MissionType type, MissionScope scope, MissionStatus val)

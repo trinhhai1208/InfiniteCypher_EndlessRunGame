@@ -111,7 +111,6 @@ public class AudioManager : MonoBehaviour
         _musicVolume = Mathf.Clamp01(volume);
         if (_musicSource != null) _musicSource.volume = _musicVolume;
         PlayerPrefs.SetFloat("MusicVolume", _musicVolume);
-        PlayerPrefs.Save();
     }
 
     public void SetSFXVolume(float volume)
@@ -119,7 +118,6 @@ public class AudioManager : MonoBehaviour
         _sfxVolume = Mathf.Clamp01(volume);
         // SFX Source volume gốc luôn là 1, ta điều khiển qua PlayOneShot
         PlayerPrefs.SetFloat("SFXVolume", _sfxVolume);
-        PlayerPrefs.Save();
     }
 
     private void LoadVolumeSettings()
