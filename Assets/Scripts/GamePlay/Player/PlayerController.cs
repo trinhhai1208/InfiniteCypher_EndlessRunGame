@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private float _diveForce;
     private float _rollDuration;
     private float _rollColliderHeight;
-    private float _rollColliderCenterZ;
+
     private float _minSwipeDistance;
     private float _stumbleSpeedPenalty;
     private float _stumbleDuration;
@@ -118,7 +118,7 @@ public class PlayerController : MonoBehaviour
         _diveForce                = _config.diveForce;
         _rollDuration             = _config.rollDuration;
         _rollColliderHeight       = _config.rollColliderHeight;
-        _rollColliderCenterZ      = _config.rollColliderCenterZ;
+
         _minSwipeDistance         = _config.minSwipeDistance;
         _stumbleSpeedPenalty      = _config.stumbleSpeedPenalty;
         _stumbleDuration          = _config.stumbleDuration;
@@ -360,7 +360,7 @@ public class PlayerController : MonoBehaviour
         if (_capsuleCollider != null)
         {
             _capsuleCollider.height = _rollColliderHeight;
-            _capsuleCollider.center = new Vector3(0f, _rollColliderHeight / 2f, _rollColliderCenterZ);
+            _capsuleCollider.center = new Vector3(0f, _rollColliderHeight / 2f, 0f);
         }
 
         yield return new WaitForSeconds(_rollDuration);

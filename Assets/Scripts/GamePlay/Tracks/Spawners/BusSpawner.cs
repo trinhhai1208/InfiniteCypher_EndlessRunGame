@@ -17,6 +17,7 @@ public class BusSpawner
     private readonly float _coinSpacingOnBus;
     private readonly int _maxBusChain;
     private readonly SpawnBudget _budget;
+    private readonly float _bridgeSineAmplitude;
 
     public BusSpawner(
         List<AssetReference> busRefs,
@@ -26,7 +27,8 @@ public class BusSpawner
         float busGapZ,
         float coinSpacingOnBus,
         int maxBusChain,
-        SpawnBudget budget)
+        SpawnBudget budget,
+        float bridgeSineAmplitude = 0.8f)
     {
         _busRefs = busRefs;
         _laneDistance = laneDistance;
@@ -36,6 +38,7 @@ public class BusSpawner
         _coinSpacingOnBus = coinSpacingOnBus;
         _maxBusChain = maxBusChain;
         _budget = budget;
+        _bridgeSineAmplitude = bridgeSineAmplitude;
     }
 
     /// <summary>
@@ -47,6 +50,8 @@ public class BusSpawner
         int lane,
         LevelGenerator.SpawnedObjects group,
         ObjectSizeCache sizeCache,
+        bool makeMoving = false,
+        float speed = 0f,
         System.Action<float> onSpawned = null)
     {
         float x = lane * _laneDistance;
@@ -56,17 +61,24 @@ public class BusSpawner
         yield return AddressablePoolManager.Instance.GetRoutine(
             busRef,
             new Vector3(x, 0f, worldZ),
-            Quaternion.identity,
+            Quaternion.Euler(0f, 180f, 0f),
             segment.transform,
             res => busObj = res);
 
         _budget.Register();
 
         float spawnedLength = _busLengthZ;
-        if (busObj == null) { onSpawned?.Invoke(spawnedLength); yield break; }
+        if (busObj == null) { onSpawned?.Invoke(0f); yield break; }
 
         group.Obstacles.Add(busObj);
         spawnedLength = sizeCache.AlignAndGetLength(busObj, worldZ, _busLengthZ);
+
+        if (makeMoving)
+        {
+            var mover = busObj.GetComponent<MovingObstacle>();
+            if (mover == null) mover = busObj.AddComponent<MovingObstacle>();
+            mover.Activate(speed);
+        }
 
         if (CoinPool.Instance == null) { onSpawned?.Invoke(spawnedLength); yield break; }
 
@@ -75,7 +87,8 @@ public class BusSpawner
         float coinZ      = coinStartZ;
         while (coinZ <= coinEndZ)
         {
-            var coin = CoinPool.Instance.Get(new Vector3(x, _busRoofY, coinZ), Quaternion.identity, segment.transform);
+            Transform parent = makeMoving ? busObj.transform : segment.transform;
+            var coin = CoinPool.Instance.Get(new Vector3(x, _busRoofY, coinZ), Quaternion.identity, parent);
             if (coin != null) group.Coins.Add(coin);
             coinZ += _coinSpacingOnBus;
         }
@@ -92,6 +105,8 @@ public class BusSpawner
         int lane,
         LevelGenerator.SpawnedObjects group,
         ObjectSizeCache sizeCache,
+        bool makeMoving = false,
+        float speed = 0f,
         System.Action<float> onSpawned = null)
     {
         float x = lane * _laneDistance;
@@ -101,17 +116,26 @@ public class BusSpawner
         yield return AddressablePoolManager.Instance.GetRoutine(
             busRef,
             new Vector3(x, 0f, worldZ),
-            Quaternion.identity,
+            Quaternion.Euler(0, 180f, 0),
             segment.transform,
             res => busObj = res);
 
         _budget.Register();
 
         float spawnedLength = _busLengthZ;
+        if (busObj == null) { onSpawned?.Invoke(0f); yield break; }
+
         if (busObj != null)
         {
             group.Obstacles.Add(busObj);
             spawnedLength = sizeCache.AlignAndGetLength(busObj, worldZ, _busLengthZ);
+            
+            if (makeMoving)
+            {
+                var mover = busObj.GetComponent<MovingObstacle>();
+                if (mover == null) mover = busObj.AddComponent<MovingObstacle>();
+                mover.Activate(speed);
+            }
         }
 
         onSpawned?.Invoke(spawnedLength);
@@ -119,4 +143,35 @@ public class BusSpawner
 
     public int GetMaxChain() => _maxBusChain;
     public float GetGapZ()   => _busGapZ;
+
+    public IEnumerator SpawnSinusoidalBridge(
+        TrackSegment segment,
+        float fromZ,
+        float toZ,
+        float laneX,
+        float roofY,
+        int coinCount,
+        LevelGenerator.SpawnedObjects group)
+    {
+        if (CoinPool.Instance == null) yield break;
+
+        float gapLength = toZ - fromZ;
+        if (gapLength <= 0f) yield break;
+
+        for (int i = 0; i < coinCount; i++)
+        {
+            float t = (float)i / Mathf.Max(coinCount - 1, 1);
+            float z = Mathf.Lerp(fromZ, toZ, t);
+            float sinY = Mathf.Sin(t * Mathf.PI) * _bridgeSineAmplitude;
+            float y = roofY + sinY;
+
+            var coin = CoinPool.Instance.Get(
+                new Vector3(laneX, y, z),
+                Quaternion.identity,
+                segment.transform);
+            if (coin != null) group.Coins.Add(coin);
+        }
+
+        yield return null;
+    }
 }

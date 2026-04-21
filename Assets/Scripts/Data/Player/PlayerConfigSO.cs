@@ -13,14 +13,14 @@ public class PlayerConfigSO : ScriptableObject
     public float baseSpeed = 16f;
 
     [Tooltip("Tốc độ tối đa - không thể vượt qua giá trị này")]
-    public float maxSpeed = 24f;
+    public float maxSpeed = 20f;
 
     [Header("Discrete Speed Up (Mới)")]
     [Tooltip("Quãng đường chạy được để kích hoạt tăng tốc (m)")]
     public float speedIncreaseDistance = 500f;
 
     [Tooltip("Lượng tốc độ cộng thêm mỗi khi đạt mốc quãng đường")]
-    public float speedBonusPerDistance = 1f;
+    public float speedBonusPerDistance = 0.25f;
 
     [Header("Lane")]
     [Tooltip("Khoảng cách giữa các lane (phải khớp với LevelGenerator._laneDistance)")]
@@ -46,8 +46,7 @@ public class PlayerConfigSO : ScriptableObject
     [Tooltip("Chiều cao Capsule Collider khi đang lăn")]
     public float rollColliderHeight = 1.2f;
 
-    [Tooltip("Offset Z của tâm Collider khi lăn")]
-    public float rollColliderCenterZ = 0f;
+
 
     [Header("Mobile Input")]
     [Tooltip("Khoảng cách tối thiểu (pixels) để nhận diện là Swipe")]
@@ -58,16 +57,16 @@ public class PlayerConfigSO : ScriptableObject
     public float stumbleSpeedPenalty = 0.6f;
 
     [Tooltip("Tổng thời gian bị stun sau vấp (giây)")]
-    public float stumbleDuration = 0.5f;
+    public float stumbleDuration = 0.15f;
 
     [Tooltip("Thời gian freeze di chuyển thẳng đầu của vấp")]
-    public float stumbleForwardFreezeTime = 0.2f;
+    public float stumbleForwardFreezeTime = 0.1f;
 
     [Tooltip("Khoảng đẩy lùi theo Z khi vấp")]
-    public float stumbleBackwardPush = 0.35f;
+    public float stumbleBackwardPush = 0.05f;
 
     [Tooltip("Khoảng đẩy ngang khi vấp (tránh xa vật cản)")]
-    public float stumbleBackwardSidePush = 0.45f;
+    public float stumbleBackwardSidePush = 0.2f;
 
     [Header("Road Boundaries")]
     [Tooltip("Giới hạn trục X của mặt đường. Vượt quá sẽ vấp lề.")]

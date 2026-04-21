@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8e3eda821fd8d6468afd301f2651eaf, type: 3}
   m_Name: PlayerConfig_Default
   m_EditorClassIdentifier: 
-  baseSpeed: 20
-  maxSpeed: 26
-  speedIncreaseDistance: 750
-  speedBonusPerDistance: 2
+  baseSpeed: 16
+  maxSpeed: 20
+  speedIncreaseDistance: 500
+  speedBonusPerDistance: 0.25
   laneDistance: 3.8
   laneChangeSpeed: 25
   jumpForce: 10

@@ -31,8 +31,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private List<AssetReference> _carRefs = new();
     [SerializeField] private float _carRoofY = 2f;
     [SerializeField] private float _carLengthZ = 4.6f;
-    [SerializeField] private float _carSineAmplitude = 1f;
-    [SerializeField] private int _coinsOnCar = 3;
+
 
     // ─────────────────────────────────────────
     [Header("Xe Bus")]
@@ -62,6 +61,29 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private float _gapBetweenGroups = 5f;
 
     // ─────────────────────────────────────────
+    [Header("Parkour Pattern Settings")]
+    [SerializeField] [Range(0f, 1f)] private float _parkourPatternChance = 0.30f;
+    [Tooltip("Số xe con làm bệ phóng trước khi nhảy lên Bus.")]
+    [SerializeField] private int _steppingStoneCount = 3;
+    [Tooltip("Khoảng cách từ xe con cuối cùng đến bus (lấy đà nhảy).")]
+    [SerializeField] private float _carToBusJumpGap = 3.0f;
+    [Tooltip("Số lượng bus trong chuỗi nhảy (1-3, sau đó 1).")]
+    [SerializeField] private int _maxJumpSequenceBuses = 3;
+    [Tooltip("Tốc độ xe bus di động (m/s).")]
+    [SerializeField] private float _movingBusSpeed = 8f;
+    [Tooltip("Khoảng cách nhảy giữa 2 bus trong chuỗi liên hoàn.")]
+    [SerializeField] private float _jumpGapBetweenBuses = 4.5f;
+    [Tooltip("Độ cao cung mây xu hình Sin nối giữa 2 xe bus.")]
+    [SerializeField] private float _bridgeSineAmplitude = 2.5f;
+
+    // Lựa chọn Pattern
+    private enum ParkourType
+    {
+        StaticJump,  // Tất cả bus đứng yên, có bridge coin hình sin
+        MovingJump   // Tất cả bus di động, coin gắn vào bus
+    }
+
+    // ─────────────────────────────────────────
     [Header("Tỉ Lệ Sinh (Probabilities)")]
     [SerializeField] [Range(0f, 1f)] private float _carGroupChance = 0.30f;
     [SerializeField] [Range(0f, 1f)] private float _busGroupChance = 0.25f;
@@ -71,7 +93,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] [Range(0f, 1f)] private float _zigzagChance = 0.6f;
     [SerializeField] private Vector2Int _freeCoinCountRange = new(5, 12);
     [SerializeField] private float _freeCoinSpacing = 1.0f;
-    [SerializeField] [Range(0f, 1f)] private float _extraCoinAfterObstacleChance = 0.5f;
+
     [SerializeField] private int _maxCoinsPerSegment = 60;
 
     // ─────────────────────────────────────────
@@ -108,12 +130,11 @@ public class LevelGenerator : MonoBehaviour
         _budget    = new SpawnBudget(_spawnBudgetPerFrame);
 
         _carSpawner = new CarSpawner(
-            _carRefs, _laneDistance, _carRoofY, _carLengthZ,
-            _carSineAmplitude, _coinsOnCar, _budget);
+            _carRefs, _laneDistance, _carRoofY, _carLengthZ, _budget);
 
         _busSpawner = new BusSpawner(
             _busRefs, _laneDistance, _busRoofY, _busLengthZ,
-            _busGapZ, _coinSpacingOnBus, _maxBusChain, _budget);
+            _busGapZ, _coinSpacingOnBus, _maxBusChain, _budget, _bridgeSineAmplitude);
 
         _barrierSpawner = new BarrierSpawner(
             _barrierRefs, _laneDistance,
@@ -145,7 +166,7 @@ public class LevelGenerator : MonoBehaviour
                 for (int i = 0; i < group.Coins.Count; i++)
                 {
                     GameObject coin = group.Coins[i];
-                    if (coin != null && coin.transform.parent == segment.transform)
+                    if (coin != null)
                         CoinPool.Instance?.Return(coin);
                 }
             }
@@ -197,16 +218,24 @@ public class LevelGenerator : MonoBehaviour
                 yield return null; // Nhường frame
             }
 
-            // ─── Xe Con ─────────────────────────────────────
-            if (roll < _carGroupChance && _carRefs.Count > 0)
+            // ─── Parkour Pattern ────────────────────────────
+            if (roll < _parkourPatternChance)
+            {
+                float patternLen = 0f;
+                yield return SpawnParkourPattern(segment, currentZ, group, len => patternLen = len);
+                advanceZ = patternLen + _gapBetweenGroups;
+            }
+            // ─── Xe Con (Single Car) ───────────────────────────
+            else if (roll < _parkourPatternChance + _carGroupChance && _carRefs.Count > 0)
             {
                 int lane = Random.Range(-1, 2);
                 float actualCarLength = _carLengthZ;
-                yield return _carSpawner.SpawnWithCoins(segment, currentZ, lane, group, _sizeCache, len => actualCarLength = len);
+                // Chỉ sinh 1 xe con đơn lẻ
+                yield return _carSpawner.SpawnOnly(segment, currentZ, lane, group, _sizeCache, len => actualCarLength = len);
                 advanceZ = actualCarLength + _gapBetweenGroups;
             }
             // ─── Xe Bus ─────────────────────────────────────
-            else if (roll < _carGroupChance + _busGroupChance && _busRefs.Count > 0)
+            else if (roll < _parkourPatternChance + _carGroupChance + _busGroupChance && _busRefs.Count > 0)
             {
                 int lane = Random.Range(-1, 2);
                 bool spawnBusCoins = Random.value < _busHasCoinChance;
@@ -234,7 +263,7 @@ public class LevelGenerator : MonoBehaviour
                         if (currentBusZ > endZ) break;
                         if (_budget.IsExhausted()) { _budget.ResetFrame(); yield return null; }
                         float nextLen = _busLengthZ;
-                        yield return _busSpawner.SpawnWithCoins(segment, currentBusZ, lane, group, _sizeCache, len => nextLen = len);
+                        yield return _busSpawner.SpawnWithCoins(segment, currentBusZ, lane, group, _sizeCache, onSpawned: len => nextLen = len);
                         currentBusZ += nextLen + _busSpawner.GetGapZ();
                         groupEndZ = currentBusZ;
                     }
@@ -252,7 +281,7 @@ public class LevelGenerator : MonoBehaviour
                         if (currentBusZ > endZ) break;
                         if (_budget.IsExhausted()) { _budget.ResetFrame(); yield return null; }
                         float nextLen = _busLengthZ;
-                        yield return _busSpawner.SpawnOnly(segment, currentBusZ, lane, group, _sizeCache, len => nextLen = len);
+                        yield return _busSpawner.SpawnOnly(segment, currentBusZ, lane, group, _sizeCache, onSpawned: len => nextLen = len);
                         currentBusZ += nextLen + _busSpawner.GetGapZ();
                         groupEndZ = currentBusZ;
                     }
@@ -261,7 +290,7 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
             // ─── Rào Chắn ───────────────────────────────────
-            else if (roll < _carGroupChance + _busGroupChance + _barrierChance && _barrierRefs.Count > 0)
+            else if (roll < _parkourPatternChance + _carGroupChance + _busGroupChance + _barrierChance && _barrierRefs.Count > 0)
             {
                 int lane = Random.Range(-1, 2);
                 yield return _barrierSpawner.Spawn(segment, currentZ, lane, group,
@@ -284,20 +313,113 @@ public class LevelGenerator : MonoBehaviour
 
             currentZ += advanceZ;
 
-            // Xu bonus sau xe/bus
-            if (roll < _carGroupChance + _busGroupChance
-                && CoinPool.Instance != null
-                && Random.value < _extraCoinAfterObstacleChance)
+
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────
+    // Parkour Pattern Logic
+    // ─────────────────────────────────────────────────────────
+
+    private IEnumerator SpawnParkourPattern(TrackSegment segment, float startZ, SpawnedObjects group, System.Action<float> onComplete)
+    {
+        ParkourType type = Random.value < 0.5f ? ParkourType.StaticJump : ParkourType.MovingJump;
+        int parkourLane = Random.Range(-1, 2);
+        int[] allLanes = { -1, 0, 1 };
+
+        // 1. Sinh Bệ Phóng (Car Stepping Stones)
+        float steppingEndZ = startZ;
+        for (int i = 0; i < _steppingStoneCount; i++)
+        {
+            if (_budget.IsExhausted()) { _budget.ResetFrame(); yield return null; }
+            float carLen = _carLengthZ;
+            yield return _carSpawner.SpawnOnly(segment, steppingEndZ, parkourLane, group, _sizeCache, len => carLen = len);
+            steppingEndZ += carLen;
+        }
+
+        float blockStartZ = steppingEndZ + _carToBusJumpGap;
+        int chainBusCount = PickChainLength();
+        float totalLengthZ = 0f;
+
+        if (type == ParkourType.StaticJump)
+        {
+            // StaticJump: Làn parkourLane có Static Bus nhảy qua nhảy lại. Các làn kia trống hoặc rào chắn.
+            foreach (int lane in allLanes)
             {
-                int bonusRemaining = _maxCoinsPerSegment - coinCount;
-                if (bonusRemaining > 0)
+                if (lane == parkourLane) continue;
+                float sideRoll = Random.value;
+                if (sideRoll < 0.6f) { /* Trống */ }
+                else if (_barrierRefs.Count > 0)
                 {
-                    int bonusCount = Mathf.Min(_freeCoinSpawner.GetRandomCount(), bonusRemaining);
-                    yield return _freeCoinSpawner.Spawn(segment, currentZ, Random.Range(-1, 2), group, bonusCount);
-                    coinCount += bonusCount;
-                    currentZ  += bonusCount * _freeCoinSpawner.GetSpacing() + _gapBetweenGroups;
+                    if (_budget.IsExhausted()) { _budget.ResetFrame(); yield return null; }
+                    yield return _barrierSpawner.Spawn(segment, blockStartZ, lane, group, _maxCoinsPerSegment, 0, _ => { });
                 }
             }
+
+            // Sinh Chuỗi Static Nhảy trên parkourLane
+            float currentBusZ = blockStartZ;
+            float prevBusEndZ = blockStartZ;
+            
+            for (int i = 0; i < chainBusCount; i++)
+            {
+                if (_budget.IsExhausted()) { _budget.ResetFrame(); yield return null; }
+                float busLen = _busLengthZ;
+                bool isSuccess = false;
+                yield return _busSpawner.SpawnWithCoins(segment, currentBusZ, parkourLane, group, _sizeCache, onSpawned: len => { busLen = len; isSuccess = (len > 0); });
+                
+                if (isSuccess && i > 0)
+                {
+                    yield return _busSpawner.SpawnSinusoidalBridge(segment, prevBusEndZ, currentBusZ, parkourLane * _laneDistance, _busRoofY, coinCount: 5, group);
+                }
+                
+                prevBusEndZ = currentBusZ + busLen;
+                currentBusZ = prevBusEndZ + _jumpGapBetweenBuses;
+            }
+            totalLengthZ = currentBusZ - startZ;
         }
+        else // MovingJump
+        {
+            // MovingJump: Làn parkourLane dừng lại ở 1 Static Bus làm đài. Các làn kia phun Moving Bus.
+            float safePlatformLen = _busLengthZ;
+            yield return _busSpawner.SpawnWithCoins(segment, blockStartZ, parkourLane, group, _sizeCache, onSpawned: len => safePlatformLen = len);
+            
+            int movingLaneCount = 0;
+            float maxMovingZ = blockStartZ;
+            
+            foreach (int lane in allLanes)
+            {
+                if (lane == parkourLane) continue;
+
+                float sideRoll = Random.value;
+                if (sideRoll < 0.5f || movingLaneCount >= 2) 
+                {
+                    if (sideRoll >= 0.5f && _barrierRefs.Count > 0)
+                        yield return _barrierSpawner.Spawn(segment, blockStartZ, lane, group, _maxCoinsPerSegment, 0, _ => { });
+                    continue; 
+                }
+
+                movingLaneCount++;
+                float movingZ = blockStartZ;
+                for (int i = 0; i < chainBusCount; i++)
+                {
+                    float busLen = _busLengthZ;
+                    yield return _busSpawner.SpawnWithCoins(segment, movingZ, lane, group, _sizeCache, makeMoving: true, speed: _movingBusSpeed, onSpawned: len => busLen = len);
+                    movingZ += busLen + _jumpGapBetweenBuses;
+                }
+                maxMovingZ = Mathf.Max(maxMovingZ, movingZ);
+            }
+            
+            totalLengthZ = maxMovingZ - startZ;
+        }
+
+        onComplete?.Invoke(totalLengthZ);
+    }
+
+    private int PickChainLength()
+    {
+        float r = Random.value;
+        if (r < 0.50f) return 1;
+        if (r < 0.80f) return 2;
+        return _maxJumpSequenceBuses;
     }
 }
