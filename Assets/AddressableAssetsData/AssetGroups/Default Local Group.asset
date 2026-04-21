@@ -34,11 +34,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 4be47a48b47d6224ebb6430561872389
-    m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_19.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 50e260f821baa56419af96b848301e5d
     m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/Magnet.prefab
     m_ReadOnly: 0
@@ -51,11 +46,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 61c7dcd8337158a468821e9b631f2689
     m_Address: Assets/AssetStore/Items/BTM_Items_Gems/Prefabs/GoldPile.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 640b94cf88de4ef459ce14645b2736d9
-    m_Address: Assets/AssetStore/ithappy/Cartoon_City_Free/Prefabs/Cars/Car_06.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

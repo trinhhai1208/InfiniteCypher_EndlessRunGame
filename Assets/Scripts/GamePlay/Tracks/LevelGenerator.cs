@@ -58,13 +58,13 @@ public class LevelGenerator : MonoBehaviour
     // ─────────────────────────────────────────
     [Header("Spawn Settings")]
     [SerializeField] private float _safeStartOffset = 50f;
-    [SerializeField] private float _gapBetweenGroups = 5f;
+    [SerializeField] private float _gapBetweenGroups = 10f; // Rút ngắn xuống 10m để mật độ dày hơn
+    [SerializeField] private float _adaptiveDistanceThreshold = 2000f; // Ngưỡng chuyển sang chế độ Push
 
     // ─────────────────────────────────────────
     [Header("Parkour Pattern Settings")]
     [SerializeField] [Range(0f, 1f)] private float _parkourPatternChance = 0.30f;
-    [Tooltip("Số xe con làm bệ phóng trước khi nhảy lên Bus.")]
-    [SerializeField] private int _steppingStoneCount = 3;
+
     [Tooltip("Khoảng cách từ xe con cuối cùng đến bus (lấy đà nhảy).")]
     [SerializeField] private float _carToBusJumpGap = 3.0f;
     [Tooltip("Số lượng bus trong chuỗi nhảy (1-3, sau đó 1).")]
@@ -119,6 +119,10 @@ public class LevelGenerator : MonoBehaviour
     private BusSpawner _busSpawner;
     private BarrierSpawner _barrierSpawner;
     private FreeCoinSpawner _freeCoinSpawner;
+
+    // Smart Spawner state (Per-Lane tracking) - Duy trì xuyên suốt game
+    private float[] _lastZPerLane = new float[] { -999f, -999f, -999f }; 
+    private int[] _lastTypePerLane = new int[] { 0, 0, 0 }; // 0:None, 1:Vehicle, 2:Cluster, 3:Barrier
 
     // ─────────────────────────────────────────────────────────
     // Lifecycle
@@ -206,10 +210,28 @@ public class LevelGenerator : MonoBehaviour
         float currentZ = segment.StartPoint.position.z + _safeStartOffset;
         float endZ     = segment.EndPoint.position.z - 5f;
 
+        const float SAFETY_BUFFER_Z = 6.0f;
+        const float CLUSTER_GAP = 12.0f; // Khoảng cách đẩy lùi cho bệ phóng ở late game
+        const float MIN_VEHICLE_GAP_SAME_LANE = 20.0f; // Chỉnh dính nhau: 20m tối thiểu (Subway style)
+
         while (currentZ < endZ)
         {
+            // --- ADAPTIVE DIFFICULTY LOGIC ---
+            // Mỗi 1000m tăng xác suất và giảm khoảng cách
+            int difficultyKm = Mathf.FloorToInt(currentZ / 1000f);
+            float difficultyBonus = difficultyKm * 0.05f;
+            
+            // Giảm gap dần từ 10m xuống tối thiểu 7m
+            float currentGap = Mathf.Max(7f, _gapBetweenGroups - (difficultyKm * 0.5f)); 
+            
+            // Tăng Parkour và Barrier theo yêu cầu (Vehicle và Bus giữ nguyên mốc nền)
+            float dynamicParkourChance = _parkourPatternChance + difficultyBonus;
+            float dynamicBarrierChance = _barrierChance + difficultyBonus;
+            float dynamicCarChance = _carGroupChance;
+            float dynamicBusChance = _busGroupChance;
+
             float roll     = Random.value;
-            float advanceZ = _gapBetweenGroups;
+            float advanceZ = currentGap;
 
             // P2: Reset budget mỗi lần qua threshold
             if (_budget.IsExhausted())
@@ -218,31 +240,103 @@ public class LevelGenerator : MonoBehaviour
                 yield return null; // Nhường frame
             }
 
-            // ─── Parkour Pattern ────────────────────────────
-            if (roll < _parkourPatternChance)
+            // ─── PHÂN VAI TRÒ (Weighted Spawning) ─────────────────
+            // Đưa Barrier lên đầu để đảm bảo tỉ lệ xuất hiện đúng config
+            if (roll < dynamicBarrierChance && _barrierRefs.Count > 0)
             {
+                int lane = Random.Range(-1, 2);
+                int laneIndex = lane + 1;
+
+                // SAFETY: Nếu trùng lane với xe con trước, dãn Z
+                if (_lastTypePerLane[laneIndex] == 1 && (currentZ - _lastZPerLane[laneIndex] < SAFETY_BUFFER_Z))
+                {
+                    currentZ = _lastZPerLane[laneIndex] + SAFETY_BUFFER_Z;
+                }
+
+                yield return _barrierSpawner.Spawn(segment, currentZ, lane, group,
+                    _maxCoinsPerSegment, coinCount,
+                    spawned => coinCount += spawned);
+
+                advanceZ = currentGap;
+
+                _lastZPerLane[laneIndex] = currentZ + 2f; 
+                _lastTypePerLane[laneIndex] = 3; // Barrier
+            }
+            // ─── Parkour Pattern ────────────────────────────
+            else if (roll < dynamicBarrierChance + dynamicParkourChance)
+            {
+                int parkourLane = Random.Range(-1, 2);
+                int laneIndex = parkourLane + 1;
+
+                // RULE: Lối vào sạch theo làn
+                if (_lastTypePerLane[laneIndex] == 1 || _lastTypePerLane[laneIndex] == 2)
+                {
+                    if (currentZ < _adaptiveDistanceThreshold) { currentZ += currentGap; continue; } 
+                    else { currentZ = _lastZPerLane[laneIndex] + CLUSTER_GAP; }
+                }
+                else if (_lastTypePerLane[laneIndex] == 3) // Barrier
+                {
+                    if (currentZ - _lastZPerLane[laneIndex] < 7f) currentZ = _lastZPerLane[laneIndex] + 7f;
+                }
+
                 float patternLen = 0f;
-                yield return SpawnParkourPattern(segment, currentZ, group, len => patternLen = len);
-                advanceZ = patternLen + _gapBetweenGroups;
+                yield return SpawnParkourPattern(segment, currentZ, group, parkourLane, len => patternLen = len);
+                
+                _lastZPerLane[laneIndex] = currentZ + patternLen;
+                _lastTypePerLane[laneIndex] = 2; // Cluster
+                
+                advanceZ = patternLen + currentGap;
             }
             // ─── Xe Con (Single Car) ───────────────────────────
-            else if (roll < _parkourPatternChance + _carGroupChance && _carRefs.Count > 0)
+            else if (roll < dynamicBarrierChance + dynamicParkourChance + dynamicCarChance && _carRefs.Count > 0)
             {
                 int lane = Random.Range(-1, 2);
+                int laneIndex = lane + 1;
+
+                if (_lastTypePerLane[laneIndex] == 1 && (currentZ - _lastZPerLane[laneIndex] < MIN_VEHICLE_GAP_SAME_LANE))
+                {
+                    lane = (lane == 1) ? 0 : lane + 1;
+                    laneIndex = lane + 1;
+                    if (currentZ - _lastZPerLane[laneIndex] < 10f) currentZ = _lastZPerLane[laneIndex] + 10f;
+                }
+
                 float actualCarLength = _carLengthZ;
-                // Chỉ sinh 1 xe con đơn lẻ
                 yield return _carSpawner.SpawnOnly(segment, currentZ, lane, group, _sizeCache, len => actualCarLength = len);
-                advanceZ = actualCarLength + _gapBetweenGroups;
+                
+                _lastZPerLane[laneIndex] = currentZ + actualCarLength;
+                _lastTypePerLane[laneIndex] = 1; // Vehicle
+
+                advanceZ = actualCarLength + currentGap;
             }
             // ─── Xe Bus ─────────────────────────────────────
-            else if (roll < _parkourPatternChance + _carGroupChance + _busGroupChance && _busRefs.Count > 0)
+            else if (roll < dynamicBarrierChance + dynamicParkourChance + dynamicCarChance + dynamicBusChance && _busRefs.Count > 0)
             {
                 int lane = Random.Range(-1, 2);
+                int laneIndex = lane + 1;
+
+                if (_lastTypePerLane[laneIndex] == 1 && (currentZ - _lastZPerLane[laneIndex] < MIN_VEHICLE_GAP_SAME_LANE))
+                {
+                    currentZ = _lastZPerLane[laneIndex] + MIN_VEHICLE_GAP_SAME_LANE;
+                }
+                // ... rest of bus logic ...
+
                 bool spawnBusCoins = Random.value < _busHasCoinChance;
 
                 if (spawnBusCoins)
                 {
-                    int steppingCount = Random.Range(2, 4);
+                    // Case: Bệ phóng cho Bus Static
+                    // RULE: Lối vào sạch theo làn
+                    if (_lastTypePerLane[laneIndex] == 1 || _lastTypePerLane[laneIndex] == 2)
+                    {
+                        if (currentZ < _adaptiveDistanceThreshold) { currentZ += currentGap; continue; } 
+                        else { currentZ = _lastZPerLane[laneIndex] + CLUSTER_GAP; }
+                    }
+                    else if (_lastTypePerLane[laneIndex] == 3)
+                    {
+                        if (currentZ - _lastZPerLane[laneIndex] < 7f) currentZ = _lastZPerLane[laneIndex] + 7f;
+                    }
+
+                    int steppingCount = 2; // FIXED COUNT
                     float steppingZ   = currentZ;
 
                     for (int i = 0; i < steppingCount; i++)
@@ -268,7 +362,7 @@ public class LevelGenerator : MonoBehaviour
                         groupEndZ = currentBusZ;
                     }
 
-                    advanceZ = (groupEndZ - currentZ) + _gapBetweenGroups;
+                    advanceZ = (groupEndZ - currentZ) + currentGap;
                 }
                 else
                 {
@@ -286,18 +380,11 @@ public class LevelGenerator : MonoBehaviour
                         groupEndZ = currentBusZ;
                     }
 
-                    advanceZ = (groupEndZ - currentZ) + _gapBetweenGroups;
+                    advanceZ = (groupEndZ - currentZ) + currentGap;
                 }
-            }
-            // ─── Rào Chắn ───────────────────────────────────
-            else if (roll < _parkourPatternChance + _carGroupChance + _busGroupChance + _barrierChance && _barrierRefs.Count > 0)
-            {
-                int lane = Random.Range(-1, 2);
-                yield return _barrierSpawner.Spawn(segment, currentZ, lane, group,
-                    _maxCoinsPerSegment, coinCount,
-                    spawned => coinCount += spawned);
 
-                advanceZ = _gapBetweenGroups;
+                _lastZPerLane[laneIndex] = currentZ + advanceZ;
+                _lastTypePerLane[laneIndex] = 2; // Cluster
             }
             // ─── Xu Tự Do ───────────────────────────────────
             else if (CoinPool.Instance != null)
@@ -308,12 +395,10 @@ public class LevelGenerator : MonoBehaviour
                 int freeCoinCount = Mathf.Min(_freeCoinSpawner.GetRandomCount(), remaining);
                 yield return _freeCoinSpawner.Spawn(segment, currentZ, Random.Range(-1, 2), group, freeCoinCount);
                 coinCount += freeCoinCount;
-                advanceZ = freeCoinCount * _freeCoinSpawner.GetSpacing() + _gapBetweenGroups;
+                advanceZ = freeCoinCount * _freeCoinSpawner.GetSpacing() + currentGap;
             }
 
             currentZ += advanceZ;
-
-
         }
     }
 
@@ -321,15 +406,14 @@ public class LevelGenerator : MonoBehaviour
     // Parkour Pattern Logic
     // ─────────────────────────────────────────────────────────
 
-    private IEnumerator SpawnParkourPattern(TrackSegment segment, float startZ, SpawnedObjects group, System.Action<float> onComplete)
+    private IEnumerator SpawnParkourPattern(TrackSegment segment, float startZ, SpawnedObjects group, int parkourLane, System.Action<float> onComplete)
     {
         ParkourType type = Random.value < 0.5f ? ParkourType.StaticJump : ParkourType.MovingJump;
-        int parkourLane = Random.Range(-1, 2);
         int[] allLanes = { -1, 0, 1 };
 
-        // 1. Sinh Bệ Phóng (Car Stepping Stones)
+        // 1. Sinh Bệ Phóng (Car Stepping Stones) - CỐ ĐỊNH 2 CAR
         float steppingEndZ = startZ;
-        for (int i = 0; i < _steppingStoneCount; i++)
+        for (int i = 0; i < 2; i++)
         {
             if (_budget.IsExhausted()) { _budget.ResetFrame(); yield return null; }
             float carLen = _carLengthZ;

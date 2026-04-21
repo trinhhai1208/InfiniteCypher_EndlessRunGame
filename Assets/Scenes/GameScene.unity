@@ -1398,14 +1398,6 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  - m_AssetGUID: 4be47a48b47d6224ebb6430561872389
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
-  - m_AssetGUID: 640b94cf88de4ef459ce14645b2736d9
-    m_SubObjectName: 
-    m_SubObjectType: 
-    m_EditorAssetChanged: 0
   - m_AssetGUID: fc1e359a90d4e6542b4d8022c50429ce
     m_SubObjectName: 
     m_SubObjectType: 
@@ -1440,15 +1432,15 @@ MonoBehaviour:
     m_SubObjectName: 
     m_SubObjectType: 
     m_EditorAssetChanged: 0
-  _barrierChance: 0.37
+  _barrierChance: 0.62
   _barrierCoinZOffset: -3
   _barrierLowCoinY: 1
   _coinSpacingOnBus: 1.2
   _freeCoinHeightY: 1.2
-  _safeStartOffset: 40
-  _gapBetweenGroups: 5
+  _safeStartOffset: 50
+  _gapBetweenGroups: 15
+  _adaptiveDistanceThreshold: 2000
   _parkourPatternChance: 0.3
-  _steppingStoneCount: 2
   _carToBusJumpGap: 3
   _maxJumpSequenceBuses: 3
   _movingBusSpeed: 8
