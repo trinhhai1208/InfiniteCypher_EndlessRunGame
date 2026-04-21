@@ -22,7 +22,7 @@ public class BossController : MonoBehaviour
 
     [Header("Intro Sequence")]
     [Tooltip("Khoảng cách Boss xuất hiện sau Player trong màn Intro (nhìn thấy rõ).")]
-    [SerializeField] private float _introDistance = 1f;
+    [SerializeField] private float _introDistance = 2f;
     [Tooltip("Thời gian Boss đứng gần (Intro) trước khi bắt đầu lùi.")]
     [SerializeField] private float _introHoldDuration = 5.0f;
 
@@ -31,13 +31,6 @@ public class BossController : MonoBehaviour
     [SerializeField] private float _retreatSpeed = 4f;
     [Tooltip("Khoảng cách tối đa từ player để Boss ẩn đi.")]
     [SerializeField] private float _retreatHideDistance = 30f;
-    [Tooltip("Thời gian SmoothDamp trục Z khi bám sát.")]
-    [SerializeField] private float _zSmoothTime = 0.10f;
-
-    [Header("Lane Follow (Smooth Lag)")]
-    [Tooltip("Thời gian Boss lag lại so với Player khi đổi lane.")]
-    [SerializeField] private float _laneFollowDelay = 0.35f;
-    [SerializeField] private float _xSmoothTime = 0.12f;
 
     public BossState State { get; private set; } = BossState.Hidden;
 
@@ -46,12 +39,8 @@ public class BossController : MonoBehaviour
 
     private float _currentZ;
     private float _targetZ;
-    private float _zVelocity;
 
     private float _currentX;
-    private float _delayedPlayerX;
-    private float _xLagVelocity;
-    private float _xVelocity;
 
     private float _currentY;
     private float _yVelocity;
@@ -102,50 +91,31 @@ public class BossController : MonoBehaviour
         switch (State)
         {
             case BossState.Intro:
-                _targetZ        = playerZ - _introDistance;
-                _delayedPlayerX = Mathf.SmoothDamp(_delayedPlayerX, _player.position.x,
-                                                    ref _xLagVelocity, _laneFollowDelay);
+                _currentZ = playerZ - _introDistance;
+                _currentX = _player.position.x;
                 _introTimer -= Time.deltaTime;
                 if (_introTimer <= 0f)
                     State = BossState.Recovering;
                 break;
 
             case BossState.Chasing:
-                _targetZ        = playerZ - _chaseDistance;
-                _delayedPlayerX = Mathf.SmoothDamp(_delayedPlayerX, _player.position.x,
-                                                    ref _xLagVelocity, _laneFollowDelay);
+                _currentZ = playerZ - _chaseDistance;
+                _currentX = _player.position.x;
                 break;
 
             case BossState.Recovering:
-                _currentZ      -= _retreatSpeed * Time.deltaTime;
-                _delayedPlayerX = _player.position.x;
+                _currentZ -= _retreatSpeed * Time.deltaTime;
+                _currentX = _player.position.x;
 
                 if (playerZ - _currentZ >= _retreatHideDistance)
                 {
                     ForceHide();
                     return;
                 }
-
-                _currentX = Mathf.SmoothDamp(_currentX, _delayedPlayerX, ref _xVelocity, _xSmoothTime);
-                _currentY = Mathf.SmoothDamp(_currentY, playerY,          ref _yVelocity, _ySmoothTime);
-                transform.position = new Vector3(_currentX, _currentY, _currentZ);
-                return;
+                break;
         }
 
-        // Cập nhật Z cho Intro & Chasing
-        float distZ = Mathf.Abs(_currentZ - _targetZ);
-        if (distZ < 0.15f)
-        {
-            _currentZ  = _targetZ;
-            _zVelocity = 0f;
-        }
-        else
-        {
-            _currentZ = Mathf.SmoothDamp(_currentZ, _targetZ, ref _zVelocity, _zSmoothTime);
-        }
-
-        _currentX = Mathf.SmoothDamp(_currentX, _delayedPlayerX, ref _xVelocity, _xSmoothTime);
-        _currentY = Mathf.SmoothDamp(_currentY, playerY,          ref _yVelocity, _ySmoothTime);
+        _currentY = Mathf.SmoothDamp(_currentY, playerY, ref _yVelocity, _ySmoothTime);
         transform.position = new Vector3(_currentX, _currentY, _currentZ);
     }
 
@@ -162,11 +132,9 @@ public class BossController : MonoBehaviour
         if (_player == null || _animator == null) return;
 
         _currentZ       = _player.position.z - _introDistance;
-        _targetZ        = _currentZ;
         _currentX       = _player.position.x;
         _currentY       = _player.position.y;
-        _delayedPlayerX = _player.position.x;
-        _zVelocity = _xVelocity = _yVelocity = _xLagVelocity = 0f;
+        _yVelocity = 0f;
 
         _introTimer        = _introHoldDuration;
         transform.position = new Vector3(_currentX, _currentY, _currentZ);
@@ -185,11 +153,9 @@ public class BossController : MonoBehaviour
         if (_player == null || _animator == null) return;
 
         _currentZ       = _player.position.z - _spawnBehindDistance;
-        _targetZ        = _player.position.z - _chaseDistance;
         _currentX       = _player.position.x;
         _currentY       = _player.position.y;
-        _delayedPlayerX = _player.position.x;
-        _zVelocity = _xVelocity = _yVelocity = _xLagVelocity = 0f;
+        _yVelocity = 0f;
 
         transform.position = new Vector3(_currentX, _currentY, _currentZ);
         gameObject.SetActive(true);
@@ -219,7 +185,7 @@ public class BossController : MonoBehaviour
     public void PlayJump()
     {
         EnsureInitialized();
-        if ((State == BossState.Chasing || State == BossState.Intro) && _animator != null)
+        if ((State == BossState.Chasing || State == BossState.Intro || State == BossState.Recovering) && _animator != null)
             _animator.SetTrigger(HashJump);
     }
 

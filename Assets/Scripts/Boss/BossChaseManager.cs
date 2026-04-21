@@ -85,7 +85,7 @@ public class BossChaseManager : MonoBehaviour
     private void HandlePlayerJump(PlayerJumpEvent e)
     {
         BossController boss = ResolveBossController();
-        if (IsChasing && boss != null)
+        if (boss != null)
             boss.PlayJump();
     }
 

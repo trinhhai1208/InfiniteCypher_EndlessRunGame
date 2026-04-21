@@ -887,15 +887,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f35257fa53379904291ef6d62f74cf04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _chaseDistance: 1.5
+  _chaseDistance: 3.5
   _spawnBehindDistance: 15
-  _introDistance: 1.5
+  _introDistance: 3.5
   _introHoldDuration: 5
   _retreatSpeed: 2.5
   _retreatHideDistance: 20
-  _zSmoothTime: 0.1
-  _laneFollowDelay: 0.15
-  _xSmoothTime: 0.12
 --- !u!95 &459655668
 Animator:
   serializedVersion: 5
@@ -2522,11 +2519,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _target: {fileID: 7186931820594961514}
-  _offset: {x: 0, y: 4.5, z: -12}
+  _offset: {x: 0, y: 4, z: -6.5}
   _xSmoothTime: 0.12
   _ySmoothTime: 0.15
   _rotationSmoothTime: 0.15
-  _lookAtOffset: {x: 0, y: 2.5, z: 0}
+  _lookAtOffset: {x: 0, y: 2, z: 0}
 --- !u!1 &1302132077
 GameObject:
   m_ObjectHideFlags: 0
