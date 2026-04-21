@@ -12,20 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8e3eda821fd8d6468afd301f2651eaf, type: 3}
   m_Name: PlayerConfig_Default
   m_EditorClassIdentifier: 
-  baseSpeed: 16
-  speedIncreaseRate: 0.25
-  maxSpeed: 24
+  baseSpeed: 20
+  maxSpeed: 26
+  speedIncreaseDistance: 750
+  speedBonusPerDistance: 2
   laneDistance: 3.8
-  laneChangeSpeed: 15
+  laneChangeSpeed: 25
   jumpForce: 10
   gravity: 28
-  diveForce: 35
+  diveForce: 25
   rollDuration: 0.5
   rollColliderHeight: 1.2
   rollColliderCenterZ: 0
   minSwipeDistance: 30
-  stumbleSpeedPenalty: 0.4
-  stumbleDuration: 0.5
-  stumbleForwardFreezeTime: 0.2
-  stumbleBackwardPush: 0.35
-  stumbleBackwardSidePush: 0.45
+  stumbleSpeedPenalty: 0.6
+  stumbleDuration: 0.15
+  stumbleForwardFreezeTime: 0.1
+  stumbleBackwardPush: 0.05
+  stumbleBackwardSidePush: 0.2
+  roadBoundaryX: 3.8

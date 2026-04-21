@@ -12,11 +12,15 @@ public class PlayerConfigSO : ScriptableObject
     [Tooltip("Tốc độ khởi đầu khi bắt đầu ván chơi")]
     public float baseSpeed = 16f;
 
-    [Tooltip("Tốc độ tăng mỗi giây (FixedUpdate)")]
-    public float speedIncreaseRate = 0.25f;
-
     [Tooltip("Tốc độ tối đa - không thể vượt qua giá trị này")]
     public float maxSpeed = 24f;
+
+    [Header("Discrete Speed Up (Mới)")]
+    [Tooltip("Quãng đường chạy được để kích hoạt tăng tốc (m)")]
+    public float speedIncreaseDistance = 500f;
+
+    [Tooltip("Lượng tốc độ cộng thêm mỗi khi đạt mốc quãng đường")]
+    public float speedBonusPerDistance = 1f;
 
     [Header("Lane")]
     [Tooltip("Khoảng cách giữa các lane (phải khớp với LevelGenerator._laneDistance)")]
@@ -64,4 +68,8 @@ public class PlayerConfigSO : ScriptableObject
 
     [Tooltip("Khoảng đẩy ngang khi vấp (tránh xa vật cản)")]
     public float stumbleBackwardSidePush = 0.45f;
+
+    [Header("Road Boundaries")]
+    [Tooltip("Giới hạn trục X của mặt đường. Vượt quá sẽ vấp lề.")]
+    public float roadBoundaryX = 6.5f;
 }

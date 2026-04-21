@@ -86,6 +86,9 @@ public class GameManager : MonoBehaviour
         State = GameState.Playing;
         OnGameStart?.Invoke();
         EventBus.Publish(new GameStartEvent());
+
+        // Chạy màn giới thiệu Boss: xuất hiện gần → lùi chậm → tạo cảm giác hồi hộp ngay từ đầu game
+        BossChaseManager.Instance?.PlayIntroSequence();
     }
 
     public void UpdateDistance(float zPosition)

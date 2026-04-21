@@ -14,8 +14,10 @@ public class PlayerController : MonoBehaviour
 
     // ── Runtime values — được nạp từ PlayerConfigSO trong ApplyConfig() ──
     private float _baseSpeed;
-    private float _speedIncreaseRate;
     private float _maxSpeed;
+    private float _speedIncreaseDistance;
+    private float _speedBonusPerDistance;
+    private float _roadBoundaryX;
     private float _laneDistance;
     private float _laneChangeSpeed;
     private float _jumpForce;
@@ -54,6 +56,7 @@ public class PlayerController : MonoBehaviour
     private bool _hasStumbleObstacleBounds;
     private float _groundY;
     private float _lastSafeY;
+    private float _nextSpeedMilestone; // Mốc quãng đường tiếp theo để tăng tốc
     private Coroutine _rollCoroutine;
 
     private bool _jumpRequested;
@@ -99,17 +102,15 @@ public class PlayerController : MonoBehaviour
         ApplyConfig();
     }
 
-    /// <summary>
-    /// Nếu có PlayerConfigSO gán vào Inspector, ghi đè SerializeField bằng giá trị từ SO.
-    /// Không ảnh hưởng gì nếu SO không được gán.
-    /// </summary>
     private void ApplyConfig()
     {
         if (_config == null) return;
 
         _baseSpeed                = _config.baseSpeed;
-        _speedIncreaseRate        = _config.speedIncreaseRate;
         _maxSpeed                 = _config.maxSpeed;
+        _speedIncreaseDistance    = _config.speedIncreaseDistance;
+        _speedBonusPerDistance    = _config.speedBonusPerDistance;
+        _roadBoundaryX            = _config.roadBoundaryX;
         _laneDistance             = _config.laneDistance;
         _laneChangeSpeed          = _config.laneChangeSpeed;
         _jumpForce                = _config.jumpForce;
@@ -137,21 +138,15 @@ public class PlayerController : MonoBehaviour
         if (_isDead) return;
 
         HandleInput();
+        CheckSidewalkStumble();
+        CheckGroundStatus();
+        UpdateSpeed();
+        HandleJumpAndDive();
+        ApplyMovementUpdate();
         UpdateAnimator();
 
         if (GameManager.Instance != null)
             GameManager.Instance.UpdateDistance(transform.position.z);
-    }
-
-    private void FixedUpdate()
-    {
-        if (GameManager.Instance != null && !GameManager.Instance.IsPlaying) return;
-        if (_isDead) return;
-
-        CheckGroundStatus();
-        UpdateSpeed();
-        HandleJumpAndDive();
-        ApplyMovementFixed();
     }
 
     private void CheckGroundStatus()
@@ -180,7 +175,6 @@ public class PlayerController : MonoBehaviour
         {
             if (_isDiving) _isDiving = false;
 
-            // VÁ LỖI MỚI: Nếu có lệnh chờ Roll khi đang nhảy, thực hiện ngay khi chạm đất
             if (_queuedRoll)
             {
                 if (!_isRolling)
@@ -218,7 +212,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
             {
                 _diveRequested = true;
-                _queuedRoll = true; // Buffer lệnh lộn người cho đến khi chạm đất
+                _queuedRoll = true;
             }
         }
 
@@ -242,12 +236,11 @@ public class PlayerController : MonoBehaviour
                 _animator.SetTrigger(HashJump);
                 _jumpRequested = false;
                 _rollRequested = false;
-                _queuedRoll = false; // Xóa lệnh chờ roll nếu thực hiện cú nhảy mới
+                _queuedRoll = false;
 
                 if (AudioManager.Instance != null)
                     AudioManager.Instance.PlayJump();
 
-                // Publish qua EventBus (Mới)
                 EventBus.Publish(new PlayerJumpEvent());
             }
             else if (_rollRequested)
@@ -260,7 +253,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            _verticalVelocity -= _gravity * Time.fixedDeltaTime;
+            _verticalVelocity -= _gravity * Time.deltaTime;
 
             if (_diveRequested)
             {
@@ -343,7 +336,7 @@ public class PlayerController : MonoBehaviour
                         else
                         {
                             _diveRequested = true;
-                            _queuedRoll = true; // Ghi nhớ lệnh roll khi vuốt xuống trên không
+                            _queuedRoll = true;
                         }
                     }
 
@@ -398,13 +391,31 @@ public class PlayerController : MonoBehaviour
     {
         if (_isDead || _isStumbling) return;
 
-        if (_currentSpeed < _maxSpeed)
-            _currentSpeed += _speedIncreaseRate * Time.fixedDeltaTime;
+        if (_speedIncreaseDistance > 0f && _currentSpeed < _maxSpeed)
+        {
+            float distanceTravelled = _rb != null ? _rb.position.z : transform.position.z;
+            if (distanceTravelled >= _nextSpeedMilestone)
+            {
+                _currentSpeed = Mathf.Min(_currentSpeed + _speedBonusPerDistance, _maxSpeed);
+                _nextSpeedMilestone += _speedIncreaseDistance;
+            }
+        }
     }
 
-    private void ApplyMovementFixed()
+    private void CheckSidewalkStumble()
     {
-        float dt = Time.fixedDeltaTime;
+        if (_isDead || _isStumbling || _roadBoundaryX <= 0f) return;
+        float absX = Mathf.Abs(_rb != null ? _rb.position.x : transform.position.x);
+        if (absX <= _roadBoundaryX) return;
+
+        float dirX = transform.position.x > 0f ? -1f : 1f;
+        Vector3 pushDir = new Vector3(dirX, 0f, -0.3f).normalized;
+        TriggerStumble(null, pushDir);
+    }
+
+    private void ApplyMovementUpdate()
+    {
+        float dt = Time.deltaTime;
         Vector3 currentPosition = _rb.position;
 
         float newZ = _freezeForwardMovement ? currentPosition.z : currentPosition.z + (_currentSpeed * dt);
@@ -502,7 +513,6 @@ public class PlayerController : MonoBehaviour
         ObstacleIdentity identity = ResolveObstacleIdentity(other);
         if (identity == null && !other.CompareTag("Obstacle")) return;
 
-        // Vehicle stumble must come from the solid body collider, not trigger sensors.
         if (identity != null && identity.CollisionType == ObstacleCollisionType.VehicleStumble)
             return;
 
@@ -523,7 +533,6 @@ public class PlayerController : MonoBehaviour
     {
         if (hitComponent == null) return null;
 
-        // Nếu vật thể chạm phải là một Sensor (như Jump/Roll Sensor) thì bỏ qua, không tính là va chạm gây chết
         if (hitComponent.GetComponent<MissionSensor>() != null || hitComponent.GetComponentInParent<MissionSensor>() != null)
             return null;
 
@@ -575,6 +584,15 @@ public class PlayerController : MonoBehaviour
     private void TriggerStumble(ObstacleIdentity obstacleIdentity, Vector3 pushDirection)
     {
         if (_isDead || _isStumbling) return;
+
+        // NEW: Bảo vệ bằng Khiên (Shield)
+        // Nếu có khiên sẽ bị mất khiên nhưng không bị vấp và không báo Boss đuổi
+        if (PowerUpManager.Instance != null && PowerUpManager.Instance.HasShield())
+        {
+            PowerUpManager.Instance.ConsumeShield();
+            return;
+        }
+
         pushDirection.y = 0f;
         _stumblePushDirection = pushDirection.sqrMagnitude > 0.0001f ? pushDirection.normalized : Vector3.back;
         _hasStumbleObstacleBounds = TryGetSolidObstacleBounds(obstacleIdentity, out _stumbleObstacleBounds);
@@ -625,7 +643,6 @@ public class PlayerController : MonoBehaviour
             _targetX = _currentLane * _laneDistance;
         }
 
-        // Publish qua EventBus
         EventBus.Publish(new PlayerStumbleEvent());
 
         yield return new WaitForSeconds(_stumbleForwardFreezeTime);
@@ -641,7 +658,6 @@ public class PlayerController : MonoBehaviour
         _isStumbling = false;
         _hasStumbleObstacleBounds = false;
     }
-
 
     public void MoveToLane(int laneIndex)
     {
@@ -698,6 +714,7 @@ public class PlayerController : MonoBehaviour
         _currentLane = 0;
         _targetX = 0f;
         _verticalVelocity = 0f;
+        _nextSpeedMilestone = _speedIncreaseDistance;
 
         if (BossChaseManager.Instance != null)
             BossChaseManager.Instance.ResetChase();
