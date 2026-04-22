@@ -85,8 +85,7 @@ public class MovingObstacle : MonoBehaviour
         for (int i = transform.childCount - 1; i >= 0; i--)
         {
             Transform child = transform.GetChild(i);
-            // Kiểm tra Tag hoặc Component để xác định là Coin (Giả định tag "Coin")
-            if (child.CompareTag("Coin"))
+            if (child.GetComponent<Coin>() != null)
             {
                 CoinPool.Instance.Return(child.gameObject);
             }

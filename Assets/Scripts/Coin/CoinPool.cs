@@ -180,6 +180,9 @@ public class CoinPool : MonoBehaviour
     {
         if (!_isReady) return null;
 
+        // P2: Active Cap — giới hạn số xu active trên mobile. Inspector: _activeCap > 0 = bật.
+        if (_activeCap > 0 && _active.Count >= _activeCap) return null;
+
         CoinInstance ci;
         if (_inactive.Count > 0)
             ci = _inactive.Pop();
@@ -189,9 +192,6 @@ public class CoinPool : MonoBehaviour
                 _maxPoolSize += 50;
             ci = CreateNew();
         }
-
-        // P2: Active Cap — giới hạn số xu active trên mobile. Inspector: _activeCap > 0 = bật.
-        if (_activeCap > 0 && _active.Count >= _activeCap) return null;
 
         ci.Tr.SetParent(parent);
         ci.Tr.SetPositionAndRotation(position, rotation);

@@ -138,15 +138,22 @@ public class PlayerController : MonoBehaviour
         if (_isDead) return;
 
         HandleInput();
-        CheckSidewalkStumble();
-        CheckGroundStatus();
         UpdateSpeed();
-        HandleJumpAndDive();
-        ApplyMovementUpdate();
         UpdateAnimator();
 
         if (GameManager.Instance != null)
             GameManager.Instance.UpdateDistance(transform.position.z);
+    }
+
+    private void FixedUpdate()
+    {
+        if (GameManager.Instance != null && !GameManager.Instance.IsPlaying) return;
+        if (_isDead) return;
+
+        CheckSidewalkStumble();
+        CheckGroundStatus();
+        HandleJumpAndDive();
+        ApplyMovementUpdate();
     }
 
     private void CheckGroundStatus()
@@ -253,7 +260,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            _verticalVelocity -= _gravity * Time.deltaTime;
+            _verticalVelocity -= _gravity * Time.fixedDeltaTime;
 
             if (_diveRequested)
             {
@@ -415,7 +422,7 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyMovementUpdate()
     {
-        float dt = Time.deltaTime;
+        float dt = Time.fixedDeltaTime;
         Vector3 currentPosition = _rb.position;
 
         float newZ = _freezeForwardMovement ? currentPosition.z : currentPosition.z + (_currentSpeed * dt);

@@ -10,28 +10,6 @@ public class PowerUpPickup : MonoBehaviour
 
     private bool _collected;
 
-    private void Awake()
-    {
-        // VÁ LỖI NÂNG CAO: Tránh Frustum Culling với cả object bị ẩn ban đầu
-        var mfs = GetComponentsInChildren<MeshFilter>(true);
-        foreach (var mf in mfs)
-        {
-            if (mf != null && mf.sharedMesh != null)
-            {
-                mf.sharedMesh.bounds = new Bounds(Vector3.zero, new Vector3(500f, 500f, 500f));
-            }
-        }
-
-        var smrs = GetComponentsInChildren<SkinnedMeshRenderer>(true);
-        foreach (var smr in smrs)
-        {
-            if (smr != null)
-            {
-                smr.localBounds = new Bounds(Vector3.zero, new Vector3(500f, 500f, 500f));
-            }
-        }
-    }
-
     private void OnEnable()
     {
         _collected = false;

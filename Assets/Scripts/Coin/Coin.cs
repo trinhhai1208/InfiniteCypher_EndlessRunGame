@@ -17,25 +17,6 @@ public class Coin : MonoBehaviour
     private void Awake()
     {
         _cachedTransform = transform;
-        
-        // VÁ LỖI NÂNG CAO: Tăng kích thước Bounding Box (Bao gồm cả các object đang bị ẩn trong Pool)
-        var mfs = GetComponentsInChildren<MeshFilter>(true);
-        foreach (var mf in mfs)
-        {
-            if (mf != null && mf.sharedMesh != null)
-            {
-                mf.sharedMesh.bounds = new Bounds(Vector3.zero, new Vector3(500f, 500f, 500f));
-            }
-        }
-
-        var smrs = GetComponentsInChildren<SkinnedMeshRenderer>(true);
-        foreach (var smr in smrs)
-        {
-            if (smr != null)
-            {
-                smr.localBounds = new Bounds(Vector3.zero, new Vector3(500f, 500f, 500f));
-            }
-        }
     }
 
     private void OnEnable()
